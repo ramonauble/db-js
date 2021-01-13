@@ -12,23 +12,42 @@
     <div class="pageBorder middle">
     <div class="pageBorder inner">
       <p id="title">db-j</p>
-			<div id="uiGroup">
+			<div class="uiGroup">
 				<div id="sg1" class="sliderGroup">
-					<input id="s1" class="slider" type="range" min="1" max="256"
+					<input id="s1" class="slider pSlider" type="range" min="1" max="256"
 					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
-					<input id="s2" class="slider" type="range" min="1" max="256"
+					<input id="s2" class="slider pSlider" type="range" min="1" max="256"
 					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
-					<input id="s3" class="slider" type="range" min="1" max="256"
+					<input id="s3" class="slider pSlider" type="range" min="1" max="256"
 					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
 				</div>
 				<div id="center" class="centerGroup">
+					<canvas id="displayCanv"></canvas>
+					<div class="uiButton" id="infoButton"></div>
+					<div class="uiButton" id="waveButton"></div>
 				</div>
 				<div id="sg2" class="sliderGroup">
-					<input id="s4" class="slider" type="range" min="1" max="256"
+					<input id="s4" class="slider pSlider" type="range" min="1" max="256"
 					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
-					<input id="s5" class="slider" type="range" min="1" max="256"
+					<input id="s5" class="slider pSlider" type="range" min="1" max="256"
 					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
-					<input id="s6" class="slider" type="range" min="1" max="256"
+					<input id="s6" class="slider pSlider" type="range" min="1" max="256"
+					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
+				</div>
+				<div class="pageGroup">
+					<div class="uiButton pageButton" id="oscButton"></div>
+					<div class="uiButton pageButton" id="ofxButton"></div>
+					<div class="uiButton pageButton" id="ratButton"></div>
+					<div class="uiButton pageButton" id="panButton"></div>
+					<div class="uiButton pageButton" id="ampButton"></div>
+					<div class="uiButton pageButton" id="lfoButton"></div>
+				</div>
+				<div class="auxGroup">
+					<input id="auxS1" class="slider aSlider" type="range" min="1" max="256"
+					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
+					<input id="auxS2" class="slider aSlider" type="range" min="1" max="256"
+					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
+					<input id="auxS3" class="slider aSlider" type="range" min="1" max="256"
 					value="1" step=".25" oninput="paramInput(this.id, this.value)"></input>
 				</div>
 			</div>
