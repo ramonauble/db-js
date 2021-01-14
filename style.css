@@ -61,7 +61,18 @@
 .pageButton {
   margin-left:3px;
   margin-right:3px;
+  background-position: center;
 }
+  #oscButton {
+    background-image: url("oscPage.png");
+  }
+  #ofxButton {
+    background-image: url("crushPage.png");
+    background-size:145%;
+  }
+  #ratButton {
+    background-image: url("ratioPage.png");
+  }
 
 .uiGroup {
   position:absolute;
