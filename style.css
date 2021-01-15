@@ -54,9 +54,11 @@
 }
   #infoButton {
     margin-right:1.5px;
+    background-image: url("./assets/pageButtons/infoButton.png");
   }
   #waveButton {
     margin-left:1.5px;
+    background-image: url("./assets/pageButtons/waveButton.png");
   }
 .pageButton {
   margin-left:3px;
@@ -64,14 +66,22 @@
   background-position: center;
 }
   #oscButton {
-    background-image: url("oscPage.png");
+    background-image: url("./assets/pageButtons/oscPage.png");
   }
   #ofxButton {
-    background-image: url("crushPage.png");
-    background-size:145%;
+    background-image: url("./assets/pageButtons/ratioPage.png");
   }
   #ratButton {
-    background-image: url("ratioPage.png");
+    background-image: url("./assets/pageButtons/crushPage.png");
+  }
+  #panButton {
+    background-image: url("./assets/pageButtons/panPage.png");
+  }
+  #ampButton {
+    background-image: url("./assets/pageButtons/adsrPage.png");
+  }
+  #lfoButton {
+    background-image: url("./assets/pageButtons/lfoPage.png");
   }
 
 .uiGroup {
