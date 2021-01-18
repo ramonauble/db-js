@@ -103,6 +103,7 @@
 }
   #oscSelect {
     background:#A962D8;
+    opacity:25%;
   }
   #ratSelect {
     background:#E93F3F;
@@ -129,7 +130,7 @@
   display:inline-flex;
   width:45px;
   height:5px;
-  background:#BB94B0;
+  background:#6A4086;
   border-radius:3px;
   box-sizing:border-box;
   background-position: center;
@@ -145,10 +146,12 @@
     #waveSelect {
       margin-left:1.5px;
       margin-right:0px;
+      opacity:25%;
     }
     #infoSelect {
       margin-left:0px;
       margin-right:1.5px;
+      opacity:25%;
     }
 
 .uiGroup {
