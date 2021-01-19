@@ -30,6 +30,17 @@ $(document).ready(function() {
     waveButton: $("#waveSelect")
   };
 
+  var sliderClassDict = {
+    oscButton: "oscSlider",
+    ratButton: "ratSlider",
+    ofxButton: "ofxSlider",
+    panButton: "panSlider",
+    ampButton: "ampSlider",
+    lfoButton: "lfoSlider"
+  };
+
+  var $pageSliders = $(".pSlider");
+
   var $activePage = $pageDict[activePage];
   var $activePageSelect = $pageSelectDict[activePage];
 
@@ -62,7 +73,9 @@ $(document).ready(function() {
         $activePage.css("opacity", "81%");
         $this.css("opacity", "100%");
         $pageSelectDict[activePage].css("opacity", "25%");
+        $pageSliders.removeClass(sliderClassDict[activePage]);
         activePage = $this.attr("id");
+        $pageSliders.addClass(sliderClassDict[activePage]);
         $activePage = $pageDict[activePage];
         $pageSelectDict[activePage].css("opacity", "100%");
       }

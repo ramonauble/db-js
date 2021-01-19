@@ -102,27 +102,27 @@
   background-position: center;
 }
   #oscSelect {
-    background:#A962D8;
-    opacity:25%;
-  }
-  #ratSelect {
-    background:#E93F3F;
-    opacity:25%;
-  }
-  #ofxSelect {
     background:#5D2E7B;
     opacity:25%;
   }
+  #ratSelect {
+    background:#7A06C7;
+    opacity:25%;
+  }
+  #ofxSelect {
+    background:#C90D0D;
+    opacity:25%;
+  }
   #panSelect {
-    background:#7CDE89;
+    background:#1B8433;
     opacity:25%;
   }
   #ampSelect {
-    background:#7CA7DE;
+    background:#3B4CD0;
     opacity:25%;
   }
   #lfoSelect {
-    background:#999999;
+    background:#B50294;
     opacity:25%;
   }
 
@@ -250,5 +250,26 @@
     height:18px;
     cursor:pointer;
     border-radius:3px;
-    background:#6A4086;
   }
+    .aSlider::-webkit-slider-thumb {
+      background:#5D2E7B;
+    }
+
+    .oscSlider::-webkit-slider-thumb {
+      background:#5D2E7B;
+    }
+    .ratSlider::-webkit-slider-thumb {
+      background:#7A06C7;
+    }
+    .ofxSlider::-webkit-slider-thumb {
+      background:#C90D0D;
+    }
+    .panSlider::-webkit-slider-thumb {
+      background:#1B8433;
+    }
+    .ampSlider::-webkit-slider-thumb {
+      background:#3B4CD0;
+    }
+    .lfoSlider::-webkit-slider-thumb {
+      background:#B50294;
+    }
