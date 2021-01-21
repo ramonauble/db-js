@@ -5,6 +5,13 @@ inspired by the ethos of the drawbar organ.
 it is designed to be both immediate & easy to understand,
 with a simple, modular structure & instantly tweakable parameters.
 
+this implementation will host 6 voices of true polyphony (duplicated signal paths),
+with separate oscillators, effects, and envelopes for each of the 6 voices.
+the voices share the same parameter values, and all voices are changed uniformly
+when modifying the parameters during playback.
+
+STRUCTURE
+----------------------------------------------------------------------------
 the synthesis engine is comprised of 6 main sections
 each denoted by a different color & symbol
 they are as follows, in order from left to right:
@@ -16,13 +23,8 @@ they are as follows, in order from left to right:
 > envelope   (AMP, light blue) - controls the shape & curve of the ADSR envelope, applied in stereo
 > lfo        (LFO, muted pink) - controls the shape, speed & depth of 2 configurable LFOs
 
-this implementation will host 6 voices of true polyphony (duplicated signal paths),
-with separate oscillators, effects, and envelopes for each of the 6 voices.
-the voices share the same parameter values, and all voices are changed uniformly
-when modifying the parameters during playback.
-
-STRUCTURE
-----------------------------------------------------------------------------
+OSC
+----------------------------------------------------
 each "partial" is comprised of a single sine wave
 the gain for which is controlled by the corresponding drawbar on the OSC page.
 each partial is thus assigned its own independent pre-mix level
@@ -32,6 +34,8 @@ with each partial N [N == 1 to 6] being 1/N the maximum amplitude (unity).
 coupled with the default ratio settings (see below), this creates a starting sound
 similar in character to a sawtooth wave
 
+RAT
+----------------------------------------------------
 each partial also has an independent frequency
 determined in reference to the fundamental of each note;
 frequencies are set by the corresponding ratio parameter on the RAT page.
@@ -41,6 +45,8 @@ the center drawbar position yields no multiplier for that partial (frequency == 
 above center sweeps through ascending multiples of the fundamental (harmonics)
 below center sweeps through descending divisions of the fundamental (µharmonics)
 
+OFX
+----------------------------------------------------
 each partial can have its own independent distortion applied to it,
 prior to being panned & attenuated according to the VCA envelope.
 the distortion for each partial is set by the corresponding drawbar on the OFX page,
@@ -48,12 +54,16 @@ starting with no distortion (bottom position, default state) to full distortion 
 the distortion itself takes the form of a bitcrush effect, dynamically changing the
 sampling depth of each partial individually as it is applied
 
+PAN
+----------------------------------------------------
 the PAN page allows each partial to be panned to a specific region of the stereo field,
 prior to being mixed down & attenuated.
 the exact placement of each partial is controlled by the corresponding drawbar.
 default position is center (equal panning) for all partials.
 top position is fully left, bottom position is fully right.
 
+AMP
+----------------------------------------------------
 the AMP page contains a standard ADSR envelope,
 with controls for attack, decay, sustain and release.
 an additional control allows for a time offset to be introduced between the stereo envelopes,
@@ -62,13 +72,15 @@ another control introduces an amount of attenuated randomness into the delay par
 allowing the trigger times to continually vary by a small, chaotic amount.
 this will be especially noticeable when playing polyphonically (chords)
 
+LFO
+----------------------------------------------------
 the LFO page is fairly standard, hosting two identical LFOs, with separate shape,
 speed and depth controls for each.
 the left LFO (sliders 1-3) affects the amount of tremolo (ampltiude variation)
 the right LFO (sliders 4-6) affects the amount of vibrato (pitch variation)
 
 NOTES
-------------------------------------------------------------------------
+----------------------------------------------------------------------------
 this project is still very much in development; the aforementioned structure is mostly
 finalized, but may change in minor ways as the project moves forward.
 
