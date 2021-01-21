@@ -72,18 +72,20 @@ $(document).ready(function() {
       if ($this.attr("id") != activePage) {
         $activePage.css("opacity", "81%");
         $this.css("opacity", "100%");
-        $pageSelectDict[activePage].css("opacity", "25%");
+        $pageSelectDict[activePage].css("opacity", "20%");
         $pageSliders.removeClass(sliderClassDict[activePage]);
         activePage = $this.attr("id");
         $pageSliders.addClass(sliderClassDict[activePage]);
         $activePage = $pageDict[activePage];
         $pageSelectDict[activePage].css("opacity", "100%");
+        let newBgColor = $pageSelectDict[activePage].css("background");
+        $("#displayCanv").css("background", newBgColor);
       }
     } else {
       if ($this.attr("id") != activeUI) {
         $activeUI.css("opacity", "81%");
         $this.css("opacity", "100%");
-        $uiSelectDict[activeUI].css("opacity", "25%");
+        $uiSelectDict[activeUI].css("opacity", "20%");
         activeUI = $this.attr("id");
         $activeUI = $uiDict[activeUI];
         $uiSelectDict[activeUI].css("opacity", "100%");
