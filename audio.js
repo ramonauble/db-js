@@ -1,53 +1,80 @@
 'use strict';
 
 $(document).ready(function() {
+  //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
 
-  var osc1 = synthCtx.createOscillator();
-  var osc2 = synthCtx.createOscillator();
-  var osc3 = synthCtx.createOscillator();
-  var osc4 = synthCtx.createOscillator();
-  var osc5 = synthCtx.createOscillator();
-  var osc6 = synthCtx.createOscillator();
+  //voice class definition
+  class Voice {
+    //instantaneous frequency of voice
+    fundamental = 440;
 
-  var oscGain1 = synthCtx.createGain();
-  var oscGain2 = synthCtx.createGain();
-  var oscGain3 = synthCtx.createGain();
-  var oscGain4 = synthCtx.createGain();
-  var oscGain5 = synthCtx.createGain();
-  var oscGain6 = synthCtx.createGain();
+    //new voice constructor - create nodes
+    constructor() {
+      this.osc1 = synthCtx.createOscillator();
+      this.osc2 = synthCtx.createOscillator();
+      this.osc3 = synthCtx.createOscillator();
+      this.osc4 = synthCtx.createOscillator();
+      this.osc5 = synthCtx.createOscillator();
+      this.osc6 = synthCtx.createOscillator();
 
-  oscGain1.gain.value = 1.0;
-  oscGain2.gain.value = 0.8;
-  oscGain3.gain.value = 0.6;
-  oscGain4.gain.value = 0.4;
-  oscGain5.gain.value = 0.2;
-  oscGain6.gain.value = 0.1;
+      this.oscGain1 = synthCtx.createGain();
+      this.oscGain2 = synthCtx.createGain();
+      this.oscGain3 = synthCtx.createGain();
+      this.oscGain4 = synthCtx.createGain();
+      this.oscGain5 = synthCtx.createGain();
+      this.oscGain6 = synthCtx.createGain();
 
-  osc1.frequency.value = 440;
-  osc2.frequency.value = 880;
-  osc3.frequency.value = 1320;
-  osc4.frequency.value = 1760;
-  osc5.frequency.value = 2200;
-  osc6.frequency.value = 2640;
+      this.init();
+    }
 
-  osc1.connect(oscGain1).connect(synthCtx.destination);
-  osc2.connect(oscGain2).connect(synthCtx.destination);
-  osc3.connect(oscGain3).connect(synthCtx.destination);
-  osc4.connect(oscGain4).connect(synthCtx.destination);
-  osc5.connect(oscGain5).connect(synthCtx.destination);
-  osc6.connect(oscGain6).connect(synthCtx.destination);
+    //initalize voice properties
+    init() {
+      //init frequencies - simple harmonic series
+      this.osc1.frequency.value = this.fundamental;
+      this.osc2.frequency.value = this.fundamental * 2;
+      this.osc3.frequency.value = this.fundamental * 3;
+      this.osc4.frequency.value = this.fundamental * 4;
+      this.osc5.frequency.value = this.fundamental * 5;
+      this.osc6.frequency.value = this.fundamental * 6;
 
-  //osc1.start();
-  //osc2.start();
-  //osc3.start();
-  //osc4.start();
-  //osc5.start();
-  //osc6.start();
+      //init ampltitudes - sawtooth-like decay (1/N)
+      this.oscGain1.gain.value = 1.0;
+      this.oscGain2.gain.value = 0.5;
+      this.oscGain3.gain.value = 0.25;
+      this.oscGain4.gain.value = 0.125;
+      this.oscGain5.gain.value = 0.0625;
+      this.oscGain6.gain.value = 0.03125;
 
+      //connect oscillators to gain nodes
+      //connect gain nodes to audio context
+      this.osc1.connect(this.oscGain1).connect(synthCtx.destination);
+      this.osc2.connect(this.oscGain2).connect(synthCtx.destination);
+      this.osc3.connect(this.oscGain3).connect(synthCtx.destination);
+      this.osc4.connect(this.oscGain4).connect(synthCtx.destination);
+      this.osc5.connect(this.oscGain5).connect(synthCtx.destination);
+      this.osc6.connect(this.oscGain6).connect(synthCtx.destination);
+    }
+
+    //start oscillators
+    start() {
+      this.osc1.start();
+      this.osc2.start();
+      this.osc3.start();
+      this.osc4.start();
+      this.osc5.start();
+      this.osc6.start();
+    }
+  };
+
+  //create & init test voice
+  let voice1 = new Voice();
+  voice1.start();
+
+  //start test
   $(".pageButton").click(function() {
     console.log("test");
-    //synthCtx.resume();
+    synthCtx.resume();
   });
 });
