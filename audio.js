@@ -5,6 +5,18 @@ $(document).ready(function() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
 
+  var $sliderDict = {
+    s1: $("#s1"),
+    s2: $("#s2"),
+    s3: $("#s3"),
+    s4: $("#s4"),
+    s5: $("#s5"),
+    s6: $("#s6")
+  };
+
+  //init active page to oscillator page
+  var activePage = "oscPage";
+
   //voice class definition
   class Voice {
     //instantaneous frequency of voice
@@ -72,9 +84,59 @@ $(document).ready(function() {
   let voice1 = new Voice();
   voice1.start();
 
+  var gainNodeDict = {
+    s1: voice1.oscGain1,
+    s2: voice1.oscGain2,
+    s3: voice1.oscGain3,
+    s4: voice1.oscGain4,
+    s5: voice1.oscGain5,
+    s6: voice1.oscGain6
+  };
+
   //start test
   $(".pageButton").click(function() {
     console.log("test");
     synthCtx.resume();
+    pageChange($(this).attr("id"));
   });
+
+  //handle slider input for all slider page classes
+  $(".pSlider").on("input", function() {
+    let $this = $(this);
+    if ($this.hasClass("oscSlider")) {
+      var currentGain = gainNodeDict[$this.attr("id")];
+      currentGain.gain.value = $this.val()/256;
+    } else if ($this.hasClass("ratSlider")) {
+      console.log("rat: " + $this.val());
+    } else if ($this.hasClass("ofxSlider")) {
+      console.log("ofx: " + $this.val());
+    } else if ($this.hasClass("panSlider")) {
+      console.log("pan: " + $this.val());
+    } else if ($this.hasClass("ampSlider")) {
+      console.log("amp: " + $this.val());
+    } else if ($this.hasClass("lfoSlider")) {
+      console.log("lfo: " + $this.val());
+    }
+  });
+
+  function pageChange(newPage) {
+    if (newPage == "oscButton") {
+      $sliderDict["s1"].val(voice1.oscGain1.gain.value * 255);
+      $sliderDict["s2"].val(voice1.oscGain2.gain.value * 255);
+      $sliderDict["s3"].val(voice1.oscGain3.gain.value * 255);
+      $sliderDict["s4"].val(voice1.oscGain4.gain.value * 255);
+      $sliderDict["s5"].val(voice1.oscGain5.gain.value * 255);
+      $sliderDict["s6"].val(voice1.oscGain6.gain.value * 255);
+    } else if (newPage == "ratButton") {
+
+    } else if (newPage == "ofxButton") {
+
+    } else if (newPage == "panButton") {
+
+    } else if (newPage == "ampButton") {
+
+    } else if (newPage == "lfoButton") {
+
+    }
+  }
 });
