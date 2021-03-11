@@ -5,6 +5,11 @@ $(document).ready(function() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
 
+  var scope = synthCtx.createAnalyser();
+  scope.fftSize = 2048;
+
+  var tDomainWave = new Uint8Array(scope.frequencyBinCount);
+
   var $sliderDict = {
     s1: $("#s1"),
     s2: $("#s2"),
@@ -61,12 +66,12 @@ $(document).ready(function() {
 
       //connect oscillators to gain nodes
       //connect gain nodes to audio context
-      this.osc1.connect(this.oscGain1).connect(synthCtx.destination);
-      this.osc2.connect(this.oscGain2).connect(synthCtx.destination);
-      this.osc3.connect(this.oscGain3).connect(synthCtx.destination);
-      this.osc4.connect(this.oscGain4).connect(synthCtx.destination);
-      this.osc5.connect(this.oscGain5).connect(synthCtx.destination);
-      this.osc6.connect(this.oscGain6).connect(synthCtx.destination);
+      this.osc1.connect(this.oscGain1).connect(scope).connect(synthCtx.destination);
+      this.osc2.connect(this.oscGain2).connect(scope).connect(synthCtx.destination);
+      this.osc3.connect(this.oscGain3).connect(scope).connect(synthCtx.destination);
+      this.osc4.connect(this.oscGain4).connect(scope).connect(synthCtx.destination);
+      this.osc5.connect(this.oscGain5).connect(scope).connect(synthCtx.destination);
+      this.osc6.connect(this.oscGain6).connect(scope).connect(synthCtx.destination);
     }
 
     //start oscillators
@@ -139,4 +144,16 @@ $(document).ready(function() {
 
     }
   }
+
+  var lastUpdate;
+  var updateTime = 33; //ms
+
+  function oscilloscope(timestamp) {
+    if (lastUpdate == undefined || timestamp - lastUpdate >= updateTime) {
+      lastUpdate = timestamp;
+      scope.getByteTimeDomainData(tDomainWave);
+    }
+    window.requestAnimationFrame(oscilloscope);
+  }
+  window.requestAnimationFrame(oscilloscope);
 });
