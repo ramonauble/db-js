@@ -9,7 +9,7 @@ $(document).ready(function() {
   const displayCanvCtx = $displayCanv[0].getContext("2d");
   const displayCanvWidth = displayCanv.width;
   const displayCanvHeight = displayCanv.height;
-  displayCanvCtx.fillStyle = "#6a4086";
+  displayCanvCtx.fillStyle = "#5D2E7B";
   displayCanvCtx.lineWidth = 3;
   displayCanvCtx.strokeStyle = "#FFFFFF";
   console.log(displayCanvWidth + ", " + displayCanvHeight);
@@ -30,6 +30,15 @@ $(document).ready(function() {
     s4: $("#s4"),
     s5: $("#s5"),
     s6: $("#s6")
+  };
+
+  var colorsDict = {
+    oscButton: "#5D2E7B",
+    ratButton: "#A15ECE",
+    ofxButton: "#C75858",
+    panButton: "#8AC497",
+    ampButton: "#848EDF",
+    lfoButton: "#DB689C"
   };
 
   var sliderVals = {  //memory for all slider values
@@ -202,6 +211,7 @@ $(document).ready(function() {
   });
 
   function pageChange(newPage) {
+    displayCanvCtx.fillStyle = colorsDict[newPage];
     $sliderDict["s1"].val(sliderVals[newPage]["s1"]);
     $sliderDict["s2"].val(sliderVals[newPage]["s2"]);
     $sliderDict["s3"].val(sliderVals[newPage]["s3"]);
@@ -232,7 +242,7 @@ $(document).ready(function() {
 
         x += binWidth; //increment x by displayCanvWidth/binCount ~1.17px
       }
-      displayCanvCtx.lineTo(displayCanvWidth, displayCanvHeight/2); //finish
+      //displayCanvCtx.lineTo(displayCanvWidth, displayCanvHeight/2); //finish
       displayCanvCtx.stroke();
       x = 0;
     }
