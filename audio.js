@@ -10,8 +10,8 @@ $(document).ready(function() {
   const displayCanvWidth = displayCanv.width;
   const displayCanvHeight = displayCanv.height;
   displayCanvCtx.fillStyle = "#6a4086";
-  displayCanvCtx.lineWidth = 2;
-  displayCanvCtx.strokeStyle = "#000000";
+  displayCanvCtx.lineWidth = 3;
+  displayCanvCtx.strokeStyle = "#FFFFFF";
   console.log(displayCanvWidth + ", " + displayCanvHeight);
 
   var scope = synthCtx.createAnalyser();
@@ -159,10 +159,10 @@ $(document).ready(function() {
   }
 
   var lastUpdate;
-  var updateTime = 50; //ms
+  var updateTime = 33; //ms
 
   function oscilloscope(timestamp) {
-    if (lastUpdate == undefined || timestamp - lastUpdate >= updateTime) {
+    if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
       lastUpdate = timestamp;
       scope.getByteTimeDomainData(tDomainWave);
       displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight);
@@ -170,21 +170,19 @@ $(document).ready(function() {
 
       for (let n = 0; n < binLength; n++) {
         let m = tDomainWave[n] / 255.0; //normalize to [0, 1)
-        //let y = m * (displayCanvHeight); //vert pos
+        let y = m * (displayCanvHeight); //vert pos
 
-
-
-        /*if (n == 0) {
-          displayCanvCtx.moveTo(x, y); //init pos
+        if (n == 0) {
+          displayCanvCtx.moveTo(x, y); //init pos (0, )
         } else {
           displayCanvCtx.lineTo(x, y); //draw next segment
         }
 
-        x += binWidth;
-
-        displayCanvCtx.stroke();*/
+        x += binWidth; //increment x by displayCanvWidth/binCount ~1.17px
       }
-      //console.log(timestamp);
+      displayCanvCtx.lineTo(displayCanvWidth, displayCanvHeight/2); //finish
+      displayCanvCtx.stroke();
+      x = 0;
     }
     window.requestAnimationFrame(oscilloscope);
   }
