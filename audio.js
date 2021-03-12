@@ -5,10 +5,23 @@ $(document).ready(function() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
 
-  var scope = synthCtx.createAnalyser();
-  scope.fftSize = 2048;
+  const $displayCanv = $("#displayCanv");
+  const displayCanvCtx = $displayCanv[0].getContext("2d");
+  const displayCanvWidth = displayCanv.width;
+  const displayCanvHeight = displayCanv.height;
+  displayCanvCtx.fillStyle = "#6a4086";
+  displayCanvCtx.lineWidth = 2;
+  displayCanvCtx.strokeStyle = "#000000";
+  console.log(displayCanvWidth + ", " + displayCanvHeight);
 
-  var tDomainWave = new Uint8Array(scope.frequencyBinCount);
+  var scope = synthCtx.createAnalyser();
+  scope.fftSize = 512;
+
+  var binLength = scope.frequencyBinCount;
+  var tDomainWave = new Uint8Array(binLength); //512 unsigned bytes
+
+  var binWidth = (displayCanvWidth * 1.0) / binLength; //width of each "pixel"
+  var x = 0; //init vertical position
 
   var $sliderDict = {
     s1: $("#s1"),
@@ -146,12 +159,32 @@ $(document).ready(function() {
   }
 
   var lastUpdate;
-  var updateTime = 33; //ms
+  var updateTime = 50; //ms
 
   function oscilloscope(timestamp) {
     if (lastUpdate == undefined || timestamp - lastUpdate >= updateTime) {
       lastUpdate = timestamp;
       scope.getByteTimeDomainData(tDomainWave);
+      displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight);
+      displayCanvCtx.beginPath();
+
+      for (let n = 0; n < binLength; n++) {
+        let m = tDomainWave[n] / 255.0; //normalize to [0, 1)
+        //let y = m * (displayCanvHeight); //vert pos
+
+
+
+        /*if (n == 0) {
+          displayCanvCtx.moveTo(x, y); //init pos
+        } else {
+          displayCanvCtx.lineTo(x, y); //draw next segment
+        }
+
+        x += binWidth;
+
+        displayCanvCtx.stroke();*/
+      }
+      //console.log(timestamp);
     }
     window.requestAnimationFrame(oscilloscope);
   }
