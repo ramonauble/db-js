@@ -32,6 +32,57 @@ $(document).ready(function() {
     s6: $("#s6")
   };
 
+  var sliderVals = {  //memory for all slider values
+    oscButton: {
+      s1: 255,
+      s2: 127,
+      s3: 63,
+      s4: 31,
+      s5: 15,
+      s6: 7
+    },
+    ratButton: {
+      s1: 0,
+      s2: 0,
+      s3: 0,
+      s4: 0,
+      s5: 0,
+      s6: 0
+    },
+    ofxButton: {
+      s1: 0,
+      s2: 0,
+      s3: 0,
+      s4: 0,
+      s5: 0,
+      s6: 0
+    },
+    panButton: {
+      s1: 0,
+      s2: 0,
+      s3: 0,
+      s4: 0,
+      s5: 0,
+      s6: 0
+    },
+    ampButton: {
+      s1: 0,
+      s2: 0,
+      s3: 0,
+      s4: 0,
+      s5: 0,
+      s6: 0
+    },
+    lfoButton: {
+      s1: 0,
+      s2: 0,
+      s3: 0,
+      s4: 0,
+      s5: 0,
+      s6: 0
+    },
+  };
+
   //init active page to oscillator page
   var activePage = "oscPage";
 
@@ -77,7 +128,8 @@ $(document).ready(function() {
       this.oscGain5.gain.value = 0.0625;
       this.oscGain6.gain.value = 0.03125;
 
-      //connect oscillators to gain nodes
+      //connect oscillators to analyzer nodes
+      //connect analyzer nodes to gain nodes
       //connect gain nodes to audio context
       this.osc1.connect(this.oscGain1).connect(scope).connect(synthCtx.destination);
       this.osc2.connect(this.oscGain2).connect(scope).connect(synthCtx.destination);
@@ -111,6 +163,15 @@ $(document).ready(function() {
     s6: voice1.oscGain6
   };
 
+  var oscNodeDict = {
+    s1: voice1.osc1,
+    s2: voice1.osc2,
+    s3: voice1.osc3,
+    s4: voice1.osc4,
+    s5: voice1.osc5,
+    s6: voice1.osc6
+  }
+
   //start test
   $(".pageButton").click(function() {
     console.log("test");
@@ -122,40 +183,31 @@ $(document).ready(function() {
   $(".pSlider").on("input", function() {
     let $this = $(this);
     if ($this.hasClass("oscSlider")) {
-      var currentGain = gainNodeDict[$this.attr("id")];
-      currentGain.gain.value = $this.val()/256;
+      sliderVals["oscButton"][$this.attr("id")] = $this.val(); //save value
+      var currentGain = gainNodeDict[$this.attr("id")];       //get gain node
+      currentGain.gain.value = $this.val()/256;              //set gain
     } else if ($this.hasClass("ratSlider")) {
-      console.log("rat: " + $this.val());
+      sliderVals["ratButton"][$this.attr("id")] = $this.val();
+      var currentOsc = oscNodeDict[$this.attr("id")];
+      currentOsc.frequency.value = (voice1.fundamental*4)*($this.val()/256);
     } else if ($this.hasClass("ofxSlider")) {
-      console.log("ofx: " + $this.val());
+      sliderVals["ofxButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("panSlider")) {
-      console.log("pan: " + $this.val());
+      sliderVals["panButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("ampSlider")) {
-      console.log("amp: " + $this.val());
+      sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("lfoSlider")) {
-      console.log("lfo: " + $this.val());
+      sliderVals["lfoButton"][$this.attr("id")] = $this.val();
     }
   });
 
   function pageChange(newPage) {
-    if (newPage == "oscButton") {
-      $sliderDict["s1"].val(voice1.oscGain1.gain.value * 255);
-      $sliderDict["s2"].val(voice1.oscGain2.gain.value * 255);
-      $sliderDict["s3"].val(voice1.oscGain3.gain.value * 255);
-      $sliderDict["s4"].val(voice1.oscGain4.gain.value * 255);
-      $sliderDict["s5"].val(voice1.oscGain5.gain.value * 255);
-      $sliderDict["s6"].val(voice1.oscGain6.gain.value * 255);
-    } else if (newPage == "ratButton") {
-
-    } else if (newPage == "ofxButton") {
-
-    } else if (newPage == "panButton") {
-
-    } else if (newPage == "ampButton") {
-
-    } else if (newPage == "lfoButton") {
-
-    }
+    $sliderDict["s1"].val(sliderVals[newPage]["s1"]);
+    $sliderDict["s2"].val(sliderVals[newPage]["s2"]);
+    $sliderDict["s3"].val(sliderVals[newPage]["s3"]);
+    $sliderDict["s4"].val(sliderVals[newPage]["s4"]);
+    $sliderDict["s5"].val(sliderVals[newPage]["s5"]);
+    $sliderDict["s6"].val(sliderVals[newPage]["s6"]);
   }
 
   var lastUpdate;
