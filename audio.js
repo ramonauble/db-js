@@ -5,6 +5,7 @@ $(document).ready(function() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
 
+  //reference canvas & get/configure context for drawing
   const $displayCanv = $("#displayCanv");
   const displayCanvCtx = $displayCanv[0].getContext("2d");
   const displayCanvWidth = displayCanv.width;
@@ -12,17 +13,18 @@ $(document).ready(function() {
   displayCanvCtx.fillStyle = "#5D2E7B";
   displayCanvCtx.lineWidth = 3;
   displayCanvCtx.strokeStyle = "#FFFFFF";
-  console.log(displayCanvWidth + ", " + displayCanvHeight);
 
+  //instantiate analyser node (for oscilloscope)
   var scope = synthCtx.createAnalyser();
   scope.fftSize = 512;
 
-  var binLength = scope.frequencyBinCount;
-  var tDomainWave = new Uint8Array(binLength); //512 unsigned bytes
-
+  //configure variables for drawing time domain waveform
+  var binLength = scope.frequencyBinCount; //fftSize/2 == 256
+  var tDomainWave = new Uint8Array(binLength); //256 unsigned bytes
   var binWidth = (displayCanvWidth * 1.0) / binLength; //width of each "pixel"
   var x = 0; //init vertical position
 
+  //define dictionaries for sliders & fill colors
   var $sliderDict = {
     s1: $("#s1"),
     s2: $("#s2"),
@@ -41,7 +43,28 @@ $(document).ready(function() {
     lfoButton: "#DB689C"
   };
 
-  var sliderVals = {  //memory for all slider values
+  //LUT of oscillator tuning ratios (in ref. to fundamental)
+  var ratioDict = {
+    63: 8.67, 62: 8.50, 61: 8.33, 60: 8.00,
+    59: 7.67, 58: 7.50, 57: 7.33, 56: 7.00,
+    55: 6.67, 54: 6.50, 53: 6.33, 52: 6.00,
+    51: 5.67, 50: 5.50, 49: 5.33, 48: 5.00,
+    47: 4.67, 46: 4.50, 45: 4.33, 44: 4.00,
+    43: 3.67, 42: 3.50, 41: 3.33, 40: 3.00,
+    39: 2.67, 38: 2.50, 37: 2.33, 36: 2.00,
+    35: 1.67, 34: 1.50, 33: 1.33, 32: 1.00,
+    31: 1.00, 30: 0.80, 29: 0.75, 28: 0.67,
+    27: 0.60, 26: .571, 25: 0.50, 24: 0.44,
+    23: .429, 22: 0.40, 21: .375, 20: .364,
+    19: .333, 18: .308, 17: .300, 16: .286,
+    15: .272, 14: .267, 13: 0.25, 12: .235,
+    11: .231, 10: .222, 9: .214, 8: .211,
+    7: 0.20, 6: .190, 5: .188, 4: .181,
+    3: .176, 2: .174, 1: .167, 0: 0.16,
+  };
+
+  //instantiate memory for all instantaneous param states
+  var sliderVals = {
     oscButton: {
       s1: 255,
       s2: 127,
@@ -92,15 +115,17 @@ $(document).ready(function() {
     },
   };
 
-  //init active page to oscillator page
+  //init active param page to osc page
   var activePage = "oscPage";
+  //init active display page to info page
+  var activeUI = "info";
 
   //voice class definition
   class Voice {
-    //instantaneous frequency of voice
+    //fundamental frequency of voice
     fundamental = 440;
 
-    //new voice constructor - create nodes
+    //new voice constructor - create audio nodes
     constructor() {
       this.osc1 = synthCtx.createOscillator();
       this.osc2 = synthCtx.createOscillator();
@@ -119,7 +144,7 @@ $(document).ready(function() {
       this.init();
     }
 
-    //initalize voice properties
+    //initalize voice properties & route nodes
     init() {
       //init frequencies - simple harmonic series
       this.osc1.frequency.value = this.fundamental;
@@ -159,10 +184,11 @@ $(document).ready(function() {
     }
   };
 
-  //create & init test voice
+  //create & init voice (test)
   let voice1 = new Voice();
   voice1.start();
 
+  //define dictionaries for node selection
   var gainNodeDict = {
     s1: voice1.oscGain1,
     s2: voice1.oscGain2,
@@ -198,7 +224,7 @@ $(document).ready(function() {
     } else if ($this.hasClass("ratSlider")) {
       sliderVals["ratButton"][$this.attr("id")] = $this.val();
       var currentOsc = oscNodeDict[$this.attr("id")];
-      currentOsc.frequency.value = (voice1.fundamental*4)*($this.val()/256);
+      currentOsc.frequency.value = (voice1.fundamental)*ratioDict[$this.val() >>> 2];
     } else if ($this.hasClass("ofxSlider")) {
       sliderVals["ofxButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("panSlider")) {
@@ -210,6 +236,7 @@ $(document).ready(function() {
     }
   });
 
+  //change fill color & update slider values on page change
   function pageChange(newPage) {
     displayCanvCtx.fillStyle = colorsDict[newPage];
     $sliderDict["s1"].val(sliderVals[newPage]["s1"]);
@@ -220,33 +247,45 @@ $(document).ready(function() {
     $sliderDict["s6"].val(sliderVals[newPage]["s6"]);
   }
 
+  //draw info & scope displays at ~30fps
   var lastUpdate;
   var updateTime = 33; //ms
 
-  function oscilloscope(timestamp) {
+  function drawCanvas(timestamp) {
     if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
-      lastUpdate = timestamp;
-      scope.getByteTimeDomainData(tDomainWave);
-      displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight);
-      displayCanvCtx.beginPath();
+      lastUpdate = timestamp; //record latest update time
+      scope.getByteTimeDomainData(tDomainWave); //grab TD waveform snapshot
+      displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight); //clear canvas
 
-      for (let n = 0; n < binLength; n++) {
-        let m = tDomainWave[n] / 255.0; //normalize to [0, 1)
-        let y = m * (displayCanvHeight); //vert pos
+      if (activeUI == "info") { //draw info
 
-        if (n == 0) {
-          displayCanvCtx.moveTo(x, y); //init pos (0, )
-        } else {
-          displayCanvCtx.lineTo(x, y); //draw next segment
+      } else if (activeUI == "wave") { //draw scope
+        displayCanvCtx.beginPath();
+        for (let n = 0; n < binLength; n++) {
+          let m = tDomainWave[n] / 255.0; //normalize to [0, 1)
+          let y = m * (displayCanvHeight); //vert pos
+          if (n == 0) {
+            displayCanvCtx.moveTo(x, y); //init pos (0, y)
+          } else {
+            displayCanvCtx.lineTo(x, y); //draw next segment
+          }
+          x += binWidth; //increment x by displayCanvWidth/binCount ~1.17px
         }
-
-        x += binWidth; //increment x by displayCanvWidth/binCount ~1.17px
+        displayCanvCtx.stroke();
+        x = 0;
       }
-      //displayCanvCtx.lineTo(displayCanvWidth, displayCanvHeight/2); //finish
-      displayCanvCtx.stroke();
-      x = 0;
     }
-    window.requestAnimationFrame(oscilloscope);
+    window.requestAnimationFrame(drawCanvas);
   }
-  window.requestAnimationFrame(oscilloscope);
+  window.requestAnimationFrame(drawCanvas);
+
+  //handle display page change
+  $(".uiButton").click(function() {
+    let $this = $(this);
+    if ($this.attr("id") == "infoButton") {
+      activeUI = "info";
+    } else if ($this.attr("id") == "waveButton") {
+      activeUI = "wave";
+    }
+  });
 });
