@@ -2,7 +2,7 @@
 
 $(document).ready(function() {
   var activePage = "oscButton";
-  var activeUI = "infoButton";
+  var activeUI = "waveButton";
 
   var $pageDict = {
     oscButton: $("#oscButton"),
