@@ -4,6 +4,7 @@ $(document).ready(function() {
   //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
+  const distCurve = makeCurve(20); //generate distortion curve
 
   //reference canvas & get/configure context for drawing
   const $displayCanv = $("#displayCanv");
@@ -118,7 +119,7 @@ $(document).ready(function() {
   //init active param page to osc page
   var activePage = "oscPage";
   //init active display page to info page
-  var activeUI = "info";
+  var activeUI = "wave";
 
   //voice class definition
   class Voice {
@@ -127,19 +128,34 @@ $(document).ready(function() {
 
     //new voice constructor - create audio nodes
     constructor() {
+      //instantiate oscillator nodes
       this.osc1 = synthCtx.createOscillator();
       this.osc2 = synthCtx.createOscillator();
       this.osc3 = synthCtx.createOscillator();
       this.osc4 = synthCtx.createOscillator();
       this.osc5 = synthCtx.createOscillator();
       this.osc6 = synthCtx.createOscillator();
-
+      //instantiate oscillator gain nodes
       this.oscGain1 = synthCtx.createGain();
       this.oscGain2 = synthCtx.createGain();
       this.oscGain3 = synthCtx.createGain();
       this.oscGain4 = synthCtx.createGain();
       this.oscGain5 = synthCtx.createGain();
       this.oscGain6 = synthCtx.createGain();
+      //instantiate distortion gain nodes
+      this.distGain1 = synthCtx.createGain();
+      this.distGain2 = synthCtx.createGain();
+      this.distGain3 = synthCtx.createGain();
+      this.distGain4 = synthCtx.createGain();
+      this.distGain5 = synthCtx.createGain();
+      this.distGain6 = synthCtx.createGain();
+      //instantiate distortion nodes
+      this.dist1 = synthCtx.createWaveShaper(distCurve);
+      this.dist2 = synthCtx.createWaveShaper(distCurve);
+      this.dist3 = synthCtx.createWaveShaper(distCurve);
+      this.dist4 = synthCtx.createWaveShaper(distCurve);
+      this.dist5 = synthCtx.createWaveShaper(distCurve);
+      this.dist6 = synthCtx.createWaveShaper(distCurve);
 
       this.init();
     }
@@ -162,15 +178,19 @@ $(document).ready(function() {
       this.oscGain5.gain.value = 0.0625;
       this.oscGain6.gain.value = 0.03125;
 
-      //connect oscillators to analyzer nodes
-      //connect analyzer nodes to gain nodes
-      //connect gain nodes to audio context
       this.osc1.connect(this.oscGain1).connect(scope).connect(synthCtx.destination);
       this.osc2.connect(this.oscGain2).connect(scope).connect(synthCtx.destination);
       this.osc3.connect(this.oscGain3).connect(scope).connect(synthCtx.destination);
       this.osc4.connect(this.oscGain4).connect(scope).connect(synthCtx.destination);
       this.osc5.connect(this.oscGain5).connect(scope).connect(synthCtx.destination);
       this.osc6.connect(this.oscGain6).connect(scope).connect(synthCtx.destination);
+
+      this.osc1.connect(this.distGain1).connect(this.dist1);
+      this.osc2.connect(this.distGain2).connect(this.dist2);
+      this.osc3.connect(this.distGain3).connect(this.dist3);
+      this.osc4.connect(this.distGain4).connect(this.dist4);
+      this.osc5.connect(this.distGain5).connect(this.dist5);
+      this.osc6.connect(this.distGain6).connect(this.dist6);
     }
 
     //start oscillators
@@ -288,4 +308,15 @@ $(document).ready(function() {
       activeUI = "wave";
     }
   });
+
+  //calculate distortion curve
+  function makeCurve(amount) {
+    let curveOut = new Float32Array(256);
+    let xVal = 0;
+    for (let i = 0; i < 256; i++) {
+      xVal = ((i/255)*2) - 1; //normalize input value to [-1, 1]
+      curveOut[i] = ((Math.PI + amount)*xVal)/(Math.PI + (amount*Math.abs(xVal)));
+    }
+    return curveOut;
+  }
 });
