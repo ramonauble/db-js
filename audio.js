@@ -150,12 +150,12 @@ $(document).ready(function() {
       this.distGain5 = synthCtx.createGain();
       this.distGain6 = synthCtx.createGain();
       //instantiate distortion nodes
-      this.dist1 = synthCtx.createWaveShaper(distCurve);
-      this.dist2 = synthCtx.createWaveShaper(distCurve);
-      this.dist3 = synthCtx.createWaveShaper(distCurve);
-      this.dist4 = synthCtx.createWaveShaper(distCurve);
-      this.dist5 = synthCtx.createWaveShaper(distCurve);
-      this.dist6 = synthCtx.createWaveShaper(distCurve);
+      this.dist1 = synthCtx.createWaveShaper();
+      this.dist2 = synthCtx.createWaveShaper();
+      this.dist3 = synthCtx.createWaveShaper();
+      this.dist4 = synthCtx.createWaveShaper();
+      this.dist5 = synthCtx.createWaveShaper();
+      this.dist6 = synthCtx.createWaveShaper();
 
       this.init();
     }
@@ -178,19 +178,35 @@ $(document).ready(function() {
       this.oscGain5.gain.value = 0.0625;
       this.oscGain6.gain.value = 0.03125;
 
+      //init distortion mix - all 0 (no distortion)
+      this.distGain1.gain.value = 0;
+      this.distGain2.gain.value = 0;
+      this.distGain3.gain.value = 0;
+      this.distGain4.gain.value = 0;
+      this.distGain5.gain.value = 0;
+      this.distGain6.gain.value = 0;
+
+      this.dist1.curve = distCurve;
+      this.dist2.curve = distCurve;
+      this.dist3.curve = distCurve;
+      this.dist4.curve = distCurve;
+      this.dist5.curve = distCurve;
+      this.dist6.curve = distCurve;
+
+      //route oscillators -> gain nodes -> analyser -> output
       this.osc1.connect(this.oscGain1).connect(scope).connect(synthCtx.destination);
       this.osc2.connect(this.oscGain2).connect(scope).connect(synthCtx.destination);
       this.osc3.connect(this.oscGain3).connect(scope).connect(synthCtx.destination);
       this.osc4.connect(this.oscGain4).connect(scope).connect(synthCtx.destination);
       this.osc5.connect(this.oscGain5).connect(scope).connect(synthCtx.destination);
       this.osc6.connect(this.oscGain6).connect(scope).connect(synthCtx.destination);
-
-      this.osc1.connect(this.distGain1).connect(this.dist1);
-      this.osc2.connect(this.distGain2).connect(this.dist2);
-      this.osc3.connect(this.distGain3).connect(this.dist3);
-      this.osc4.connect(this.distGain4).connect(this.dist4);
-      this.osc5.connect(this.distGain5).connect(this.dist5);
-      this.osc6.connect(this.distGain6).connect(this.dist6);
+      //route oscillators -> dist. gain nodes -> distortion -> output
+      this.osc1.connect(this.distGain1).connect(this.dist1).connect(scope).connect(synthCtx.destination);
+      this.osc2.connect(this.distGain2).connect(this.dist2).connect(scope).connect(synthCtx.destination);
+      this.osc3.connect(this.distGain3).connect(this.dist3).connect(scope).connect(synthCtx.destination);
+      this.osc4.connect(this.distGain4).connect(this.dist4).connect(scope).connect(synthCtx.destination);
+      this.osc5.connect(this.distGain5).connect(this.dist5).connect(scope).connect(synthCtx.destination);
+      this.osc6.connect(this.distGain6).connect(this.dist6).connect(scope).connect(synthCtx.destination);
     }
 
     //start oscillators
@@ -227,9 +243,17 @@ $(document).ready(function() {
     s6: voice1.osc6
   }
 
+  var distNodeDict = {
+    s1: voice1.distGain1,
+    s2: voice1.distGain2,
+    s3: voice1.distGain3,
+    s4: voice1.distGain4,
+    s5: voice1.distGain5,
+    s6: voice1.distGain6
+  }
+
   //start test
   $(".pageButton").click(function() {
-    console.log("test");
     synthCtx.resume();
     pageChange($(this).attr("id"));
   });
@@ -247,6 +271,8 @@ $(document).ready(function() {
       currentOsc.frequency.value = (voice1.fundamental)*ratioDict[$this.val() >>> 2];
     } else if ($this.hasClass("ofxSlider")) {
       sliderVals["ofxButton"][$this.attr("id")] = $this.val();
+      var currentDist = distNodeDict[$this.attr("id")];
+      currentDist.gain.value = $this.val()/256;
     } else if ($this.hasClass("panSlider")) {
       sliderVals["panButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("ampSlider")) {
