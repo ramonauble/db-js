@@ -29,9 +29,16 @@
   }
 
 #title {
-  margin:-2px auto 4px;
+  margin:-3px auto 0px;
   font-family:monospace;
   font-size:5.5em;
+  text-decoration:underline;
+}
+
+#subTitle {
+  margin:-3px auto -3px;
+  font-family:monospace;
+  font-size:1.5em;
   text-decoration:underline;
 }
 
