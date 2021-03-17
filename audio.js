@@ -75,12 +75,12 @@ $(document).ready(function() {
       s6: 7
     },
     ratButton: {
-      s1: 0,
-      s2: 0,
-      s3: 0,
-      s4: 0,
-      s5: 0,
-      s6: 0
+      s1: 128,
+      s2: 144,
+      s3: 160,
+      s4: 176,
+      s5: 192,
+      s6: 208
     },
     ofxButton: {
       s1: 0,
@@ -156,6 +156,13 @@ $(document).ready(function() {
       this.dist4 = synthCtx.createWaveShaper();
       this.dist5 = synthCtx.createWaveShaper();
       this.dist6 = synthCtx.createWaveShaper();
+      //instantiate osc/dist mixer nodes (unity gain)
+      this.mixGain1 = synthCtx.createGain();
+      this.mixGain2 = synthCtx.createGain();
+      this.mixGain3 = synthCtx.createGain();
+      this.mixGain4 = synthCtx.createGain();
+      this.mixGain5 = synthCtx.createGain();
+      this.mixGain6 = synthCtx.createGain();
 
       this.init();
     }
@@ -186,6 +193,14 @@ $(document).ready(function() {
       this.distGain5.gain.value = 0;
       this.distGain6.gain.value = 0;
 
+      //init pre-pan mix - all 1.0 (unity gain)
+      this.mixGain1.gain.value = 1.0;
+      this.mixGain2.gain.value = 1.0;
+      this.mixGain3.gain.value = 1.0;
+      this.mixGain4.gain.value = 1.0;
+      this.mixGain5.gain.value = 1.0;
+      this.mixGain6.gain.value = 1.0;
+
       this.dist1.curve = distCurve;
       this.dist2.curve = distCurve;
       this.dist3.curve = distCurve;
@@ -194,19 +209,31 @@ $(document).ready(function() {
       this.dist6.curve = distCurve;
 
       //route oscillators -> gain nodes -> analyser -> output
-      this.osc1.connect(this.oscGain1).connect(scope).connect(synthCtx.destination);
-      this.osc2.connect(this.oscGain2).connect(scope).connect(synthCtx.destination);
-      this.osc3.connect(this.oscGain3).connect(scope).connect(synthCtx.destination);
-      this.osc4.connect(this.oscGain4).connect(scope).connect(synthCtx.destination);
-      this.osc5.connect(this.oscGain5).connect(scope).connect(synthCtx.destination);
-      this.osc6.connect(this.oscGain6).connect(scope).connect(synthCtx.destination);
-      //route oscillators -> dist. gain nodes -> distortion -> output
-      this.osc1.connect(this.distGain1).connect(this.dist1).connect(scope).connect(synthCtx.destination);
-      this.osc2.connect(this.distGain2).connect(this.dist2).connect(scope).connect(synthCtx.destination);
-      this.osc3.connect(this.distGain3).connect(this.dist3).connect(scope).connect(synthCtx.destination);
-      this.osc4.connect(this.distGain4).connect(this.dist4).connect(scope).connect(synthCtx.destination);
-      this.osc5.connect(this.distGain5).connect(this.dist5).connect(scope).connect(synthCtx.destination);
-      this.osc6.connect(this.distGain6).connect(this.dist6).connect(scope).connect(synthCtx.destination);
+      this.osc1.connect(this.oscGain1).connect(this.mixGain1)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc2.connect(this.oscGain2).connect(this.mixGain2)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc3.connect(this.oscGain3).connect(this.mixGain3)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc4.connect(this.oscGain4).connect(this.mixGain4)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc5.connect(this.oscGain5).connect(this.mixGain5)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc6.connect(this.oscGain6).connect(this.mixGain6)
+      .connect(scope).connect(synthCtx.destination);
+      //route oscillators -> waveshaper distortion -> dist. gain nodes -> analyser -> output
+      this.osc1.connect(this.dist1).connect(this.distGain1).connect(this.mixGain1)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc2.connect(this.dist2).connect(this.distGain2).connect(this.mixGain2)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc3.connect(this.dist3).connect(this.distGain3).connect(this.mixGain3)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc4.connect(this.dist4).connect(this.distGain4).connect(this.mixGain4)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc5.connect(this.dist5).connect(this.distGain5).connect(this.mixGain5)
+      .connect(scope).connect(synthCtx.destination);
+      this.osc6.connect(this.dist6).connect(this.distGain6).connect(this.mixGain6)
+      .connect(scope).connect(synthCtx.destination);
     }
 
     //start oscillators
