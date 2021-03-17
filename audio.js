@@ -186,6 +186,13 @@ $(document).ready(function() {
       this.distGain5.gain.value = 0;
       this.distGain6.gain.value = 0;
 
+      this.dist1.oversample = "4x";
+      this.dist2.oversample = "4x";
+      this.dist3.oversample = "4x";
+      this.dist4.oversample = "4x";
+      this.dist5.oversample = "4x";
+      this.dist6.oversample = "4x";
+
       this.dist1.curve = distCurve;
       this.dist2.curve = distCurve;
       this.dist3.curve = distCurve;
