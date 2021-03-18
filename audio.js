@@ -359,7 +359,7 @@ $(document).ready(function() {
     if ($this.hasClass("oscSlider")) {
       sliderVals["oscButton"][$this.attr("id")] = $this.val(); //save value
       var currentGain = gainNodeDict[$this.attr("id")];       //get gain node
-      currentGain.gain.value = $this.val()/256;              //set gain
+      currentGain.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .003);              //set gain
     } else if ($this.hasClass("ratSlider")) {
       sliderVals["ratButton"][$this.attr("id")] = $this.val();
       var currentOsc = oscNodeDict[$this.attr("id")];
@@ -367,13 +367,13 @@ $(document).ready(function() {
     } else if ($this.hasClass("ofxSlider")) {
       sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = distNodeDict[$this.attr("id")];
-      currentDist.gain.value = $this.val()/256;
+      currentDist.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .003);
     } else if ($this.hasClass("panSlider")) {
       sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentLeft = leftGainDict[$this.attr("id")];
       var currentRight = rightGainDict[$this.attr("id")];
-      currentRight.gain.value = .96*((255 - $this.val())/255);
-      currentLeft.gain.value = .96*(($this.val())/255);
+      currentRight.gain.setTargetAtTime((.96*((255 - $this.val())/255)), synthCtx.currentTime, .003);
+      currentLeft.gain.setTargetAtTime((.96*(($this.val())/255)), synthCtx.currentTime, .003);;
     } else if ($this.hasClass("ampSlider")) {
       sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("lfoSlider")) {
