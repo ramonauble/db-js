@@ -91,12 +91,12 @@ $(document).ready(function() {
       s6: 0
     },
     panButton: {
-      s1: 0,
-      s2: 0,
-      s3: 0,
-      s4: 0,
-      s5: 0,
-      s6: 0
+      s1: 127,
+      s2: 127,
+      s3: 127,
+      s4: 127,
+      s5: 127,
+      s6: 127
     },
     ampButton: {
       s1: 0,
@@ -218,6 +218,20 @@ $(document).ready(function() {
       this.dist5.curve = distCurve;
       this.dist6.curve = distCurve;
 
+      //center pan for all oscillators by default
+      this.LGain1.gain.value = .5;
+      this.LGain2.gain.value = .5;
+      this.LGain3.gain.value = .5;
+      this.LGain4.gain.value = .5;
+      this.LGain5.gain.value = .5;
+      this.LGain6.gain.value = .5;
+      this.RGain1.gain.value = .5;
+      this.RGain2.gain.value = .5;
+      this.RGain3.gain.value = .5;
+      this.RGain4.gain.value = .5;
+      this.RGain5.gain.value = .5;
+      this.RGain6.gain.value = .5;
+
       //route oscillators -> gain nodes
         //route gain outputs -> L/R gain nodes -> stereo VCAs
       //route oscillators -> dist nodes -> dist gain nodes
@@ -316,6 +330,23 @@ $(document).ready(function() {
     s6: voice1.distGain6
   }
 
+  var leftGainDict = {
+    s1: voice1.LGain1,
+    s2: voice1.LGain2,
+    s3: voice1.LGain3,
+    s4: voice1.LGain4,
+    s5: voice1.LGain5,
+    s6: voice1.LGain6
+  }
+  var rightGainDict = {
+    s1: voice1.RGain1,
+    s2: voice1.RGain2,
+    s3: voice1.RGain3,
+    s4: voice1.RGain4,
+    s5: voice1.RGain5,
+    s6: voice1.RGain6
+  }
+
   //start test
   $(".pageButton").click(function() {
     synthCtx.resume();
@@ -339,6 +370,10 @@ $(document).ready(function() {
       currentDist.gain.value = $this.val()/256;
     } else if ($this.hasClass("panSlider")) {
       sliderVals["panButton"][$this.attr("id")] = $this.val();
+      var currentLeft = leftGainDict[$this.attr("id")];
+      var currentRight = rightGainDict[$this.attr("id")];
+      currentRight.gain.value = .96*((255 - $this.val())/255);
+      currentLeft.gain.value = .96*(($this.val())/255);
     } else if ($this.hasClass("ampSlider")) {
       sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("lfoSlider")) {
