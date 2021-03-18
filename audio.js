@@ -157,12 +157,23 @@ $(document).ready(function() {
       this.dist5 = synthCtx.createWaveShaper();
       this.dist6 = synthCtx.createWaveShaper();
       //instantiate osc/dist mixer nodes (unity gain)
-      this.mixGain1 = synthCtx.createGain();
-      this.mixGain2 = synthCtx.createGain();
-      this.mixGain3 = synthCtx.createGain();
-      this.mixGain4 = synthCtx.createGain();
-      this.mixGain5 = synthCtx.createGain();
-      this.mixGain6 = synthCtx.createGain();
+      this.LGain1 = synthCtx.createGain();
+      this.LGain2 = synthCtx.createGain();
+      this.LGain3 = synthCtx.createGain();
+      this.LGain4 = synthCtx.createGain();
+      this.LGain5 = synthCtx.createGain();
+      this.LGain6 = synthCtx.createGain();
+      this.RGain1 = synthCtx.createGain();
+      this.RGain2 = synthCtx.createGain();
+      this.RGain3 = synthCtx.createGain();
+      this.RGain4 = synthCtx.createGain();
+      this.RGain5 = synthCtx.createGain();
+      this.RGain6 = synthCtx.createGain();
+      //stereo VCAs
+      this.LVCA = synthCtx.createGain();
+      this.RVCA = synthCtx.createGain();
+      //stereo channel merger for output to destination
+      this.stereoMerge = synthCtx.createChannelMerger(2);
 
       this.init();
     }
@@ -207,32 +218,59 @@ $(document).ready(function() {
       this.dist5.curve = distCurve;
       this.dist6.curve = distCurve;
 
-      //route oscillators -> gain nodes -> analyser -> output
-      this.osc1.connect(this.oscGain1).connect(this.mixGain1)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc2.connect(this.oscGain2).connect(this.mixGain2)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc3.connect(this.oscGain3).connect(this.mixGain3)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc4.connect(this.oscGain4).connect(this.mixGain4)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc5.connect(this.oscGain5).connect(this.mixGain5)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc6.connect(this.oscGain6).connect(this.mixGain6)
-      .connect(scope).connect(synthCtx.destination);
-      //route oscillators -> waveshaper distortion -> dist. gain nodes -> analyser -> output
-      this.osc1.connect(this.dist1).connect(this.distGain1).connect(this.mixGain1)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc2.connect(this.dist2).connect(this.distGain2).connect(this.mixGain2)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc3.connect(this.dist3).connect(this.distGain3).connect(this.mixGain3)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc4.connect(this.dist4).connect(this.distGain4).connect(this.mixGain4)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc5.connect(this.dist5).connect(this.distGain5).connect(this.mixGain5)
-      .connect(scope).connect(synthCtx.destination);
-      this.osc6.connect(this.dist6).connect(this.distGain6).connect(this.mixGain6)
-      .connect(scope).connect(synthCtx.destination);
+      //route oscillators -> gain nodes
+        //route gain outputs -> L/R gain nodes -> stereo VCAs
+      //route oscillators -> dist nodes -> dist gain nodes
+        //route dist gain outputs -> L/R gain nodes -> stereo VCAs
+      this.osc1.connect(this.oscGain1);
+        this.oscGain1.connect(this.LGain1).connect(this.LVCA);
+        this.oscGain1.connect(this.RGain1).connect(this.RVCA);
+      this.osc1.connect(this.dist1).connect(this.distGain1);
+        this.distGain1.connect(this.LGain1).connect(this.LVCA);
+        this.distGain1.connect(this.RGain1).connect(this.RVCA);
+
+      this.osc2.connect(this.oscGain2);
+        this.oscGain2.connect(this.LGain2).connect(this.LVCA);
+        this.oscGain2.connect(this.RGain2).connect(this.RVCA);
+      this.osc2.connect(this.dist2).connect(this.distGain2);
+        this.distGain2.connect(this.LGain2).connect(this.LVCA);
+        this.distGain2.connect(this.RGain2).connect(this.RVCA);
+
+      this.osc3.connect(this.oscGain3);
+        this.oscGain3.connect(this.LGain3).connect(this.LVCA);
+        this.oscGain3.connect(this.RGain3).connect(this.RVCA);
+      this.osc3.connect(this.dist3).connect(this.distGain3);
+        this.distGain3.connect(this.LGain3).connect(this.LVCA);
+        this.distGain3.connect(this.RGain3).connect(this.RVCA);
+
+      this.osc4.connect(this.oscGain4);
+        this.oscGain4.connect(this.LGain4).connect(this.LVCA);
+        this.oscGain4.connect(this.RGain4).connect(this.RVCA);
+      this.osc4.connect(this.dist4).connect(this.distGain4);
+        this.distGain4.connect(this.LGain4).connect(this.LVCA);
+        this.distGain4.connect(this.RGain4).connect(this.RVCA);
+
+      this.osc5.connect(this.oscGain5);
+        this.oscGain5.connect(this.LGain5).connect(this.LVCA);
+        this.oscGain5.connect(this.RGain5).connect(this.RVCA);
+      this.osc5.connect(this.dist5).connect(this.distGain5);
+        this.distGain5.connect(this.LGain5).connect(this.LVCA);
+        this.distGain5.connect(this.RGain5).connect(this.RVCA);
+
+      this.osc6.connect(this.oscGain6);
+        this.oscGain6.connect(this.LGain6).connect(this.LVCA);
+        this.oscGain6.connect(this.RGain6).connect(this.RVCA);
+      this.osc6.connect(this.dist6).connect(this.distGain6);
+        this.distGain6.connect(this.LGain6).connect(this.LVCA);
+        this.distGain6.connect(this.RGain6).connect(this.RVCA);
+
+      //finalize signal path - merge stereo VCAs into 2 channel output
+      //then connect merger output to destination (audio output)
+      //also connect merger output to scope for TD visualization
+      this.LVCA.connect(this.stereoMerge, 0, 0);
+      this.RVCA.connect(this.stereoMerge, 0, 1);
+      this.stereoMerge.connect(synthCtx.destination);
+      this.stereoMerge.connect(scope);
     }
 
     //start oscillators
