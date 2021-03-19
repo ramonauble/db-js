@@ -1,6 +1,7 @@
 'use strict';
 
 $(document).ready(function() {
+  document.body.addEventListener('touchstart', resume, false);
   //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
@@ -363,7 +364,7 @@ $(document).ready(function() {
     } else if ($this.hasClass("ratSlider")) {
       sliderVals["ratButton"][$this.attr("id")] = $this.val();
       var currentOsc = oscNodeDict[$this.attr("id")];
-      currentOsc.frequency.value = (voice1.fundamental)*ratioDict[$this.val() >>> 2];
+      currentOsc.frequency.setTargetAtTime((voice1.fundamental)*ratioDict[$this.val() >>> 2], .003);
     } else if ($this.hasClass("ofxSlider")) {
       sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = distNodeDict[$this.attr("id")];
@@ -444,4 +445,14 @@ $(document).ready(function() {
     }
     return curveOut;
   }
+
+  var resume = function() {
+    synthCtx.resume();
+    voice1.start();
+    setTimeout(function() {
+      if (synthCtx.state === 'running') {
+        document.body.removeEventListener('touchstart', resume, false);
+      }
+    }, 0);
+  };
 });
