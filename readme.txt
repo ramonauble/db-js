@@ -24,7 +24,7 @@ each "partial" is comprised of a single sine wave
 the gain for each is controlled by the corresponding drawbar on the OSC page.
 each partial is thus assigned its own independent pre-mix level
 bounded between 0 & unity gain.
-the default position falls in line with a simple harmonic series
+the default positions fall in line with a simple harmonic series
 with each partial N [N == 1 to 6] being 1/N the maximum amplitude (unity).
 coupled with the default ratio settings (see below), this creates a starting sound
 similar in character to a sawtooth wave
@@ -78,6 +78,11 @@ the LFO page is fairly standard, hosting two identical LFOs, with separate shape
 speed and depth controls for each.
 the left LFO (sliders 1-3) affects the amount of tremolo (ampltiude variation)
 the right LFO (sliders 4-6) affects the amount of vibrato (pitch variation)
+
+EDIT:
+this page will most likely be nixed;
+instead offering one LFO per page, freely routable to any of the parameters on that page.
+this page will most likely be changed to a master reverb effect. 
 
 NOTES
 ----------------------------------------------------------------------------
