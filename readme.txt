@@ -89,8 +89,24 @@ NOTES
 this project is still very much in development; the aforementioned structure is mostly
 finalized, but may change in minor ways as the project moves forward.
 
-additional functionality will include MIDI controller support (using WebMIDI API),
-configurable root note & scale, as well as a configurable semitone offset to the fundamental.
+the current alpha build runs just a single voice,
+which begins sounding at receipt of user interaction (page select).
 
-this synthesizer is intended as a software realization of a hardware prototype,
-also presently in development, based on the atmega328 platform.
+currently implemented:
+  • oscillators & mix controls (page 1)
+  • ratio table & ratio select (page 2)
+  • waveshapers & mix controls (page 3)
+  • per partial pan & controls (page 4)
+  • oscilloscope display
+to implement:
+  • stereo envelopes & control (page 5)
+  • LFO modulators & routing   (page 6)
+  • info page display (to show param changes)
+  • keyboard note change & trigger
+  • 6 voice polyphony
+  • pattern sequencer
+
+additional functionality will include MIDI controller support (using WebMIDI API),
+configurable root note & scale, as well as a selectable semitone offset to the fundamental.
+
+^w^
