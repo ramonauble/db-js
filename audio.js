@@ -143,7 +143,14 @@ $(document).ready(function() {
       this.oscGain4 = synthCtx.createGain();
       this.oscGain5 = synthCtx.createGain();
       this.oscGain6 = synthCtx.createGain();
-      //instantiate distortion gain nodes
+      //instantiate pre-distortion gain nodes
+      this.preGain1 = synthCtx.createGain();
+      this.preGain2 = synthCtx.createGain();
+      this.preGain3 = synthCtx.createGain();
+      this.preGain4 = synthCtx.createGain();
+      this.preGain5 = synthCtx.createGain();
+      this.preGain6 = synthCtx.createGain();
+      //instantiate post-distortion gain nodes
       this.distGain1 = synthCtx.createGain();
       this.distGain2 = synthCtx.createGain();
       this.distGain3 = synthCtx.createGain();
@@ -197,7 +204,13 @@ $(document).ready(function() {
       this.oscGain5.gain.value = 0.0625;
       this.oscGain6.gain.value = 0.03125;
 
-      //init distortion mix - all 0 (no distortion)
+      //init distortion gain & mix - all 0 (no distortion)
+      this.preGain1.gain.value = 0;
+      this.preGain2.gain.value = 0;
+      this.preGain3.gain.value = 0;
+      this.preGain4.gain.value = 0;
+      this.preGain5.gain.value = 0;
+      this.preGain6.gain.value = 0;
       this.distGain1.gain.value = 0;
       this.distGain2.gain.value = 0;
       this.distGain3.gain.value = 0;
@@ -240,42 +253,42 @@ $(document).ready(function() {
       this.osc1.connect(this.oscGain1);
         this.oscGain1.connect(this.LGain1).connect(this.LVCA);
         this.oscGain1.connect(this.RGain1).connect(this.RVCA);
-      this.osc1.connect(this.dist1).connect(this.distGain1);
+      this.osc1.connect(this.preGain1).connect(this.dist1).connect(this.distGain1);
         this.distGain1.connect(this.LGain1).connect(this.LVCA);
         this.distGain1.connect(this.RGain1).connect(this.RVCA);
 
       this.osc2.connect(this.oscGain2);
         this.oscGain2.connect(this.LGain2).connect(this.LVCA);
         this.oscGain2.connect(this.RGain2).connect(this.RVCA);
-      this.osc2.connect(this.dist2).connect(this.distGain2);
+      this.osc2.connect(this.preGain2).connect(this.dist2).connect(this.distGain2);
         this.distGain2.connect(this.LGain2).connect(this.LVCA);
         this.distGain2.connect(this.RGain2).connect(this.RVCA);
 
       this.osc3.connect(this.oscGain3);
         this.oscGain3.connect(this.LGain3).connect(this.LVCA);
         this.oscGain3.connect(this.RGain3).connect(this.RVCA);
-      this.osc3.connect(this.dist3).connect(this.distGain3);
+      this.osc3.connect(this.preGain3).connect(this.dist3).connect(this.distGain3);
         this.distGain3.connect(this.LGain3).connect(this.LVCA);
         this.distGain3.connect(this.RGain3).connect(this.RVCA);
 
       this.osc4.connect(this.oscGain4);
         this.oscGain4.connect(this.LGain4).connect(this.LVCA);
         this.oscGain4.connect(this.RGain4).connect(this.RVCA);
-      this.osc4.connect(this.dist4).connect(this.distGain4);
+      this.osc4.connect(this.preGain4).connect(this.dist4).connect(this.distGain4);
         this.distGain4.connect(this.LGain4).connect(this.LVCA);
         this.distGain4.connect(this.RGain4).connect(this.RVCA);
 
       this.osc5.connect(this.oscGain5);
         this.oscGain5.connect(this.LGain5).connect(this.LVCA);
         this.oscGain5.connect(this.RGain5).connect(this.RVCA);
-      this.osc5.connect(this.dist5).connect(this.distGain5);
+      this.osc5.connect(this.preGain5).connect(this.dist5).connect(this.distGain5);
         this.distGain5.connect(this.LGain5).connect(this.LVCA);
         this.distGain5.connect(this.RGain5).connect(this.RVCA);
 
       this.osc6.connect(this.oscGain6);
         this.oscGain6.connect(this.LGain6).connect(this.LVCA);
         this.oscGain6.connect(this.RGain6).connect(this.RVCA);
-      this.osc6.connect(this.dist6).connect(this.distGain6);
+      this.osc6.connect(this.preGain6).connect(this.dist6).connect(this.distGain6);
         this.distGain6.connect(this.LGain6).connect(this.LVCA);
         this.distGain6.connect(this.RGain6).connect(this.RVCA);
 
@@ -322,6 +335,14 @@ $(document).ready(function() {
     s6: voice1.osc6
   }
 
+  var preNodeDict = {
+    s1: voice1.preGain1,
+    s2: voice1.preGain2,
+    s3: voice1.preGain3,
+    s4: voice1.preGain4,
+    s5: voice1.preGain5,
+    s6: voice1.preGain6
+  }
   var distNodeDict = {
     s1: voice1.distGain1,
     s2: voice1.distGain2,
@@ -348,6 +369,8 @@ $(document).ready(function() {
     s6: voice1.RGain6
   }
 
+  //init sliders
+  pageChange("oscButton");
   //start test
   $(".pageButton").click(function() {
     synthCtx.resume();
@@ -360,21 +383,23 @@ $(document).ready(function() {
     if ($this.hasClass("oscSlider")) {
       sliderVals["oscButton"][$this.attr("id")] = $this.val(); //save value
       var currentGain = gainNodeDict[$this.attr("id")];       //get gain node
-      currentGain.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .003);              //set gain
+      currentGain.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);              //set gain
     } else if ($this.hasClass("ratSlider")) {
       sliderVals["ratButton"][$this.attr("id")] = $this.val();
       var currentOsc = oscNodeDict[$this.attr("id")];
-      currentOsc.frequency.setTargetAtTime((voice1.fundamental)*ratioDict[$this.val() >>> 2], .003);
+      currentOsc.frequency.setTargetAtTime((voice1.fundamental)*ratioDict[$this.val() >>> 2], synthCtx.currentTime, .005) ;
     } else if ($this.hasClass("ofxSlider")) {
       sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = distNodeDict[$this.attr("id")];
-      currentDist.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .003);
+      var currentPre = preNodeDict[$this.attr("id")];
+      currentPre.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
+      currentDist.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
     } else if ($this.hasClass("panSlider")) {
       sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentLeft = leftGainDict[$this.attr("id")];
       var currentRight = rightGainDict[$this.attr("id")];
-      currentRight.gain.setTargetAtTime((.96*((255 - $this.val())/255)), synthCtx.currentTime, .003);
-      currentLeft.gain.setTargetAtTime((.96*(($this.val())/255)), synthCtx.currentTime, .003);;
+      currentRight.gain.setTargetAtTime((.95*((255 - $this.val())/255)), synthCtx.currentTime, .005);
+      currentLeft.gain.setTargetAtTime((.95*(($this.val())/255)), synthCtx.currentTime, .005);;
     } else if ($this.hasClass("ampSlider")) {
       sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("lfoSlider")) {
@@ -395,7 +420,7 @@ $(document).ready(function() {
 
   //draw info & scope displays at ~30fps
   var lastUpdate;
-  var updateTime = 33; //ms
+  var updateTime = 16.7; //ms
 
   function drawCanvas(timestamp) {
     if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
