@@ -117,6 +117,27 @@ $(document).ready(function() {
     },
   };
 
+  //define exponent numerators for calculating frequencies
+  //from key presses (single octave chromatic scale)
+  var keyDict = {
+    65: 0, //a - C
+    87: 1, //w - C#
+    83: 2, //s - D
+    69: 3, //e - D#
+    68: 4, //d - E
+    70: 5, //f - F
+    84: 6, //t - F#
+    71: 7, //g - G
+    89: 8, //y - G#
+    72: 9, //h - A
+    85: 10, //u - A#
+    74: 11, //j - B
+    75: 12  //k - C2
+  };
+  //default to 5th octave of chromatic scale
+  var octaveOffset = 0;
+  var shiftPressed = false; //shift state
+
   //init active param page to osc page
   var activePage = "oscPage";
   //init active display page to info page
@@ -124,8 +145,8 @@ $(document).ready(function() {
 
   //voice class definition
   class Voice {
-    //fundamental frequency of voice
-    fundamental = 440;
+    //fundamental frequency of voice - C5 default
+    fundamental = 523.25;
 
     //new voice constructor - create audio nodes
     constructor() {
@@ -418,9 +439,9 @@ $(document).ready(function() {
     $sliderDict["s6"].val(sliderVals[newPage]["s6"]);
   }
 
-  //draw info & scope displays at ~30fps
+  //draw info & scope displays at ~60fps
   var lastUpdate;
-  var updateTime = 16.7; //ms
+  var updateTime = 16.67; //ms
 
   function drawCanvas(timestamp) {
     if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
@@ -480,4 +501,47 @@ $(document).ready(function() {
       }
     }, 0);
   };
+
+  $(document).keydown(function(event) {
+    let root = 523.251130601; //C5
+    let expOffset = keyDict[event.which];
+    if (expOffset !== undefined) {
+      expOffset += (12*octaveOffset); //account for octave
+      let newFreq = root*(2**(expOffset/12.0)); //12tet
+      changeFreqs(newFreq);
+    } else if (event.which == 16) { //catch shift press
+      shiftPressed = true;
+    } else if (event.which == 37 && shiftPressed) {
+      if (octaveOffset > -5) { //left arrow - octave down
+        octaveOffset--;
+      }
+    } else if (event.which == 39 && shiftPressed) {
+      if (octaveOffset < 5) { //right arrow - octave up
+        octaveOffset++;
+      }
+    }
+  });
+
+  //catch shift release & change shift state
+  $(document).keyup(function(event) {
+    if (event.which == 16) {
+      shiftPressed = false;
+    }
+  });
+
+  function changeFreqs(newFund) {
+    voice1.fundamental = newFund;
+    oscNodeDict["s1"].frequency.setTargetAtTime
+    (newFund*ratioDict[sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .005);
+    oscNodeDict["s2"].frequency.setTargetAtTime
+    (newFund*ratioDict[sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .005);
+    oscNodeDict["s3"].frequency.setTargetAtTime
+    (newFund*ratioDict[sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .005);
+    oscNodeDict["s4"].frequency.setTargetAtTime
+    (newFund*ratioDict[sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .005);
+    oscNodeDict["s5"].frequency.setTargetAtTime
+    (newFund*ratioDict[sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .005);
+    oscNodeDict["s6"].frequency.setTargetAtTime
+    (newFund*ratioDict[sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .005);
+  }
 });
