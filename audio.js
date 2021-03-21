@@ -503,7 +503,7 @@ $(document).ready(function() {
   };
 
   $(document).keydown(function(event) {
-    let root = 523.251130601; //C5
+    let root = 261.625565301; //C5
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
       expOffset += (12*octaveOffset); //account for octave
@@ -512,11 +512,11 @@ $(document).ready(function() {
     } else if (event.which == 16) { //catch shift press
       shiftPressed = true;
     } else if (event.which == 37 && shiftPressed) {
-      if (octaveOffset > -5) { //left arrow - octave down
+      if (octaveOffset > -2) { //left arrow - octave down
         octaveOffset--;
       }
     } else if (event.which == 39 && shiftPressed) {
-      if (octaveOffset < 5) { //right arrow - octave up
+      if (octaveOffset < 2) { //right arrow - octave up
         octaveOffset++;
       }
     }
@@ -532,16 +532,16 @@ $(document).ready(function() {
   function changeFreqs(newFund) {
     voice1.fundamental = newFund;
     oscNodeDict["s1"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .005);
+    (newFund*ratioDict[sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .001);
     oscNodeDict["s2"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .005);
+    (newFund*ratioDict[sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .001);
     oscNodeDict["s3"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .005);
+    (newFund*ratioDict[sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .001);
     oscNodeDict["s4"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .005);
+    (newFund*ratioDict[sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .001);
     oscNodeDict["s5"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .005);
+    (newFund*ratioDict[sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .001);
     oscNodeDict["s6"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .005);
+    (newFund*ratioDict[sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .001);
   }
 });
