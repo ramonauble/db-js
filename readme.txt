@@ -5,6 +5,17 @@ inspired by the ethos of the drawbar organ.
 it is designed to be both immediate & easy to understand,
 with a simple, modular structure & 36 instantly tweakable parameters.
 
+to play chromatically, the keys are mapped as follows:
+    W   E       T   Y   U
+  A   S   D   F   G   H   J   K
+  -----------------------------
+    C#  D#      F#  G#  A#
+  C   D   E   F   G   A   B   C
+
+to shift octave down, press and hold SHIFT & press L ARROW
+to shift octave up, press and hold SHIFT & press R ARROW
+(-/+ 5 octaves from default position)
+
 STRUCTURE
 ----------------------------------------------------------------------------
 the synthesis engine is comprised of 6 main sections
@@ -82,7 +93,7 @@ the right LFO (sliders 4-6) affects the amount of vibrato (pitch variation)
 EDIT:
 this page will most likely be nixed;
 instead offering one LFO per page, freely routable to any of the parameters on that page.
-this page will most likely be changed to a master reverb effect. 
+this page will most likely be changed to a master reverb effect.
 
 NOTES
 ----------------------------------------------------------------------------
