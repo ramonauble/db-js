@@ -15,6 +15,8 @@ $(document).ready(function() {
   displayCanvCtx.fillStyle = "#5D2E7B";
   displayCanvCtx.lineWidth = 3;
   displayCanvCtx.strokeStyle = "#FFFFFF";
+  displayCanvCtx.font = "32px monospace";
+  displayCanvCtx.textAlign = "center";
 
   //instantiate analyser node (for oscilloscope)
   var scope = synthCtx.createAnalyser();
@@ -25,6 +27,9 @@ $(document).ready(function() {
   var tDomainWave = new Uint8Array(binLength); //256 unsigned bytes
   var binWidth = (displayCanvWidth * 1.0) / binLength; //width of each "pixel"
   var x = 0; //init vertical position
+
+  //reference to page title DOM object
+  var $pageTitle = $("#pageTitle");
 
   //define dictionaries for sliders & fill colors
   var $sliderDict = {
@@ -43,6 +48,15 @@ $(document).ready(function() {
     panButton: "#8AC497",
     ampButton: "#848EDF",
     lfoButton: "#DB689C"
+  };
+
+  var titleDict = {
+    oscButton: "MIX",
+    ratButton: "RATIO",
+    ofxButton: "SHAPE",
+    panButton: "PAN",
+    ampButton: "ENVELOPE",
+    lfoButton: "LFO"
   };
 
   //LUT of oscillator tuning ratios (in ref. to fundamental)
@@ -430,7 +444,10 @@ $(document).ready(function() {
 
   //change fill color & update slider values on page change
   function pageChange(newPage) {
+    activePage = newPage;
     displayCanvCtx.fillStyle = colorsDict[newPage];
+    $pageTitle.html(titleDict[newPage]);
+    $pageTitle.css("color", colorsDict[newPage]);
     $sliderDict["s1"].val(sliderVals[newPage]["s1"]);
     $sliderDict["s2"].val(sliderVals[newPage]["s2"]);
     $sliderDict["s3"].val(sliderVals[newPage]["s3"]);
@@ -450,7 +467,19 @@ $(document).ready(function() {
       displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight); //clear canvas
 
       if (activeUI == "info") { //draw info
+        if (activePage == "oscPage") {
 
+        } else if (activePage == "ratPage") {
+
+        } else if (activePage == "ofxPage") {
+
+        } else if (activePage == "panPage") {
+
+        } else if (activePage == "ampPage") {
+
+        } else if (activePage == "lfoPage") {
+
+        }
       } else if (activeUI == "wave") { //draw scope
         displayCanvCtx.beginPath();
         for (let n = 0; n < binLength; n++) {
