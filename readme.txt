@@ -12,9 +12,9 @@ to play chromatically, the keys are mapped as follows:
     C#  D#      F#  G#  A#
   C   D   E   F   G   A   B   C
 
-to shift octave down, press and hold SHIFT & press L ARROW
-to shift octave up, press and hold SHIFT & press R ARROW
-(-/+ 5 octaves from default position)
+to shift 1 octave down, press and hold SHIFT & press L ARROW
+to shift 1 octave up, press and hold SHIFT & press R ARROW
+(-/+ 2 octaves from default position)
 
 STRUCTURE
 ----------------------------------------------------------------------------
@@ -24,7 +24,7 @@ they are as follows, in order from left to right:
 
 > oscillator (OSC, dark purple) - controls the relative amplitudes of each of the 6 partials
 > ratio      (RAT, light purple) - controls the tuning ratio of each partial, in reference to the fundamental
-> shaper     (OFX, muted red) - applies a variable amount of waveshaping distortion to each partial
+> shape      (OFX, muted red) - applies a variable amount of waveshaping distortion to each partial
 > pan        (PAN, soft teal) - controls the L/R placement of each partial in the stereo field
 > envelope   (AMP, light blue) - controls the shape & curve of the ADSR envelope, applied in stereo
 > lfo        (LFO, muted pink) - controls the shape, speed & depth of 2 configurable LFOs
@@ -109,15 +109,15 @@ currently implemented:
   • waveshapers & mix controls (page 3)
   • per partial pan & controls (page 4)
   • oscilloscope display
+  • keyboard note change & trigger
 to implement:
   • stereo envelopes & control (page 5)
   • LFO modulators & routing   (page 6)
   • info page display (to show param changes)
-  • keyboard note change & trigger
-  • 6 voice polyphony
-  • pattern sequencer
+  • 3 part polyphony
+  • asymmetric note & parameter sequencers
+  • multiplicative frequency ratios
+  • midi controller support (WebMIDI API)
+  • stereo convolution reverb
 
-additional functionality will include MIDI controller support (using WebMIDI API),
-configurable root note & scale, as well as a selectable semitone offset to the fundamental.
-
-^w^
+<3
