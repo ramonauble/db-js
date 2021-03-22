@@ -31,15 +31,27 @@
 #title {
   margin:-3px auto 0px;
   font-family:monospace;
-  font-size:5.5em;
+  font-size:4.8em;
   text-decoration:underline;
 }
 
 #subTitle {
-  margin:-3px auto -3px;
+  margin:-3px auto 0px;
+  font-family:monospace;
+  font-size:1.2em;
+}
+
+#pageTitle {
+  margin:12px auto -27px;
   font-family:monospace;
   font-size:1.5em;
-  text-decoration:underline;
+  font-weight:bold;
+  color: #5D2E7B;
+  text-shadow:
+    -.5px -.5px 0 #f0dfeb,
+    .5px -.5px 0 #f0dfeb,
+    -.5px .5px 0 #f0dfeb,
+    .5px .5px 0 #f0dfeb;
 }
 
 #displayCanv {
