@@ -146,7 +146,7 @@ $(document).ready(function() {
   //voice class definition
   class Voice {
     //fundamental frequency of voice - C5 default
-    fundamental = 523.25;
+    fundamental = 261.625565301;
 
     //new voice constructor - create audio nodes
     constructor() {
@@ -441,7 +441,7 @@ $(document).ready(function() {
 
   //draw info & scope displays at ~60fps
   var lastUpdate;
-  var updateTime = 16.67; //ms
+  var updateTime = 16.6667; //ms
 
   function drawCanvas(timestamp) {
     if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
@@ -532,16 +532,16 @@ $(document).ready(function() {
   function changeFreqs(newFund) {
     voice1.fundamental = newFund;
     oscNodeDict["s1"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .001);
+    (newFund*ratioDict[sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .00005);
     oscNodeDict["s2"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .001);
+    (newFund*ratioDict[sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .00005);
     oscNodeDict["s3"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .001);
+    (newFund*ratioDict[sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .00005);
     oscNodeDict["s4"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .001);
+    (newFund*ratioDict[sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .00005);
     oscNodeDict["s5"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .001);
+    (newFund*ratioDict[sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .00005);
     oscNodeDict["s6"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .001);
+    (newFund*ratioDict[sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .00005);
   }
 });
