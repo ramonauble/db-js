@@ -61,22 +61,14 @@ $(document).ready(function() {
 
   //LUT of oscillator tuning ratios (in ref. to fundamental)
   var ratioDict = {
-    63: 8.67, 62: 8.50, 61: 8.33, 60: 8.00,
-    59: 7.67, 58: 7.50, 57: 7.33, 56: 7.00,
-    55: 6.67, 54: 6.50, 53: 6.33, 52: 6.00,
-    51: 5.67, 50: 5.50, 49: 5.33, 48: 5.00,
-    47: 4.67, 46: 4.50, 45: 4.33, 44: 4.00,
-    43: 3.67, 42: 3.50, 41: 3.33, 40: 3.00,
-    39: 2.67, 38: 2.50, 37: 2.33, 36: 2.00,
-    35: 1.67, 34: 1.50, 33: 1.33, 32: 1.00,
-    31: 1.00, 30: 0.80, 29: 0.75, 28: 0.67,
-    27: 0.60, 26: .571, 25: 0.50, 24: 0.44,
-    23: .429, 22: 0.40, 21: .375, 20: .364,
-    19: .333, 18: .308, 17: .300, 16: .286,
-    15: .272, 14: .267, 13: 0.25, 12: .235,
-    11: .231, 10: .222, 9: .214, 8: .211,
-    7: 0.20, 6: .190, 5: .188, 4: .181,
-    3: .176, 2: .174, 1: .167, 0: 0.16,
+    31: 2.00, 30: 1.875, 29: 1.833, 28: 1.80,
+    27: 1.75, 26: 1.667, 25: 1.625, 24: 1.60,
+    23: 1.50, 22: 1.40, 21: 1.375, 20: 1.33,
+    19: 1.25, 18: 1.20, 17: 1.167, 16: 1.125,
+    15: 1.00, 14: .875, 13: .833, 12: .80,
+    11: .75, 10: .667, 9: .625, 8: .60,
+    7: .50, 6: .40, 5: .375, 4: .333,
+    3: .25, 2: .20, 1: .167, 0: 0.125,
   };
 
   //instantiate memory for all instantaneous param states
@@ -90,12 +82,12 @@ $(document).ready(function() {
       s6: 7
     },
     ratButton: {
-      s1: 128,
-      s2: 144,
-      s3: 160,
-      s4: 176,
-      s5: 192,
-      s6: 208
+      s1: 120,
+      s2: 248,
+      s3: 184,
+      s4: 160,
+      s5: 152,
+      s6: 144
     },
     ofxButton: {
       s1: 0,
@@ -223,13 +215,6 @@ $(document).ready(function() {
 
     //initalize voice properties & route nodes
     init() {
-      //init frequencies - simple harmonic series
-      this.osc1.frequency.value = this.fundamental;
-      this.osc2.frequency.value = this.fundamental * 2;
-      this.osc3.frequency.value = this.fundamental * 3;
-      this.osc4.frequency.value = this.fundamental * 4;
-      this.osc5.frequency.value = this.fundamental * 5;
-      this.osc6.frequency.value = this.fundamental * 6;
 
       //init ampltitudes - sawtooth-like decay (1/N)
       this.oscGain1.gain.value = 1.0;
@@ -404,6 +389,8 @@ $(document).ready(function() {
     s6: voice1.RGain6
   }
 
+  //init oscillator frequencies
+  changeFreqs(voice1.fundamental);
   //init sliders
   pageChange("oscButton");
   //start test
@@ -421,8 +408,7 @@ $(document).ready(function() {
       currentGain.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);              //set gain
     } else if ($this.hasClass("ratSlider")) {
       sliderVals["ratButton"][$this.attr("id")] = $this.val();
-      var currentOsc = oscNodeDict[$this.attr("id")];
-      currentOsc.frequency.setTargetAtTime((voice1.fundamental)*ratioDict[$this.val() >>> 2], synthCtx.currentTime, .005) ;
+      changeFreqs(voice1.fundamental);
     } else if ($this.hasClass("ofxSlider")) {
       sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = distNodeDict[$this.attr("id")];
@@ -433,8 +419,8 @@ $(document).ready(function() {
       sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentLeft = leftGainDict[$this.attr("id")];
       var currentRight = rightGainDict[$this.attr("id")];
-      currentRight.gain.setTargetAtTime((.95*((255 - $this.val())/255)), synthCtx.currentTime, .005);
-      currentLeft.gain.setTargetAtTime((.95*(($this.val())/255)), synthCtx.currentTime, .005);;
+      currentRight.gain.setTargetAtTime((.9*((255 - $this.val())/255)), synthCtx.currentTime, .005);
+      currentLeft.gain.setTargetAtTime((.9*(($this.val())/255)), synthCtx.currentTime, .005);;
     } else if ($this.hasClass("ampSlider")) {
       sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("lfoSlider")) {
@@ -510,7 +496,7 @@ $(document).ready(function() {
     }
   });
 
-  //calculate distortion curve
+  //calculate sigmoid distortion curve
   function makeCurve(amount) {
     let curveOut = new Float32Array(256);
     let xVal = 0;
@@ -521,6 +507,8 @@ $(document).ready(function() {
     return curveOut;
   }
 
+  //resume context
+  //remove touch end event listener (for iOS support)
   var resume = function() {
     synthCtx.resume();
     voice1.start();
@@ -531,6 +519,10 @@ $(document).ready(function() {
     }, 0);
   };
 
+  //catches input for the following:
+  //  keyboard press - recalculates new fundamental
+  //  shift press - logs shift state
+  //  L/R arrow keys - shifts keyboard octave down/up
   $(document).keydown(function(event) {
     let root = 261.625565301; //C5
     let expOffset = keyDict[event.which];
@@ -558,19 +550,26 @@ $(document).ready(function() {
     }
   });
 
+  //recalculate all frequencies on note change event
   function changeFreqs(newFund) {
     voice1.fundamental = newFund;
+    let r1 = ratioDict[sliderVals["ratButton"]["s1"] >>> 3];
+    let r2 = ratioDict[sliderVals["ratButton"]["s2"] >>> 3];
+    let r3 = ratioDict[sliderVals["ratButton"]["s3"] >>> 3];
+    let r4 = ratioDict[sliderVals["ratButton"]["s4"] >>> 3];
+    let r5 = ratioDict[sliderVals["ratButton"]["s5"] >>> 3];
+    let r6 = ratioDict[sliderVals["ratButton"]["s6"] >>> 3];
     oscNodeDict["s1"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .00005);
+    (newFund*r1, synthCtx.currentTime, .00005);
     oscNodeDict["s2"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .00005);
+    (newFund*r1*r2, synthCtx.currentTime, .00005);
     oscNodeDict["s3"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .00005);
+    (newFund*r1*r2*r3, synthCtx.currentTime, .00005);
     oscNodeDict["s4"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .00005);
+    (newFund*r1*r2*r3*r4, synthCtx.currentTime, .00005);
     oscNodeDict["s5"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .00005);
+    (newFund*r1*r2*r3*r4*r5, synthCtx.currentTime, .00005);
     oscNodeDict["s6"].frequency.setTargetAtTime
-    (newFund*ratioDict[sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .00005);
+    (newFund*r1*r2*r3*r4*r5*r6, synthCtx.currentTime, .00005);
   }
 });
