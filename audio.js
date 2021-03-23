@@ -61,6 +61,14 @@ $(document).ready(function() {
 
   //LUT of oscillator tuning ratios (in ref. to fundamental)
   var ratioDict = {
+    63: 4.00, 62: 3.875, 61: 3.833, 60: 3.80,
+    59: 3.75, 58: 3.667, 57: 3.625, 56: 3.60,
+    55: 3.50, 54: 3.40, 53: 3.375, 52: 3.33,
+    51: 3.25, 50: 3.20, 49: 3.167, 48: 3.125,
+    47: 3.00, 46: 2.875, 45: 2.833, 44: 2.80,
+    43: 2.75, 42: 2.667, 41: 2.625, 40: 2.60,
+    39: 2.50, 38: 2.40, 37: 2.375, 36: 2.333,
+    35: 2.25, 34: 2.20, 33: 2.167, 32: 2.125,
     31: 2.00, 30: 1.875, 29: 1.833, 28: 1.80,
     27: 1.75, 26: 1.667, 25: 1.625, 24: 1.60,
     23: 1.50, 22: 1.40, 21: 1.375, 20: 1.33,
@@ -82,12 +90,12 @@ $(document).ready(function() {
       s6: 7
     },
     ratButton: {
-      s1: 120,
-      s2: 248,
-      s3: 184,
-      s4: 160,
-      s5: 152,
-      s6: 144
+      s1: 12,
+      s2: 28,
+      s3: 60,
+      s4: 124,
+      s5: 188,
+      s6: 252
     },
     ofxButton: {
       s1: 0,
@@ -253,18 +261,18 @@ $(document).ready(function() {
       this.dist6.curve = distCurve;
 
       //center pan for all oscillators by default
-      this.LGain1.gain.value = .5;
-      this.LGain2.gain.value = .5;
-      this.LGain3.gain.value = .5;
-      this.LGain4.gain.value = .5;
-      this.LGain5.gain.value = .5;
-      this.LGain6.gain.value = .5;
-      this.RGain1.gain.value = .5;
-      this.RGain2.gain.value = .5;
-      this.RGain3.gain.value = .5;
-      this.RGain4.gain.value = .5;
-      this.RGain5.gain.value = .5;
-      this.RGain6.gain.value = .5;
+      this.LGain1.gain.value = .45;
+      this.LGain2.gain.value = .45;
+      this.LGain3.gain.value = .45;
+      this.LGain4.gain.value = .45;
+      this.LGain5.gain.value = .45;
+      this.LGain6.gain.value = .45;
+      this.RGain1.gain.value = .45;
+      this.RGain2.gain.value = .45;
+      this.RGain3.gain.value = .45;
+      this.RGain4.gain.value = .45;
+      this.RGain5.gain.value = .45;
+      this.RGain6.gain.value = .45;
 
       //route oscillators -> gain nodes
         //route gain outputs -> L/R gain nodes -> stereo VCAs
@@ -414,13 +422,13 @@ $(document).ready(function() {
       var currentDist = distNodeDict[$this.attr("id")];
       var currentPre = preNodeDict[$this.attr("id")];
       currentPre.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
-      currentDist.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
+      currentDist.gain.setTargetAtTime(.9*($this.val()/256), synthCtx.currentTime, .005);
     } else if ($this.hasClass("panSlider")) {
       sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentLeft = leftGainDict[$this.attr("id")];
       var currentRight = rightGainDict[$this.attr("id")];
-      currentRight.gain.setTargetAtTime((.9*((255 - $this.val())/255)), synthCtx.currentTime, .005);
-      currentLeft.gain.setTargetAtTime((.9*(($this.val())/255)), synthCtx.currentTime, .005);;
+      currentRight.gain.setTargetAtTime((.75*((255 - $this.val())/255)), synthCtx.currentTime, .005);
+      currentLeft.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);;
     } else if ($this.hasClass("ampSlider")) {
       sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("lfoSlider")) {
@@ -553,23 +561,23 @@ $(document).ready(function() {
   //recalculate all frequencies on note change event
   function changeFreqs(newFund) {
     voice1.fundamental = newFund;
-    let r1 = ratioDict[sliderVals["ratButton"]["s1"] >>> 3];
-    let r2 = ratioDict[sliderVals["ratButton"]["s2"] >>> 3];
-    let r3 = ratioDict[sliderVals["ratButton"]["s3"] >>> 3];
-    let r4 = ratioDict[sliderVals["ratButton"]["s4"] >>> 3];
-    let r5 = ratioDict[sliderVals["ratButton"]["s5"] >>> 3];
-    let r6 = ratioDict[sliderVals["ratButton"]["s6"] >>> 3];
+    let r1 = ratioDict[sliderVals["ratButton"]["s1"] >>> 2];
+    let r2 = ratioDict[sliderVals["ratButton"]["s2"] >>> 2];
+    let r3 = ratioDict[sliderVals["ratButton"]["s3"] >>> 2];
+    let r4 = ratioDict[sliderVals["ratButton"]["s4"] >>> 2];
+    let r5 = ratioDict[sliderVals["ratButton"]["s5"] >>> 2];
+    let r6 = ratioDict[sliderVals["ratButton"]["s6"] >>> 2];
     oscNodeDict["s1"].frequency.setTargetAtTime
     (newFund*r1, synthCtx.currentTime, .00005);
     oscNodeDict["s2"].frequency.setTargetAtTime
-    (newFund*r1*r2, synthCtx.currentTime, .00005);
+    (newFund*r2, synthCtx.currentTime, .00005);
     oscNodeDict["s3"].frequency.setTargetAtTime
-    (newFund*r1*r2*r3, synthCtx.currentTime, .00005);
+    (newFund*r3, synthCtx.currentTime, .00005);
     oscNodeDict["s4"].frequency.setTargetAtTime
-    (newFund*r1*r2*r3*r4, synthCtx.currentTime, .00005);
+    (newFund*r4, synthCtx.currentTime, .00005);
     oscNodeDict["s5"].frequency.setTargetAtTime
-    (newFund*r1*r2*r3*r4*r5, synthCtx.currentTime, .00005);
+    (newFund*r5, synthCtx.currentTime, .00005);
     oscNodeDict["s6"].frequency.setTargetAtTime
-    (newFund*r1*r2*r3*r4*r5*r6, synthCtx.currentTime, .00005);
+    (newFund*r6, synthCtx.currentTime, .00005);
   }
 });
