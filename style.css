@@ -42,16 +42,16 @@
 }
 
 #pageTitle {
-  margin:12px auto -27px;
+  margin:12px auto -26px;
   font-family:monospace;
   font-size:1.4em;
   font-weight:bold;
   color: #5D2E7B;
   text-shadow:
-    -.5px -.5px 0 #f0dfeb,
-    .5px -.5px 0 #f0dfeb,
-    -.5px .5px 0 #f0dfeb,
-    .5px .5px 0 #f0dfeb;
+    -.5px -.5px 1px #f0dfeb,
+    .5px -.5px 1px #f0dfeb,
+    -.5px .5px 1px #f0dfeb,
+    .5px .5px 1px #f0dfeb;
 }
 
 #displayCanv {
