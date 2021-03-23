@@ -51,12 +51,12 @@ $(document).ready(function() {
   };
 
   var titleDict = {
-    oscButton: "MIX",
-    ratButton: "RATIO",
-    ofxButton: "SHAPE",
-    panButton: "PAN",
-    ampButton: "ENVELOPE",
-    lfoButton: "LFO"
+    oscButton: "mix",
+    ratButton: "ratio",
+    ofxButton: "shape",
+    panButton: "pan",
+    ampButton: "envelope",
+    lfoButton: "lfo"
   };
 
   //LUT of oscillator tuning ratios (in ref. to fundamental)

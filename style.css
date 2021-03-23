@@ -36,7 +36,7 @@
 }
 
 #subTitle {
-  margin:-3px auto 0px;
+  margin:-3px auto -3px;
   font-family:monospace;
   font-size:1.2em;
 }
@@ -44,7 +44,7 @@
 #pageTitle {
   margin:12px auto -27px;
   font-family:monospace;
-  font-size:1.5em;
+  font-size:1.4em;
   font-weight:bold;
   color: #5D2E7B;
   text-shadow:
