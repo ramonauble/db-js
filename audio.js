@@ -15,7 +15,7 @@ $(document).ready(function() {
   displayCanvCtx.fillStyle = "#5D2E7B";
   displayCanvCtx.lineWidth = 3;
   displayCanvCtx.strokeStyle = "#FFFFFF";
-  displayCanvCtx.font = "32px monospace";
+  displayCanvCtx.font = "30px monospace";
   displayCanvCtx.textAlign = "center";
 
   //instantiate analyser node (for oscilloscope)
@@ -153,7 +153,7 @@ $(document).ready(function() {
   var shiftPressed = false; //shift state
 
   //init active param page to osc page
-  var activePage = "oscPage";
+  var activePage = "oscButton";
   //init active display page to info page
   var activeUI = "wave";
 
@@ -461,18 +461,28 @@ $(document).ready(function() {
       displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight); //clear canvas
 
       if (activeUI == "info") { //draw info
-        if (activePage == "oscPage") {
-
-        } else if (activePage == "ratPage") {
-
-        } else if (activePage == "ofxPage") {
-
-        } else if (activePage == "panPage") {
-
-        } else if (activePage == "ampPage") {
-
-        } else if (activePage == "lfoPage") {
-
+        let p1 = sliderVals[activePage]["s1"];
+        let p2 = sliderVals[activePage]["s2"];
+        let p3 = sliderVals[activePage]["s3"];
+        let p4 = sliderVals[activePage]["s4"];
+        let p5 = sliderVals[activePage]["s5"];
+        let p6 = sliderVals[activePage]["s6"];
+        //draw oscillator & shape mix values
+        if (activePage == "oscButton" || activePage == "ofxButton") {
+          displayCanvCtx.strokeText((p1/255.0).toFixed(2), 55, 55);
+          displayCanvCtx.strokeText((p2/255.0).toFixed(2), 150, 55);
+          displayCanvCtx.strokeText((p3/255.0).toFixed(2), 245, 55);
+          displayCanvCtx.strokeText((p4/255.0).toFixed(2), 55, 120);
+          displayCanvCtx.strokeText((p5/255.0).toFixed(2), 150, 120);
+          displayCanvCtx.strokeText((p6/255.0).toFixed(2), 245, 120);
+        //draw ratio values
+        } else if (activePage == "ratButton") {
+          displayCanvCtx.strokeText((ratioDict[p1 >>> 2]).toFixed(2), 55, 55);
+          displayCanvCtx.strokeText((ratioDict[p2 >>> 2]).toFixed(2), 150, 55);
+          displayCanvCtx.strokeText((ratioDict[p3 >>> 2]).toFixed(2), 245, 55);
+          displayCanvCtx.strokeText((ratioDict[p4 >>> 2]).toFixed(2), 55, 120);
+          displayCanvCtx.strokeText((ratioDict[p5 >>> 2]).toFixed(2), 150, 120);
+          displayCanvCtx.strokeText((ratioDict[p6 >>> 2]).toFixed(2), 245, 120);
         }
       } else if (activeUI == "wave") { //draw scope
         displayCanvCtx.beginPath();
