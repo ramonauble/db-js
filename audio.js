@@ -47,7 +47,7 @@ $(document).ready(function() {
     ofxButton: "#C75858",
     panButton: "#8AC497",
     ampButton: "#848EDF",
-    lfoButton: "#DB689C"
+    revButton: "#DB689C"
   };
 
   var titleDict = {
@@ -56,7 +56,7 @@ $(document).ready(function() {
     ofxButton: "shape",
     panButton: "pan",
     ampButton: "envelope",
-    lfoButton: "lfo"
+    revButton: "reverb"
   };
 
   //LUT of oscillator tuning ratios (in ref. to fundamental)
@@ -121,7 +121,7 @@ $(document).ready(function() {
       s5: 0,
       s6: 0
     },
-    lfoButton: {
+    revButton: {
       s1: 0,
       s2: 0,
       s3: 0,
@@ -431,8 +431,8 @@ $(document).ready(function() {
       currentLeft.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);;
     } else if ($this.hasClass("ampSlider")) {
       sliderVals["ampButton"][$this.attr("id")] = $this.val();
-    } else if ($this.hasClass("lfoSlider")) {
-      sliderVals["lfoButton"][$this.attr("id")] = $this.val();
+    } else if ($this.hasClass("revSlider")) {
+      sliderVals["revButton"][$this.attr("id")] = $this.val();
     }
   });
 
