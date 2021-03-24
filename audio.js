@@ -212,6 +212,22 @@ $(document).ready(function() {
       this.RGain4 = synthCtx.createGain();
       this.RGain5 = synthCtx.createGain();
       this.RGain6 = synthCtx.createGain();
+      //intantiate reverb channel mergers
+      this.revMerge1 = synthCtx.createChannelMerger(2);
+      this.revMerge2 = synthCtx.createChannelMerger(2);
+      this.revMerge3 = synthCtx.createChannelMerger(2);
+      this.revMerge4 = synthCtx.createChannelMerger(2);
+      this.revMerge5 = synthCtx.createChannelMerger(2);
+      this.revMerge6 = synthCtx.createChannelMerger(2);
+      //instantiate reverb gain nodes
+      this.revGain1 = synthCtx.createGain();
+      this.revGain2 = synthCtx.createGain();
+      this.revGain3 = synthCtx.createGain();
+      this.revGain4 = synthCtx.createGain();
+      this.revGain5 = synthCtx.createGain();
+      this.revGain6 = synthCtx.createGain();
+      //instatiate convolver node for reverb
+      this.reverb = synthCtx.createConvolver();
       //stereo VCAs
       this.LVCA = synthCtx.createGain();
       this.RVCA = synthCtx.createGain();
@@ -274,6 +290,13 @@ $(document).ready(function() {
       this.RGain5.gain.value = .45;
       this.RGain6.gain.value = .45;
 
+      this.revGain1.gain.value = 0;
+      this.revGain2.gain.value = 0;
+      this.revGain3.gain.value = 0;
+      this.revGain4.gain.value = 0;
+      this.revGain5.gain.value = 0;
+      this.revGain6.gain.value = 0;
+
       //route oscillators -> gain nodes
         //route gain outputs -> L/R gain nodes -> stereo VCAs
       //route oscillators -> dist nodes -> dist gain nodes
@@ -320,6 +343,26 @@ $(document).ready(function() {
         this.distGain6.connect(this.LGain6).connect(this.LVCA);
         this.distGain6.connect(this.RGain6).connect(this.RVCA);
 
+      this.LGain1.connect(this.revMerge1, 0, 0);
+      this.RGain1.connect(this.revMerge1, 0, 1);
+        this.revMerge1.connect(this.revGain1).connect(this.reverb);
+      this.LGain2.connect(this.revMerge2, 0, 0);
+      this.RGain2.connect(this.revMerge2, 0, 1);
+        this.revMerge2.connect(this.revGain2).connect(this.reverb);
+      this.LGain3.connect(this.revMerge3, 0, 0);
+      this.RGain3.connect(this.revMerge3, 0, 1);
+        this.revMerge3.connect(this.revGain3).connect(this.reverb);
+      this.LGain4.connect(this.revMerge4, 0, 0);
+      this.RGain4.connect(this.revMerge4, 0, 1);
+        this.revMerge4.connect(this.revGain4).connect(this.reverb);
+      this.LGain5.connect(this.revMerge5, 0, 0);
+      this.RGain5.connect(this.revMerge5, 0, 1);
+        this.revMerge5.connect(this.revGain5).connect(this.reverb);
+      this.LGain6.connect(this.revMerge6, 0, 0);
+      this.RGain6.connect(this.revMerge6, 0, 1);
+        this.revMerge6.connect(this.revGain6).connect(this.reverb);
+      this.reverb.connect(synthCtx.destination);
+
       //finalize signal path - merge stereo VCAs into 2 channel output
       //then connect merger output to destination (audio output)
       //also connect merger output to scope for TD visualization
@@ -361,7 +404,7 @@ $(document).ready(function() {
     s4: voice1.osc4,
     s5: voice1.osc5,
     s6: voice1.osc6
-  }
+  };
 
   var preNodeDict = {
     s1: voice1.preGain1,
@@ -370,7 +413,7 @@ $(document).ready(function() {
     s4: voice1.preGain4,
     s5: voice1.preGain5,
     s6: voice1.preGain6
-  }
+  };
   var distNodeDict = {
     s1: voice1.distGain1,
     s2: voice1.distGain2,
@@ -378,7 +421,7 @@ $(document).ready(function() {
     s4: voice1.distGain4,
     s5: voice1.distGain5,
     s6: voice1.distGain6
-  }
+  };
 
   var leftGainDict = {
     s1: voice1.LGain1,
@@ -387,7 +430,7 @@ $(document).ready(function() {
     s4: voice1.LGain4,
     s5: voice1.LGain5,
     s6: voice1.LGain6
-  }
+  };
   var rightGainDict = {
     s1: voice1.RGain1,
     s2: voice1.RGain2,
@@ -395,8 +438,19 @@ $(document).ready(function() {
     s4: voice1.RGain4,
     s5: voice1.RGain5,
     s6: voice1.RGain6
-  }
+  };
 
+  var revGainDict = {
+    s1: voice1.revGain1,
+    s2: voice1.revGain2,
+    s3: voice1.revGain3,
+    s4: voice1.revGain4,
+    s5: voice1.revGain5,
+    s6: voice1.revGain6
+  };
+
+  //calculate reverb impulse response & assign to convolver node buffer
+  calcIR();
   //init oscillator frequencies
   changeFreqs(voice1.fundamental);
   //init sliders
@@ -428,11 +482,13 @@ $(document).ready(function() {
       var currentLeft = leftGainDict[$this.attr("id")];
       var currentRight = rightGainDict[$this.attr("id")];
       currentRight.gain.setTargetAtTime((.75*((255 - $this.val())/255)), synthCtx.currentTime, .005);
-      currentLeft.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);;
+      currentLeft.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);
     } else if ($this.hasClass("ampSlider")) {
       sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("revSlider")) {
       sliderVals["revButton"][$this.attr("id")] = $this.val();
+      var currentRevGain = revGainDict[$this.attr("id")];
+      currentRevGain.gain.setTargetAtTime(.75*($this.val()/255.0), synthCtx.currentTime, .005);
     }
   });
 
@@ -523,6 +579,12 @@ $(document).ready(function() {
       curveOut[i] = ((Math.PI + amount)*xVal)/(Math.PI + (amount*Math.abs(xVal)));
     }
     return curveOut;
+  }
+
+  async function calcIR() {
+    let wavFile = await fetch("./wavData/1stbap_impulse_response.wav");
+    let wavBuffer = await wavFile.arrayBuffer();
+    voice1.reverb.buffer = await synthCtx.decodeAudioData(wavBuffer);
   }
 
   //resume context
