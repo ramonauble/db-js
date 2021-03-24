@@ -103,8 +103,8 @@
   #ampButton {
     background-image: url("./assets/pageButtons/adsrPage.png");
   }
-  #lfoButton {
-    background-image: url("./assets/pageButtons/lfoPage.png");
+  #revButton {
+    background-image: url("./assets/pageButtons/reverbPage.png");
   }
 
 .pageSelect {
@@ -136,7 +136,7 @@
   #ampSelect {
     background:#848EDF;
   }
-  #lfoSelect {
+  #revSelect {
     background:#DB689C;
   }
 
@@ -284,6 +284,6 @@
     .ampSlider::-webkit-slider-thumb {
       background:#848EDF;
     }
-    .lfoSlider::-webkit-slider-thumb {
+    .revSlider::-webkit-slider-thumb {
       background:#DB689C;
     }

@@ -79,7 +79,7 @@ $(document).ready(function() {
     3: .25, 2: .20, 1: .167, 0: 0.125,
   };
 
-  //instantiate memory for all instantaneous param states
+  //instantiate memory for all instantaneous param. states
   var sliderVals = {
     oscButton: {
       s1: 255,

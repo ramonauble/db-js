@@ -10,7 +10,7 @@ $(document).ready(function() {
     ofxButton: $("#ofxButton"),
     panButton: $("#panButton"),
     ampButton: $("#ampButton"),
-    lfoButton: $("#lfoButton")
+    revButton: $("#revButton")
   };
   var $uiDict = {
     infoButton: $("#infoButton"),
@@ -23,7 +23,7 @@ $(document).ready(function() {
     ofxButton: $("#ofxSelect"),
     panButton: $("#panSelect"),
     ampButton: $("#ampSelect"),
-    lfoButton: $("#lfoSelect")
+    revButton: $("#revSelect")
   };
   var $uiSelectDict = {
     infoButton: $("#infoSelect"),
@@ -36,7 +36,7 @@ $(document).ready(function() {
     ofxButton: "ofxSlider",
     panButton: "panSlider",
     ampButton: "ampSlider",
-    lfoButton: "lfoSlider"
+    revButton: "revSlider"
   };
 
   var $pageSliders = $(".pSlider");
