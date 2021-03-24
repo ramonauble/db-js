@@ -27,7 +27,7 @@ they are as follows, in order from left to right:
 > shape      (OFX, muted red) - applies a variable amount of waveshaping distortion to each partial
 > pan        (PAN, soft teal) - controls the L/R placement of each partial in the stereo field
 > envelope   (AMP, light blue) - controls the shape & curve of the ADSR envelope, applied in stereo
-> lfo        (LFO, muted pink) - controls the shape, speed & depth of 2 configurable LFOs
+> reverb     (REV, muted pink) - controls the relative send amounts for the stereo reverb
 
 OSC
 ----------------------------------------------------
@@ -83,17 +83,15 @@ another control introduces an amount of attenuated randomness into the delay par
 allowing the trigger times to continually vary by a small, chaotic amount.
 this will be especially noticeable when playing polyphonically (chords)
 
-LFO
+REV
 ----------------------------------------------------
-the LFO page is fairly standard, hosting two identical LFOs, with separate shape,
-speed and depth controls for each.
-the left LFO (sliders 1-3) affects the amount of tremolo (ampltiude variation)
-the right LFO (sliders 4-6) affects the amount of vibrato (pitch variation)
+the REV page is host to a stereo convolution reverb
+based on an impulse response taken from the Nashville First Baptist Church (†)
+the 6 sliders control the relative reverb send amount
+for each of the 6 stereo panned waveshaper/oscillator pairings;
+the effect can thus be applied in varying amounts to each partial individually,
+offering granular control over the overall timbre of the reverberated signal
 
-EDIT:
-this page will most likely be nixed;
-instead offering one LFO per page, freely routable to any of the parameters on that page.
-this page will most likely be changed to a master reverb effect.
 
 NOTES
 ----------------------------------------------------------------------------
@@ -108,16 +106,27 @@ currently implemented:
   • ratio table & ratio select (page 2)
   • waveshapers & mix controls (page 3)
   • per partial pan & controls (page 4)
+  • keyboard note change
   • oscilloscope display
-  • keyboard note change & trigger
+currently implementing:
+  • parameter value display
+    > currently working for OSC, RAT & OFX pages (numerical)
+    > need to implement PAN, AMP & REV pages (visual)
 to implement:
   • stereo envelopes & control (page 5)
-  • LFO modulators & routing   (page 6)
-  • info page display (to show param changes)
+  • stereo convolution reverb  (page 6)
+    > using impulse response from Nashville First Baptist Church
+    > (†) Adam Townsell (www.openairlib.net)
+  • 1 freely assignable LFO per page
+    > independent frequency, shape & depth controls per page
+    > freely routable to any combination of the 6 parameters
+    > toggle switch to change between free running & tempo locked
+  • virtual (onscreen) keyboard
+    > for triggering the envelopes & changing the fundamental
+    > for programming notes into the sequencer
+  • asymmetric note & trig sequencer
+wishful (not priority):
   • 3 part polyphony
-  • asymmetric note & parameter sequencers
-  • multiplicative frequency ratios
   • midi controller support (WebMIDI API)
-  • stereo convolution reverb
-
+  
 <3
