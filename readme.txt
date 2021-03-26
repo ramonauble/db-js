@@ -1,9 +1,9 @@
 OVERVIEW
 ----------------------------------------------------------------------------
 db is a 6 oscillator additive synthesizer based on WebAudioAPI,
-inspired by the ethos of the drawbar organ.
+inspired in part by the ethos of the drawbar organ.
 it is designed to be both immediate & easy to understand,
-with a simple, modular structure & 36 instantly tweakable parameters.
+with a simple, symmetrical structure & instantly tweakable parameters.
 
 to play chromatically, the keys are mapped as follows:
     W   E       T   Y   U
@@ -19,7 +19,7 @@ to shift 1 octave up, press and hold SHIFT & press R ARROW
 STRUCTURE
 ----------------------------------------------------------------------------
 the synthesis engine is comprised of 6 main sections
-each denoted by a different color & symbol
+each is each denoted by a different color & symbol
 they are as follows, in order from left to right:
 
 > oscillator (OSC, dark purple) - controls the relative amplitudes of each of the 6 partials
@@ -96,7 +96,7 @@ offering granular control over the overall timbre of the reverberated signal
 NOTES
 ----------------------------------------------------------------------------
 this project is still very much in development; the aforementioned structure is mostly
-finalized, but may change in minor ways as the project moves forward.
+finalized, but may be subject to change as the project moves toward completion.
 
 the current alpha build runs just a single voice,
 which begins sounding at receipt of user interaction (page select).
@@ -106,6 +106,9 @@ currently implemented:
   • ratio table & ratio select (page 2)
   • waveshapers & mix controls (page 3)
   • per partial pan & controls (page 4)
+  • stereo convolution reverb  (page 6)
+    > using impulse response from Nashville First Baptist Church
+    > (†) Adam Townsell (www.openairlib.net)
   • keyboard note change
   • oscilloscope display
 currently implementing:
@@ -114,9 +117,6 @@ currently implementing:
     > need to implement PAN, AMP & REV pages (visual)
 to implement:
   • stereo envelopes & control (page 5)
-  • stereo convolution reverb  (page 6)
-    > using impulse response from Nashville First Baptist Church
-    > (†) Adam Townsell (www.openairlib.net)
   • 1 freely assignable LFO per page
     > independent frequency, shape & depth controls per page
     > freely routable to any combination of the 6 parameters
@@ -128,5 +128,5 @@ to implement:
 wishful (not priority):
   • 3 part polyphony
   • midi controller support (WebMIDI API)
-  
+
 <3
