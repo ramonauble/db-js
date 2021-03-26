@@ -16,10 +16,11 @@ to shift 1 octave down, press and hold SHIFT & press L ARROW
 to shift 1 octave up, press and hold SHIFT & press R ARROW
 (-/+ 2 octaves from default position)
 
+
 STRUCTURE
 ----------------------------------------------------------------------------
 the synthesis engine is comprised of 6 main sections
-each is each denoted by a different color & symbol
+each denoted by a different color & symbol
 they are as follows, in order from left to right:
 
 > oscillator (OSC, dark purple) - controls the relative amplitudes of each of the 6 partials
@@ -46,12 +47,9 @@ each partial also has an independent frequency
 determined in reference to the fundamental of each note;
 frequencies are set by the corresponding ratio parameter on the RAT page.
 the sliders default to a simple harmonic series, similar to a sawtooth -
-1st has no multiplier (1x), 2nd is x2, 3rd is x3, 4th is x4, 5th is x5, 6th is x6
-the center drawbar position yields no multiplier for that partial (frequency == fundamental)
-above center sweeps through ascending multiples of the fundamental (overtones)
-  1.00x - 8.00x in increments of .33
-below center sweeps through descending divisions of the fundamental (µndertones)
-  0.80x - 0.16x in varying increments
+1st is quarter freq (.25x), 2nd is .5x, 3rd is 1x, 4th is 2x, 5th is 3x, 6th is 4x
+the top 48 ratios (top 75%) range from 1.125x to 4.00x (overtones)
+the bottom 16 ratios (bottom 25%) range from 1.00x to .125x (fundamental/undertones)
 
 OFX
 ----------------------------------------------------
@@ -75,13 +73,12 @@ top position is fully left, bottom position is fully right.
 
 AMP
 ----------------------------------------------------
-the AMP page contains a standard ADSR envelope,
+the AMP page contains a stereo ADSR envelope,
 with controls for attack, decay, sustain and release.
 an additional control allows for a time offset to be introduced between the stereo envelopes,
 delaying the trigger of either the left or right envelope by a configurable amount.
 another control introduces an amount of attenuated randomness into the delay parameter,
 allowing the trigger times to continually vary by a small, chaotic amount.
-this will be especially noticeable when playing polyphonically (chords)
 
 REV
 ----------------------------------------------------

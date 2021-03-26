@@ -92,6 +92,7 @@ $(document).ready(function() {
   //create & init voice (test)
   let voice1 = new Voice(synthCtx, distCurve);
   voice1.mixGain.connect(scope);
+  voice1.reverb.connect(scope);
   voice1.start();
 
   //calculate reverb impulse response & assign to convolver node buffer
