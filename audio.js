@@ -213,26 +213,42 @@ $(document).ready(function() {
       this.RGain5 = synthCtx.createGain();
       this.RGain6 = synthCtx.createGain();
       //intantiate reverb channel mergers
-      this.revMerge1 = synthCtx.createChannelMerger(2);
-      this.revMerge2 = synthCtx.createChannelMerger(2);
-      this.revMerge3 = synthCtx.createChannelMerger(2);
-      this.revMerge4 = synthCtx.createChannelMerger(2);
-      this.revMerge5 = synthCtx.createChannelMerger(2);
-      this.revMerge6 = synthCtx.createChannelMerger(2);
-      //instantiate reverb gain nodes
+      this.chMerge1 = synthCtx.createChannelMerger(2);
+      this.chMerge2 = synthCtx.createChannelMerger(2);
+      this.chMerge3 = synthCtx.createChannelMerger(2);
+      this.chMerge4 = synthCtx.createChannelMerger(2);
+      this.chMerge5 = synthCtx.createChannelMerger(2);
+      this.chMerge6 = synthCtx.createChannelMerger(2);
+      //instantiate reverb gain nodes - wet & dry
       this.revGain1 = synthCtx.createGain();
       this.revGain2 = synthCtx.createGain();
       this.revGain3 = synthCtx.createGain();
       this.revGain4 = synthCtx.createGain();
       this.revGain5 = synthCtx.createGain();
       this.revGain6 = synthCtx.createGain();
+      this.dryGain1 = synthCtx.createGain();
+      this.dryGain2 = synthCtx.createGain();
+      this.dryGain3 = synthCtx.createGain();
+      this.dryGain4 = synthCtx.createGain();
+      this.dryGain5 = synthCtx.createGain();
+      this.dryGain6 = synthCtx.createGain();
       //instatiate convolver node for reverb
       this.reverb = synthCtx.createConvolver();
       //stereo VCAs
-      this.LVCA = synthCtx.createGain();
-      this.RVCA = synthCtx.createGain();
+      this.LVCA1 = synthCtx.createGain();
+      this.RVCA1 = synthCtx.createGain();
+      this.LVCA2 = synthCtx.createGain();
+      this.RVCA2 = synthCtx.createGain();
+      this.LVCA3 = synthCtx.createGain();
+      this.RVCA3 = synthCtx.createGain();
+      this.LVCA4 = synthCtx.createGain();
+      this.RVCA4 = synthCtx.createGain();
+      this.LVCA5 = synthCtx.createGain();
+      this.RVCA5 = synthCtx.createGain();
+      this.LVCA6 = synthCtx.createGain();
+      this.RVCA6 = synthCtx.createGain();
       //stereo channel merger for output to destination
-      this.stereoMerge = synthCtx.createChannelMerger(2);
+      this.mixGain = synthCtx.createGain();
 
       this.init();
     }
@@ -297,79 +313,93 @@ $(document).ready(function() {
       this.revGain5.gain.value = 0;
       this.revGain6.gain.value = 0;
 
+      this.dryGain1.gain.value = 1;
+      this.dryGain2.gain.value = 1;
+      this.dryGain3.gain.value = 1;
+      this.dryGain4.gain.value = 1;
+      this.dryGain5.gain.value = 1;
+      this.dryGain6.gain.value = 1;
+
+      //final mixer node before output
+      this.mixGain.gain.value = 1;
+
       //route oscillators -> gain nodes
         //route gain outputs -> L/R gain nodes -> stereo VCAs
       //route oscillators -> dist nodes -> dist gain nodes
         //route dist gain outputs -> L/R gain nodes -> stereo VCAs
       this.osc1.connect(this.oscGain1);
-        this.oscGain1.connect(this.LGain1).connect(this.LVCA);
-        this.oscGain1.connect(this.RGain1).connect(this.RVCA);
+        this.oscGain1.connect(this.LGain1).connect(this.LVCA1);
+        this.oscGain1.connect(this.RGain1).connect(this.RVCA1);
       this.osc1.connect(this.preGain1).connect(this.dist1).connect(this.distGain1);
-        this.distGain1.connect(this.LGain1).connect(this.LVCA);
-        this.distGain1.connect(this.RGain1).connect(this.RVCA);
+        this.distGain1.connect(this.LGain1).connect(this.LVCA1);
+        this.distGain1.connect(this.RGain1).connect(this.RVCA1);
 
       this.osc2.connect(this.oscGain2);
-        this.oscGain2.connect(this.LGain2).connect(this.LVCA);
-        this.oscGain2.connect(this.RGain2).connect(this.RVCA);
+        this.oscGain2.connect(this.LGain2).connect(this.LVCA2);
+        this.oscGain2.connect(this.RGain2).connect(this.RVCA2);
       this.osc2.connect(this.preGain2).connect(this.dist2).connect(this.distGain2);
-        this.distGain2.connect(this.LGain2).connect(this.LVCA);
-        this.distGain2.connect(this.RGain2).connect(this.RVCA);
+        this.distGain2.connect(this.LGain2).connect(this.LVCA2);
+        this.distGain2.connect(this.RGain2).connect(this.RVCA2);
 
       this.osc3.connect(this.oscGain3);
-        this.oscGain3.connect(this.LGain3).connect(this.LVCA);
-        this.oscGain3.connect(this.RGain3).connect(this.RVCA);
+        this.oscGain3.connect(this.LGain3).connect(this.LVCA3);
+        this.oscGain3.connect(this.RGain3).connect(this.RVCA3);
       this.osc3.connect(this.preGain3).connect(this.dist3).connect(this.distGain3);
-        this.distGain3.connect(this.LGain3).connect(this.LVCA);
-        this.distGain3.connect(this.RGain3).connect(this.RVCA);
+        this.distGain3.connect(this.LGain3).connect(this.LVCA3);
+        this.distGain3.connect(this.RGain3).connect(this.RVCA3);
 
       this.osc4.connect(this.oscGain4);
-        this.oscGain4.connect(this.LGain4).connect(this.LVCA);
-        this.oscGain4.connect(this.RGain4).connect(this.RVCA);
+        this.oscGain4.connect(this.LGain4).connect(this.LVCA4);
+        this.oscGain4.connect(this.RGain4).connect(this.RVCA4);
       this.osc4.connect(this.preGain4).connect(this.dist4).connect(this.distGain4);
-        this.distGain4.connect(this.LGain4).connect(this.LVCA);
-        this.distGain4.connect(this.RGain4).connect(this.RVCA);
+        this.distGain4.connect(this.LGain4).connect(this.LVCA4);
+        this.distGain4.connect(this.RGain4).connect(this.RVCA4);
 
       this.osc5.connect(this.oscGain5);
-        this.oscGain5.connect(this.LGain5).connect(this.LVCA);
-        this.oscGain5.connect(this.RGain5).connect(this.RVCA);
+        this.oscGain5.connect(this.LGain5).connect(this.LVCA5);
+        this.oscGain5.connect(this.RGain5).connect(this.RVCA5);
       this.osc5.connect(this.preGain5).connect(this.dist5).connect(this.distGain5);
-        this.distGain5.connect(this.LGain5).connect(this.LVCA);
-        this.distGain5.connect(this.RGain5).connect(this.RVCA);
+        this.distGain5.connect(this.LGain5).connect(this.LVCA5);
+        this.distGain5.connect(this.RGain5).connect(this.RVCA5);
 
       this.osc6.connect(this.oscGain6);
-        this.oscGain6.connect(this.LGain6).connect(this.LVCA);
-        this.oscGain6.connect(this.RGain6).connect(this.RVCA);
+        this.oscGain6.connect(this.LGain6).connect(this.LVCA6);
+        this.oscGain6.connect(this.RGain6).connect(this.RVCA6);
       this.osc6.connect(this.preGain6).connect(this.dist6).connect(this.distGain6);
-        this.distGain6.connect(this.LGain6).connect(this.LVCA);
-        this.distGain6.connect(this.RGain6).connect(this.RVCA);
+        this.distGain6.connect(this.LGain6).connect(this.LVCA6);
+        this.distGain6.connect(this.RGain6).connect(this.RVCA6);
 
-      this.LGain1.connect(this.revMerge1, 0, 0);
-      this.RGain1.connect(this.revMerge1, 0, 1);
-        this.revMerge1.connect(this.revGain1).connect(this.reverb);
-      this.LGain2.connect(this.revMerge2, 0, 0);
-      this.RGain2.connect(this.revMerge2, 0, 1);
-        this.revMerge2.connect(this.revGain2).connect(this.reverb);
-      this.LGain3.connect(this.revMerge3, 0, 0);
-      this.RGain3.connect(this.revMerge3, 0, 1);
-        this.revMerge3.connect(this.revGain3).connect(this.reverb);
-      this.LGain4.connect(this.revMerge4, 0, 0);
-      this.RGain4.connect(this.revMerge4, 0, 1);
-        this.revMerge4.connect(this.revGain4).connect(this.reverb);
-      this.LGain5.connect(this.revMerge5, 0, 0);
-      this.RGain5.connect(this.revMerge5, 0, 1);
-        this.revMerge5.connect(this.revGain5).connect(this.reverb);
-      this.LGain6.connect(this.revMerge6, 0, 0);
-      this.RGain6.connect(this.revMerge6, 0, 1);
-        this.revMerge6.connect(this.revGain6).connect(this.reverb);
-      this.reverb.connect(synthCtx.destination);
+      this.LVCA1.connect(this.chMerge1, 0, 0);
+      this.RVCA1.connect(this.chMerge1, 0, 1);
+        this.chMerge1.connect(this.revGain1).connect(this.reverb);
+        this.chMerge1.connect(this.dryGain1).connect(this.mixGain);
+      this.LVCA2.connect(this.chMerge2, 0, 0);
+      this.RVCA2.connect(this.chMerge2, 0, 1);
+        this.chMerge2.connect(this.revGain2).connect(this.reverb);
+        this.chMerge2.connect(this.dryGain2).connect(this.mixGain);
+      this.LVCA3.connect(this.chMerge3, 0, 0);
+      this.RVCA3.connect(this.chMerge3, 0, 1);
+        this.chMerge3.connect(this.revGain3).connect(this.reverb);
+        this.chMerge3.connect(this.dryGain3).connect(this.mixGain);
+      this.LVCA4.connect(this.chMerge4, 0, 0);
+      this.RVCA4.connect(this.chMerge4, 0, 1);
+        this.chMerge4.connect(this.revGain4).connect(this.reverb);
+        this.chMerge4.connect(this.dryGain4).connect(this.mixGain);
+      this.LVCA5.connect(this.chMerge5, 0, 0);
+      this.RVCA5.connect(this.chMerge5, 0, 1);
+        this.chMerge5.connect(this.revGain5).connect(this.reverb);
+        this.chMerge5.connect(this.dryGain5).connect(this.mixGain);
+      this.LVCA6.connect(this.chMerge6, 0, 0);
+      this.RVCA6.connect(this.chMerge6, 0, 1);
+        this.chMerge6.connect(this.revGain6).connect(this.reverb);
+        this.chMerge6.connect(this.dryGain6).connect(this.mixGain);
 
       //finalize signal path - merge stereo VCAs into 2 channel output
       //then connect merger output to destination (audio output)
       //also connect merger output to scope for TD visualization
-      this.LVCA.connect(this.stereoMerge, 0, 0);
-      this.RVCA.connect(this.stereoMerge, 0, 1);
-      this.stereoMerge.connect(synthCtx.destination);
-      this.stereoMerge.connect(scope);
+      this.reverb.connect(synthCtx.destination);
+      this.mixGain.connect(synthCtx.destination);
+      this.mixGain.connect(scope);
     }
 
     //start oscillators
@@ -449,6 +479,15 @@ $(document).ready(function() {
     s6: voice1.revGain6
   };
 
+  var dryGainDict = {
+    s1: voice1.dryGain1,
+    s2: voice1.dryGain2,
+    s3: voice1.dryGain3,
+    s4: voice1.dryGain4,
+    s5: voice1.dryGain5,
+    s6: voice1.dryGain6
+  };
+
   //calculate reverb impulse response & assign to convolver node buffer
   calcIR();
   //init oscillator frequencies
@@ -488,7 +527,9 @@ $(document).ready(function() {
     } else if ($this.hasClass("revSlider")) {
       sliderVals["revButton"][$this.attr("id")] = $this.val();
       var currentRevGain = revGainDict[$this.attr("id")];
-      currentRevGain.gain.setTargetAtTime(.75*($this.val()/255.0), synthCtx.currentTime, .005);
+      var currentDryGain = dryGainDict[$this.attr("id")];
+      currentDryGain.gain.setTargetAtTime(((255 - $this.val())/255.0), synthCtx.currentTime, .005);
+      currentRevGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     }
   });
 
