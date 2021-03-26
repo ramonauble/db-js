@@ -18,7 +18,7 @@ $(document).ready(function() {
   displayCanvCtx.font = "30px monospace";
   displayCanvCtx.textAlign = "center";
 
-  //instantiate analyser node (for oscilloscope)
+  //instantiate analyser node (for oscilloscope display)
   var scope = synthCtx.createAnalyser();
   scope.fftSize = 512;
 
@@ -31,7 +31,8 @@ $(document).ready(function() {
   //reference to page title DOM object
   var $pageTitle = $("#pageTitle");
 
-  //define dictionaries for sliders & fill colors
+  //slider jquery object dictionary
+  //(for faster selection during page changes)
   var $sliderDict = {
     s1: $("#s1"),
     s2: $("#s2"),
@@ -41,6 +42,8 @@ $(document).ready(function() {
     s6: $("#s6")
   };
 
+  //color dictionary to assocate page selection
+  //with canvas fill & title colors
   var colorsDict = {
     oscButton: "#5D2E7B",
     ratButton: "#A15ECE",
@@ -50,6 +53,7 @@ $(document).ready(function() {
     revButton: "#DB689C"
   };
 
+  //title dictionary to map page selection to page title
   var titleDict = {
     oscButton: "mix",
     ratButton: "ratio",
@@ -57,78 +61,6 @@ $(document).ready(function() {
     panButton: "pan",
     ampButton: "envelope",
     revButton: "reverb"
-  };
-
-  //LUT of oscillator tuning ratios (in ref. to fundamental)
-  var ratioDict = {
-    63: 4.00, 62: 3.875, 61: 3.833, 60: 3.80,
-    59: 3.75, 58: 3.667, 57: 3.625, 56: 3.60,
-    55: 3.50, 54: 3.40, 53: 3.375, 52: 3.33,
-    51: 3.25, 50: 3.20, 49: 3.167, 48: 3.125,
-    47: 3.00, 46: 2.875, 45: 2.833, 44: 2.80,
-    43: 2.75, 42: 2.667, 41: 2.625, 40: 2.60,
-    39: 2.50, 38: 2.40, 37: 2.375, 36: 2.333,
-    35: 2.25, 34: 2.20, 33: 2.167, 32: 2.125,
-    31: 2.00, 30: 1.875, 29: 1.833, 28: 1.80,
-    27: 1.75, 26: 1.667, 25: 1.625, 24: 1.60,
-    23: 1.50, 22: 1.40, 21: 1.375, 20: 1.33,
-    19: 1.25, 18: 1.20, 17: 1.167, 16: 1.125,
-    15: 1.00, 14: .875, 13: .833, 12: .80,
-    11: .75, 10: .667, 9: .625, 8: .60,
-    7: .50, 6: .40, 5: .375, 4: .333,
-    3: .25, 2: .20, 1: .167, 0: 0.125,
-  };
-
-  //instantiate memory for all instantaneous param. states
-  var sliderVals = {
-    oscButton: {
-      s1: 255,
-      s2: 127,
-      s3: 63,
-      s4: 31,
-      s5: 15,
-      s6: 7
-    },
-    ratButton: {
-      s1: 12,
-      s2: 28,
-      s3: 60,
-      s4: 124,
-      s5: 188,
-      s6: 252
-    },
-    ofxButton: {
-      s1: 0,
-      s2: 0,
-      s3: 0,
-      s4: 0,
-      s5: 0,
-      s6: 0
-    },
-    panButton: {
-      s1: 127,
-      s2: 127,
-      s3: 127,
-      s4: 127,
-      s5: 127,
-      s6: 127
-    },
-    ampButton: {
-      s1: 0,
-      s2: 0,
-      s3: 0,
-      s4: 0,
-      s5: 0,
-      s6: 0
-    },
-    revButton: {
-      s1: 0,
-      s2: 0,
-      s3: 0,
-      s4: 0,
-      s5: 0,
-      s6: 0
-    },
   };
 
   //define exponent numerators for calculating frequencies
@@ -157,336 +89,10 @@ $(document).ready(function() {
   //init active display page to info page
   var activeUI = "wave";
 
-  //voice class definition
-  class Voice {
-    //fundamental frequency of voice - C5 default
-    fundamental = 261.625565301;
-
-    //new voice constructor - create audio nodes
-    constructor() {
-      //instantiate oscillator nodes
-      this.osc1 = synthCtx.createOscillator();
-      this.osc2 = synthCtx.createOscillator();
-      this.osc3 = synthCtx.createOscillator();
-      this.osc4 = synthCtx.createOscillator();
-      this.osc5 = synthCtx.createOscillator();
-      this.osc6 = synthCtx.createOscillator();
-      //instantiate oscillator gain nodes
-      this.oscGain1 = synthCtx.createGain();
-      this.oscGain2 = synthCtx.createGain();
-      this.oscGain3 = synthCtx.createGain();
-      this.oscGain4 = synthCtx.createGain();
-      this.oscGain5 = synthCtx.createGain();
-      this.oscGain6 = synthCtx.createGain();
-      //instantiate pre-distortion gain nodes
-      this.preGain1 = synthCtx.createGain();
-      this.preGain2 = synthCtx.createGain();
-      this.preGain3 = synthCtx.createGain();
-      this.preGain4 = synthCtx.createGain();
-      this.preGain5 = synthCtx.createGain();
-      this.preGain6 = synthCtx.createGain();
-      //instantiate post-distortion gain nodes
-      this.distGain1 = synthCtx.createGain();
-      this.distGain2 = synthCtx.createGain();
-      this.distGain3 = synthCtx.createGain();
-      this.distGain4 = synthCtx.createGain();
-      this.distGain5 = synthCtx.createGain();
-      this.distGain6 = synthCtx.createGain();
-      //instantiate distortion nodes
-      this.dist1 = synthCtx.createWaveShaper();
-      this.dist2 = synthCtx.createWaveShaper();
-      this.dist3 = synthCtx.createWaveShaper();
-      this.dist4 = synthCtx.createWaveShaper();
-      this.dist5 = synthCtx.createWaveShaper();
-      this.dist6 = synthCtx.createWaveShaper();
-      //instantiate osc/dist mixer nodes (unity gain)
-      this.LGain1 = synthCtx.createGain();
-      this.LGain2 = synthCtx.createGain();
-      this.LGain3 = synthCtx.createGain();
-      this.LGain4 = synthCtx.createGain();
-      this.LGain5 = synthCtx.createGain();
-      this.LGain6 = synthCtx.createGain();
-      this.RGain1 = synthCtx.createGain();
-      this.RGain2 = synthCtx.createGain();
-      this.RGain3 = synthCtx.createGain();
-      this.RGain4 = synthCtx.createGain();
-      this.RGain5 = synthCtx.createGain();
-      this.RGain6 = synthCtx.createGain();
-      //intantiate reverb channel mergers
-      this.chMerge1 = synthCtx.createChannelMerger(2);
-      this.chMerge2 = synthCtx.createChannelMerger(2);
-      this.chMerge3 = synthCtx.createChannelMerger(2);
-      this.chMerge4 = synthCtx.createChannelMerger(2);
-      this.chMerge5 = synthCtx.createChannelMerger(2);
-      this.chMerge6 = synthCtx.createChannelMerger(2);
-      //instantiate reverb gain nodes - wet & dry
-      this.revGain1 = synthCtx.createGain();
-      this.revGain2 = synthCtx.createGain();
-      this.revGain3 = synthCtx.createGain();
-      this.revGain4 = synthCtx.createGain();
-      this.revGain5 = synthCtx.createGain();
-      this.revGain6 = synthCtx.createGain();
-      this.dryGain1 = synthCtx.createGain();
-      this.dryGain2 = synthCtx.createGain();
-      this.dryGain3 = synthCtx.createGain();
-      this.dryGain4 = synthCtx.createGain();
-      this.dryGain5 = synthCtx.createGain();
-      this.dryGain6 = synthCtx.createGain();
-      //instatiate convolver node for reverb
-      this.reverb = synthCtx.createConvolver();
-      //stereo VCAs
-      this.LVCA1 = synthCtx.createGain();
-      this.RVCA1 = synthCtx.createGain();
-      this.LVCA2 = synthCtx.createGain();
-      this.RVCA2 = synthCtx.createGain();
-      this.LVCA3 = synthCtx.createGain();
-      this.RVCA3 = synthCtx.createGain();
-      this.LVCA4 = synthCtx.createGain();
-      this.RVCA4 = synthCtx.createGain();
-      this.LVCA5 = synthCtx.createGain();
-      this.RVCA5 = synthCtx.createGain();
-      this.LVCA6 = synthCtx.createGain();
-      this.RVCA6 = synthCtx.createGain();
-      //stereo channel merger for output to destination
-      this.mixGain = synthCtx.createGain();
-
-      this.init();
-    }
-
-    //initalize voice properties & route nodes
-    init() {
-
-      //init ampltitudes - sawtooth-like decay (1/N)
-      this.oscGain1.gain.value = 1.0;
-      this.oscGain2.gain.value = 0.5;
-      this.oscGain3.gain.value = 0.25;
-      this.oscGain4.gain.value = 0.125;
-      this.oscGain5.gain.value = 0.0625;
-      this.oscGain6.gain.value = 0.03125;
-
-      //init distortion gain & mix - all 0 (no distortion)
-      this.preGain1.gain.value = 0;
-      this.preGain2.gain.value = 0;
-      this.preGain3.gain.value = 0;
-      this.preGain4.gain.value = 0;
-      this.preGain5.gain.value = 0;
-      this.preGain6.gain.value = 0;
-      this.distGain1.gain.value = 0;
-      this.distGain2.gain.value = 0;
-      this.distGain3.gain.value = 0;
-      this.distGain4.gain.value = 0;
-      this.distGain5.gain.value = 0;
-      this.distGain6.gain.value = 0;
-
-      this.dist1.oversample = "4x";
-      this.dist2.oversample = "4x";
-      this.dist3.oversample = "4x";
-      this.dist4.oversample = "4x";
-      this.dist5.oversample = "4x";
-      this.dist6.oversample = "4x";
-
-      this.dist1.curve = distCurve;
-      this.dist2.curve = distCurve;
-      this.dist3.curve = distCurve;
-      this.dist4.curve = distCurve;
-      this.dist5.curve = distCurve;
-      this.dist6.curve = distCurve;
-
-      //center pan for all oscillators by default
-      this.LGain1.gain.value = .45;
-      this.LGain2.gain.value = .45;
-      this.LGain3.gain.value = .45;
-      this.LGain4.gain.value = .45;
-      this.LGain5.gain.value = .45;
-      this.LGain6.gain.value = .45;
-      this.RGain1.gain.value = .45;
-      this.RGain2.gain.value = .45;
-      this.RGain3.gain.value = .45;
-      this.RGain4.gain.value = .45;
-      this.RGain5.gain.value = .45;
-      this.RGain6.gain.value = .45;
-
-      this.revGain1.gain.value = 0;
-      this.revGain2.gain.value = 0;
-      this.revGain3.gain.value = 0;
-      this.revGain4.gain.value = 0;
-      this.revGain5.gain.value = 0;
-      this.revGain6.gain.value = 0;
-
-      this.dryGain1.gain.value = 1;
-      this.dryGain2.gain.value = 1;
-      this.dryGain3.gain.value = 1;
-      this.dryGain4.gain.value = 1;
-      this.dryGain5.gain.value = 1;
-      this.dryGain6.gain.value = 1;
-
-      //final mixer node before output
-      this.mixGain.gain.value = 1;
-
-      //route oscillators -> gain nodes
-        //route gain outputs -> L/R gain nodes -> stereo VCAs
-      //route oscillators -> dist nodes -> dist gain nodes
-        //route dist gain outputs -> L/R gain nodes -> stereo VCAs
-      this.osc1.connect(this.oscGain1);
-        this.oscGain1.connect(this.LGain1).connect(this.LVCA1);
-        this.oscGain1.connect(this.RGain1).connect(this.RVCA1);
-      this.osc1.connect(this.preGain1).connect(this.dist1).connect(this.distGain1);
-        this.distGain1.connect(this.LGain1).connect(this.LVCA1);
-        this.distGain1.connect(this.RGain1).connect(this.RVCA1);
-
-      this.osc2.connect(this.oscGain2);
-        this.oscGain2.connect(this.LGain2).connect(this.LVCA2);
-        this.oscGain2.connect(this.RGain2).connect(this.RVCA2);
-      this.osc2.connect(this.preGain2).connect(this.dist2).connect(this.distGain2);
-        this.distGain2.connect(this.LGain2).connect(this.LVCA2);
-        this.distGain2.connect(this.RGain2).connect(this.RVCA2);
-
-      this.osc3.connect(this.oscGain3);
-        this.oscGain3.connect(this.LGain3).connect(this.LVCA3);
-        this.oscGain3.connect(this.RGain3).connect(this.RVCA3);
-      this.osc3.connect(this.preGain3).connect(this.dist3).connect(this.distGain3);
-        this.distGain3.connect(this.LGain3).connect(this.LVCA3);
-        this.distGain3.connect(this.RGain3).connect(this.RVCA3);
-
-      this.osc4.connect(this.oscGain4);
-        this.oscGain4.connect(this.LGain4).connect(this.LVCA4);
-        this.oscGain4.connect(this.RGain4).connect(this.RVCA4);
-      this.osc4.connect(this.preGain4).connect(this.dist4).connect(this.distGain4);
-        this.distGain4.connect(this.LGain4).connect(this.LVCA4);
-        this.distGain4.connect(this.RGain4).connect(this.RVCA4);
-
-      this.osc5.connect(this.oscGain5);
-        this.oscGain5.connect(this.LGain5).connect(this.LVCA5);
-        this.oscGain5.connect(this.RGain5).connect(this.RVCA5);
-      this.osc5.connect(this.preGain5).connect(this.dist5).connect(this.distGain5);
-        this.distGain5.connect(this.LGain5).connect(this.LVCA5);
-        this.distGain5.connect(this.RGain5).connect(this.RVCA5);
-
-      this.osc6.connect(this.oscGain6);
-        this.oscGain6.connect(this.LGain6).connect(this.LVCA6);
-        this.oscGain6.connect(this.RGain6).connect(this.RVCA6);
-      this.osc6.connect(this.preGain6).connect(this.dist6).connect(this.distGain6);
-        this.distGain6.connect(this.LGain6).connect(this.LVCA6);
-        this.distGain6.connect(this.RGain6).connect(this.RVCA6);
-
-      this.LVCA1.connect(this.chMerge1, 0, 0);
-      this.RVCA1.connect(this.chMerge1, 0, 1);
-        this.chMerge1.connect(this.revGain1).connect(this.reverb);
-        this.chMerge1.connect(this.dryGain1).connect(this.mixGain);
-      this.LVCA2.connect(this.chMerge2, 0, 0);
-      this.RVCA2.connect(this.chMerge2, 0, 1);
-        this.chMerge2.connect(this.revGain2).connect(this.reverb);
-        this.chMerge2.connect(this.dryGain2).connect(this.mixGain);
-      this.LVCA3.connect(this.chMerge3, 0, 0);
-      this.RVCA3.connect(this.chMerge3, 0, 1);
-        this.chMerge3.connect(this.revGain3).connect(this.reverb);
-        this.chMerge3.connect(this.dryGain3).connect(this.mixGain);
-      this.LVCA4.connect(this.chMerge4, 0, 0);
-      this.RVCA4.connect(this.chMerge4, 0, 1);
-        this.chMerge4.connect(this.revGain4).connect(this.reverb);
-        this.chMerge4.connect(this.dryGain4).connect(this.mixGain);
-      this.LVCA5.connect(this.chMerge5, 0, 0);
-      this.RVCA5.connect(this.chMerge5, 0, 1);
-        this.chMerge5.connect(this.revGain5).connect(this.reverb);
-        this.chMerge5.connect(this.dryGain5).connect(this.mixGain);
-      this.LVCA6.connect(this.chMerge6, 0, 0);
-      this.RVCA6.connect(this.chMerge6, 0, 1);
-        this.chMerge6.connect(this.revGain6).connect(this.reverb);
-        this.chMerge6.connect(this.dryGain6).connect(this.mixGain);
-
-      //finalize signal path - merge stereo VCAs into 2 channel output
-      //then connect merger output to destination (audio output)
-      //also connect merger output to scope for TD visualization
-      this.reverb.connect(synthCtx.destination);
-      this.mixGain.connect(synthCtx.destination);
-      this.mixGain.connect(scope);
-    }
-
-    //start oscillators
-    start() {
-      this.osc1.start();
-      this.osc2.start();
-      this.osc3.start();
-      this.osc4.start();
-      this.osc5.start();
-      this.osc6.start();
-    }
-  };
-
   //create & init voice (test)
-  let voice1 = new Voice();
+  let voice1 = new Voice(synthCtx, distCurve);
+  voice1.mixGain.connect(scope);
   voice1.start();
-
-  //define dictionaries for node selection
-  var gainNodeDict = {
-    s1: voice1.oscGain1,
-    s2: voice1.oscGain2,
-    s3: voice1.oscGain3,
-    s4: voice1.oscGain4,
-    s5: voice1.oscGain5,
-    s6: voice1.oscGain6
-  };
-
-  var oscNodeDict = {
-    s1: voice1.osc1,
-    s2: voice1.osc2,
-    s3: voice1.osc3,
-    s4: voice1.osc4,
-    s5: voice1.osc5,
-    s6: voice1.osc6
-  };
-
-  var preNodeDict = {
-    s1: voice1.preGain1,
-    s2: voice1.preGain2,
-    s3: voice1.preGain3,
-    s4: voice1.preGain4,
-    s5: voice1.preGain5,
-    s6: voice1.preGain6
-  };
-  var distNodeDict = {
-    s1: voice1.distGain1,
-    s2: voice1.distGain2,
-    s3: voice1.distGain3,
-    s4: voice1.distGain4,
-    s5: voice1.distGain5,
-    s6: voice1.distGain6
-  };
-
-  var leftGainDict = {
-    s1: voice1.LGain1,
-    s2: voice1.LGain2,
-    s3: voice1.LGain3,
-    s4: voice1.LGain4,
-    s5: voice1.LGain5,
-    s6: voice1.LGain6
-  };
-  var rightGainDict = {
-    s1: voice1.RGain1,
-    s2: voice1.RGain2,
-    s3: voice1.RGain3,
-    s4: voice1.RGain4,
-    s5: voice1.RGain5,
-    s6: voice1.RGain6
-  };
-
-  var revGainDict = {
-    s1: voice1.revGain1,
-    s2: voice1.revGain2,
-    s3: voice1.revGain3,
-    s4: voice1.revGain4,
-    s5: voice1.revGain5,
-    s6: voice1.revGain6
-  };
-
-  var dryGainDict = {
-    s1: voice1.dryGain1,
-    s2: voice1.dryGain2,
-    s3: voice1.dryGain3,
-    s4: voice1.dryGain4,
-    s5: voice1.dryGain5,
-    s6: voice1.dryGain6
-  };
 
   //calculate reverb impulse response & assign to convolver node buffer
   calcIR();
@@ -504,30 +110,30 @@ $(document).ready(function() {
   $(".pSlider").on("input", function() {
     let $this = $(this);
     if ($this.hasClass("oscSlider")) {
-      sliderVals["oscButton"][$this.attr("id")] = $this.val(); //save value
-      var currentGain = gainNodeDict[$this.attr("id")];       //get gain node
+      voice1.sliderVals["oscButton"][$this.attr("id")] = $this.val(); //save value
+      var currentGain = voice1.gainNodeDict[$this.attr("id")];       //get gain node
       currentGain.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);              //set gain
     } else if ($this.hasClass("ratSlider")) {
-      sliderVals["ratButton"][$this.attr("id")] = $this.val();
+      voice1.sliderVals["ratButton"][$this.attr("id")] = $this.val();
       changeFreqs(voice1.fundamental);
     } else if ($this.hasClass("ofxSlider")) {
-      sliderVals["ofxButton"][$this.attr("id")] = $this.val();
-      var currentDist = distNodeDict[$this.attr("id")];
-      var currentPre = preNodeDict[$this.attr("id")];
+      voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
+      var currentDist = voice1.distNodeDict[$this.attr("id")];
+      var currentPre = voice1.preNodeDict[$this.attr("id")];
       currentPre.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
       currentDist.gain.setTargetAtTime(.9*($this.val()/256), synthCtx.currentTime, .005);
     } else if ($this.hasClass("panSlider")) {
-      sliderVals["panButton"][$this.attr("id")] = $this.val();
-      var currentLeft = leftGainDict[$this.attr("id")];
-      var currentRight = rightGainDict[$this.attr("id")];
+      voice1.sliderVals["panButton"][$this.attr("id")] = $this.val();
+      var currentLeft = voice1.leftGainDict[$this.attr("id")];
+      var currentRight = voice1.rightGainDict[$this.attr("id")];
       currentRight.gain.setTargetAtTime((.75*((255 - $this.val())/255)), synthCtx.currentTime, .005);
       currentLeft.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);
     } else if ($this.hasClass("ampSlider")) {
-      sliderVals["ampButton"][$this.attr("id")] = $this.val();
+      voice1.sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("revSlider")) {
-      sliderVals["revButton"][$this.attr("id")] = $this.val();
-      var currentRevGain = revGainDict[$this.attr("id")];
-      var currentDryGain = dryGainDict[$this.attr("id")];
+      voice1.sliderVals["revButton"][$this.attr("id")] = $this.val();
+      var currentRevGain = voice1.revGainDict[$this.attr("id")];
+      var currentDryGain = voice1.dryGainDict[$this.attr("id")];
       currentDryGain.gain.setTargetAtTime(((255 - $this.val())/255.0), synthCtx.currentTime, .005);
       currentRevGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     }
@@ -539,12 +145,12 @@ $(document).ready(function() {
     displayCanvCtx.fillStyle = colorsDict[newPage];
     $pageTitle.html(titleDict[newPage]);
     $pageTitle.css("color", colorsDict[newPage]);
-    $sliderDict["s1"].val(sliderVals[newPage]["s1"]);
-    $sliderDict["s2"].val(sliderVals[newPage]["s2"]);
-    $sliderDict["s3"].val(sliderVals[newPage]["s3"]);
-    $sliderDict["s4"].val(sliderVals[newPage]["s4"]);
-    $sliderDict["s5"].val(sliderVals[newPage]["s5"]);
-    $sliderDict["s6"].val(sliderVals[newPage]["s6"]);
+    $sliderDict["s1"].val(voice1.sliderVals[newPage]["s1"]);
+    $sliderDict["s2"].val(voice1.sliderVals[newPage]["s2"]);
+    $sliderDict["s3"].val(voice1.sliderVals[newPage]["s3"]);
+    $sliderDict["s4"].val(voice1.sliderVals[newPage]["s4"]);
+    $sliderDict["s5"].val(voice1.sliderVals[newPage]["s5"]);
+    $sliderDict["s6"].val(voice1.sliderVals[newPage]["s6"]);
   }
 
   //draw info & scope displays at ~60fps
@@ -558,28 +164,28 @@ $(document).ready(function() {
       displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight); //clear canvas
 
       if (activeUI == "info") { //draw info
-        let p1 = sliderVals[activePage]["s1"];
-        let p2 = sliderVals[activePage]["s2"];
-        let p3 = sliderVals[activePage]["s3"];
-        let p4 = sliderVals[activePage]["s4"];
-        let p5 = sliderVals[activePage]["s5"];
-        let p6 = sliderVals[activePage]["s6"];
+        let p1 = voice1.sliderVals[activePage]["s1"];
+        let p2 = voice1.sliderVals[activePage]["s2"];
+        let p3 = voice1.sliderVals[activePage]["s3"];
+        let p4 = voice1.sliderVals[activePage]["s4"];
+        let p5 = voice1.sliderVals[activePage]["s5"];
+        let p6 = voice1.sliderVals[activePage]["s6"];
         //draw oscillator & shape mix values
         if (activePage == "oscButton" || activePage == "ofxButton") {
-          displayCanvCtx.strokeText((p1/255.0).toFixed(2), 55, 55);
-          displayCanvCtx.strokeText((p2/255.0).toFixed(2), 150, 55);
-          displayCanvCtx.strokeText((p3/255.0).toFixed(2), 245, 55);
-          displayCanvCtx.strokeText((p4/255.0).toFixed(2), 55, 120);
-          displayCanvCtx.strokeText((p5/255.0).toFixed(2), 150, 120);
-          displayCanvCtx.strokeText((p6/255.0).toFixed(2), 245, 120);
+          displayCanvCtx.strokeText(Math.trunc(100*(p1/255.0)) + "%", 55, 55);
+          displayCanvCtx.strokeText(Math.trunc(100*(p2/255.0)) + "%", 150, 55);
+          displayCanvCtx.strokeText(Math.trunc(100*(p3/255.0)) + "%", 245, 55);
+          displayCanvCtx.strokeText(Math.trunc(100*(p4/255.0)) + "%", 55, 120);
+          displayCanvCtx.strokeText(Math.trunc(100*(p5/255.0)) + "%", 150, 120);
+          displayCanvCtx.strokeText(Math.trunc(100*(p6/255.0)) + "%", 245, 120);
         //draw ratio values
         } else if (activePage == "ratButton") {
-          displayCanvCtx.strokeText((ratioDict[p1 >>> 2]).toFixed(2), 55, 55);
-          displayCanvCtx.strokeText((ratioDict[p2 >>> 2]).toFixed(2), 150, 55);
-          displayCanvCtx.strokeText((ratioDict[p3 >>> 2]).toFixed(2), 245, 55);
-          displayCanvCtx.strokeText((ratioDict[p4 >>> 2]).toFixed(2), 55, 120);
-          displayCanvCtx.strokeText((ratioDict[p5 >>> 2]).toFixed(2), 150, 120);
-          displayCanvCtx.strokeText((ratioDict[p6 >>> 2]).toFixed(2), 245, 120);
+          displayCanvCtx.strokeText((voice1.ratioDict[p1 >>> 2]).toFixed(2), 55, 55);
+          displayCanvCtx.strokeText((voice1.ratioDict[p2 >>> 2]).toFixed(2), 150, 55);
+          displayCanvCtx.strokeText((voice1.ratioDict[p3 >>> 2]).toFixed(2), 245, 55);
+          displayCanvCtx.strokeText((voice1.ratioDict[p4 >>> 2]).toFixed(2), 55, 120);
+          displayCanvCtx.strokeText((voice1.ratioDict[p5 >>> 2]).toFixed(2), 150, 120);
+          displayCanvCtx.strokeText((voice1.ratioDict[p6 >>> 2]).toFixed(2), 245, 120);
         }
       } else if (activeUI == "wave") { //draw scope
         displayCanvCtx.beginPath();
@@ -674,23 +280,23 @@ $(document).ready(function() {
   //recalculate all frequencies on note change event
   function changeFreqs(newFund) {
     voice1.fundamental = newFund;
-    let r1 = ratioDict[sliderVals["ratButton"]["s1"] >>> 2];
-    let r2 = ratioDict[sliderVals["ratButton"]["s2"] >>> 2];
-    let r3 = ratioDict[sliderVals["ratButton"]["s3"] >>> 2];
-    let r4 = ratioDict[sliderVals["ratButton"]["s4"] >>> 2];
-    let r5 = ratioDict[sliderVals["ratButton"]["s5"] >>> 2];
-    let r6 = ratioDict[sliderVals["ratButton"]["s6"] >>> 2];
-    oscNodeDict["s1"].frequency.setTargetAtTime
+    let r1 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2];
+    let r2 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2];
+    let r3 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2];
+    let r4 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2];
+    let r5 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2];
+    let r6 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2];
+    voice1.oscNodeDict["s1"].frequency.setTargetAtTime
     (newFund*r1, synthCtx.currentTime, .00005);
-    oscNodeDict["s2"].frequency.setTargetAtTime
+    voice1.oscNodeDict["s2"].frequency.setTargetAtTime
     (newFund*r2, synthCtx.currentTime, .00005);
-    oscNodeDict["s3"].frequency.setTargetAtTime
+    voice1.oscNodeDict["s3"].frequency.setTargetAtTime
     (newFund*r3, synthCtx.currentTime, .00005);
-    oscNodeDict["s4"].frequency.setTargetAtTime
+    voice1.oscNodeDict["s4"].frequency.setTargetAtTime
     (newFund*r4, synthCtx.currentTime, .00005);
-    oscNodeDict["s5"].frequency.setTargetAtTime
+    voice1.oscNodeDict["s5"].frequency.setTargetAtTime
     (newFund*r5, synthCtx.currentTime, .00005);
-    oscNodeDict["s6"].frequency.setTargetAtTime
+    voice1.oscNodeDict["s6"].frequency.setTargetAtTime
     (newFund*r6, synthCtx.currentTime, .00005);
   }
 });
