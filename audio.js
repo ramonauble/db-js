@@ -127,8 +127,8 @@ $(document).ready(function() {
       voice1.sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentLeft = voice1.leftGainDict[$this.attr("id")];
       var currentRight = voice1.rightGainDict[$this.attr("id")];
-      currentRight.gain.setTargetAtTime((.75*((255 - $this.val())/255)), synthCtx.currentTime, .005);
-      currentLeft.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);
+      currentLeft.gain.setTargetAtTime((.75*((255 - $this.val())/255)), synthCtx.currentTime, .005);
+      currentRight.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);
     } else if ($this.hasClass("ampSlider")) {
       voice1.sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("revSlider")) {
@@ -187,6 +187,21 @@ $(document).ready(function() {
           displayCanvCtx.strokeText((voice1.ratioDict[p4 >>> 2]).toFixed(2), 55, 120);
           displayCanvCtx.strokeText((voice1.ratioDict[p5 >>> 2]).toFixed(2), 150, 120);
           displayCanvCtx.strokeText((voice1.ratioDict[p6 >>> 2]).toFixed(2), 245, 120);
+        //draw panning position display
+        } else if (activePage == "panButton") {
+          displayCanvCtx.beginPath();
+            displayCanvCtx.moveTo(25, 45); displayCanvCtx.lineTo(85, 45); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(120, 45); displayCanvCtx.lineTo(180, 45); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(215, 45); displayCanvCtx.lineTo(275, 45); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(25, 110); displayCanvCtx.lineTo(85, 110); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(120, 110); displayCanvCtx.lineTo(180, 110); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(215, 110); displayCanvCtx.lineTo(275, 110); displayCanvCtx.stroke();
+            displayCanvCtx.strokeText("•", 25 + 60*(voice1.sliderVals["panButton"]["s1"]/255.0), 53.45);
+            displayCanvCtx.strokeText("•", 120 + 60*(voice1.sliderVals["panButton"]["s2"]/255.0), 53.45);
+            displayCanvCtx.strokeText("•", 215 + 60*(voice1.sliderVals["panButton"]["s3"]/255.0), 53.45);
+            displayCanvCtx.strokeText("•", 25 + 60*(voice1.sliderVals["panButton"]["s4"]/255.0), 118.45);
+            displayCanvCtx.strokeText("•", 120 + 60*(voice1.sliderVals["panButton"]["s5"]/255.0), 118.45);
+            displayCanvCtx.strokeText("•", 215 + 60*(voice1.sliderVals["panButton"]["s6"]/255.0), 118.45);
         }
       } else if (activeUI == "wave") { //draw scope
         displayCanvCtx.beginPath();
