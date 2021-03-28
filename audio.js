@@ -173,6 +173,7 @@ $(document).ready(function() {
         let p6 = voice1.sliderVals[activePage]["s6"];
         //draw oscillator & shape mix values
         if (activePage == "oscButton" || activePage == "ofxButton") {
+          displayCanvCtx.lineWidth = 3;
           displayCanvCtx.strokeText(Math.trunc(100*(p1/255.0)) + "%", 55, 55);
           displayCanvCtx.strokeText(Math.trunc(100*(p2/255.0)) + "%", 150, 55);
           displayCanvCtx.strokeText(Math.trunc(100*(p3/255.0)) + "%", 245, 55);
@@ -181,6 +182,7 @@ $(document).ready(function() {
           displayCanvCtx.strokeText(Math.trunc(100*(p6/255.0)) + "%", 245, 120);
         //draw ratio values
         } else if (activePage == "ratButton") {
+          displayCanvCtx.lineWidth = 3;
           displayCanvCtx.strokeText((voice1.ratioDict[p1 >>> 2]).toFixed(2), 55, 55);
           displayCanvCtx.strokeText((voice1.ratioDict[p2 >>> 2]).toFixed(2), 150, 55);
           displayCanvCtx.strokeText((voice1.ratioDict[p3 >>> 2]).toFixed(2), 245, 55);
@@ -189,21 +191,38 @@ $(document).ready(function() {
           displayCanvCtx.strokeText((voice1.ratioDict[p6 >>> 2]).toFixed(2), 245, 120);
         //draw panning position display
         } else if (activePage == "panButton") {
+          displayCanvCtx.lineWidth = 4;
           displayCanvCtx.beginPath();
+            //draw horizontal lines
             displayCanvCtx.moveTo(25, 45); displayCanvCtx.lineTo(85, 45); displayCanvCtx.stroke();
             displayCanvCtx.moveTo(120, 45); displayCanvCtx.lineTo(180, 45); displayCanvCtx.stroke();
             displayCanvCtx.moveTo(215, 45); displayCanvCtx.lineTo(275, 45); displayCanvCtx.stroke();
             displayCanvCtx.moveTo(25, 110); displayCanvCtx.lineTo(85, 110); displayCanvCtx.stroke();
             displayCanvCtx.moveTo(120, 110); displayCanvCtx.lineTo(180, 110); displayCanvCtx.stroke();
             displayCanvCtx.moveTo(215, 110); displayCanvCtx.lineTo(275, 110); displayCanvCtx.stroke();
-            displayCanvCtx.strokeText("•", 25 + 60*(voice1.sliderVals["panButton"]["s1"]/255.0), 53.45);
-            displayCanvCtx.strokeText("•", 120 + 60*(voice1.sliderVals["panButton"]["s2"]/255.0), 53.45);
-            displayCanvCtx.strokeText("•", 215 + 60*(voice1.sliderVals["panButton"]["s3"]/255.0), 53.45);
-            displayCanvCtx.strokeText("•", 25 + 60*(voice1.sliderVals["panButton"]["s4"]/255.0), 118.45);
-            displayCanvCtx.strokeText("•", 120 + 60*(voice1.sliderVals["panButton"]["s5"]/255.0), 118.45);
-            displayCanvCtx.strokeText("•", 215 + 60*(voice1.sliderVals["panButton"]["s6"]/255.0), 118.45);
+            //draw vertical lines at center
+            displayCanvCtx.lineWidth = 2.5;
+            displayCanvCtx.moveTo(55, 35); displayCanvCtx.lineTo(55, 55); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(150, 35); displayCanvCtx.lineTo(150, 55); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(245, 35); displayCanvCtx.lineTo(245, 55); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(55, 100); displayCanvCtx.lineTo(55, 120); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(150, 100); displayCanvCtx.lineTo(150, 120); displayCanvCtx.stroke();
+            displayCanvCtx.moveTo(245, 100); displayCanvCtx.lineTo(245, 120); displayCanvCtx.stroke();
+            //draw characters to display active pan locations
+            displayCanvCtx.lineWidth = 4;
+            displayCanvCtx.fillStyle = "#000000";
+            displayCanvCtx.font = "36px monospace"
+            displayCanvCtx.fillText("•", 25 + 60*(p1/255.0), 55);
+            displayCanvCtx.fillText("•", 120 + 60*(p2/255.0), 55);
+            displayCanvCtx.fillText("•", 215 + 60*(p3/255.0), 55);
+            displayCanvCtx.fillText("•", 25 + 60*(p4/255.0), 120.5);
+            displayCanvCtx.fillText("•", 120 + 60*(p5/255.0), 120.5);
+            displayCanvCtx.fillText("•", 215 + 60*(p6/255.0), 120.5);
+            displayCanvCtx.font = "30px monospace"
+            displayCanvCtx.fillStyle = colorsDict["panButton"];
         }
       } else if (activeUI == "wave") { //draw scope
+        displayCanvCtx.lineWidth = 4;
         displayCanvCtx.beginPath();
         for (let n = 0; n < binLength; n++) {
           let m = tDomainWave[n] / 255.0; //normalize to [0, 1)
