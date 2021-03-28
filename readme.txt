@@ -69,7 +69,7 @@ the PAN page allows each partial to be panned to a specific region of the stereo
 prior to being mixed down & attenuated.
 the exact L/R placement of each partial is controlled by the corresponding drawbar.
 default position is center (equal panning) for all partials.
-top position is fully left, bottom position is fully right.
+top position is fully right, bottom position is fully left.
 
 AMP
 ----------------------------------------------------
