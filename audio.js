@@ -22,7 +22,8 @@ $(document).ready(function() {
   var scope = synthCtx.createAnalyser();
   scope.fftSize = 512;
 
-  //configure variables for drawing time domain waveform
+  //configure variables for drawing canvas
+  const pi = Math.PI;
   var binLength = scope.frequencyBinCount; //fftSize/2 == 256
   var tDomainWave = new Uint8Array(binLength); //256 unsigned bytes
   var binWidth = (displayCanvWidth * 1.0) / binLength; //width of each "pixel"
@@ -191,35 +192,51 @@ $(document).ready(function() {
           displayCanvCtx.strokeText((voice1.ratioDict[p6 >>> 2]).toFixed(2), 245, 120);
         //draw panning position display
         } else if (activePage == "panButton") {
+          //draw horizontal lines
           displayCanvCtx.lineWidth = 4;
           displayCanvCtx.beginPath();
-            //draw horizontal lines
-            displayCanvCtx.moveTo(25, 45); displayCanvCtx.lineTo(85, 45); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(120, 45); displayCanvCtx.lineTo(180, 45); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(215, 45); displayCanvCtx.lineTo(275, 45); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(25, 110); displayCanvCtx.lineTo(85, 110); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(120, 110); displayCanvCtx.lineTo(180, 110); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(215, 110); displayCanvCtx.lineTo(275, 110); displayCanvCtx.stroke();
-            //draw vertical lines at center
-            displayCanvCtx.lineWidth = 2.5;
-            displayCanvCtx.moveTo(55, 35); displayCanvCtx.lineTo(55, 55); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(150, 35); displayCanvCtx.lineTo(150, 55); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(245, 35); displayCanvCtx.lineTo(245, 55); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(55, 100); displayCanvCtx.lineTo(55, 120); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(150, 100); displayCanvCtx.lineTo(150, 120); displayCanvCtx.stroke();
-            displayCanvCtx.moveTo(245, 100); displayCanvCtx.lineTo(245, 120); displayCanvCtx.stroke();
-            //draw characters to display active pan locations
-            displayCanvCtx.lineWidth = 4;
-            displayCanvCtx.fillStyle = "#000000";
-            displayCanvCtx.font = "36px monospace"
-            displayCanvCtx.fillText("•", 25 + 60*(p1/255.0), 55);
-            displayCanvCtx.fillText("•", 120 + 60*(p2/255.0), 55);
-            displayCanvCtx.fillText("•", 215 + 60*(p3/255.0), 55);
-            displayCanvCtx.fillText("•", 25 + 60*(p4/255.0), 120.5);
-            displayCanvCtx.fillText("•", 120 + 60*(p5/255.0), 120.5);
-            displayCanvCtx.fillText("•", 215 + 60*(p6/255.0), 120.5);
-            displayCanvCtx.font = "30px monospace"
-            displayCanvCtx.fillStyle = colorsDict["panButton"];
+          displayCanvCtx.strokeStyle = "#000000"
+          displayCanvCtx.moveTo(25, 45); displayCanvCtx.lineTo(85, 45); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(120, 45); displayCanvCtx.lineTo(180, 45); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(215, 45); displayCanvCtx.lineTo(275, 45); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(25, 110); displayCanvCtx.lineTo(85, 110); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(120, 110); displayCanvCtx.lineTo(180, 110); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(215, 110); displayCanvCtx.lineTo(275, 110); displayCanvCtx.stroke();
+          //draw vertical lines at center
+          displayCanvCtx.lineWidth = 3;
+          displayCanvCtx.beginPath();
+          displayCanvCtx.strokeStyle = "#FFFFFF"
+          displayCanvCtx.moveTo(55, 34); displayCanvCtx.lineTo(55, 56); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(150, 34); displayCanvCtx.lineTo(150, 56); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(245, 34); displayCanvCtx.lineTo(245, 56); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(55, 99); displayCanvCtx.lineTo(55, 121); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(150, 99); displayCanvCtx.lineTo(150, 121); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(245, 99); displayCanvCtx.lineTo(245, 121); displayCanvCtx.stroke();
+          //draw characters to display active pan locations
+          displayCanvCtx.fillStyle = "#FFFFFF";
+          displayCanvCtx.font = "40px monospace"
+          displayCanvCtx.fillText("•", 25 + 60*(p1/255.0), 55.5);
+          displayCanvCtx.fillText("•", 120 + 60*(p2/255.0), 55.5);
+          displayCanvCtx.fillText("•", 215 + 60*(p3/255.0), 55.5);
+          displayCanvCtx.fillText("•", 25 + 60*(p4/255.0), 120.5);
+          displayCanvCtx.fillText("•", 120 + 60*(p5/255.0), 120.5);
+          displayCanvCtx.fillText("•", 215 + 60*(p6/255.0), 120.5);
+          displayCanvCtx.font = "30px monospace"
+          displayCanvCtx.fillStyle = colorsDict["panButton"];
+        } else if (activePage == "revButton") {
+          displayCanvCtx.lineWidth = 3;
+          displayCanvCtx.beginPath();
+          displayCanvCtx.fillStyle = "#FFFFFF";
+          displayCanvCtx.arc(55, 45, (25*(p1/255.0) + 3), 0, 2*pi);
+          displayCanvCtx.arc(150, 45, (25*(p2/255.0) + 3), 0, 2*pi);
+          displayCanvCtx.arc(245, 45, (25*(p3/255.0) + 3), 0, 2*pi);
+          displayCanvCtx.fill();
+          displayCanvCtx.beginPath();
+          displayCanvCtx.arc(55, 110, (25*(p4/255.0) + 3), 0, 2*pi);
+          displayCanvCtx.arc(150, 110, (25*(p5/255.0) + 3), 0, 2*pi);
+          displayCanvCtx.arc(245, 110, (25*(p6/255.0) + 3), 0, 2*pi);
+          displayCanvCtx.fill();
+          displayCanvCtx.fillStyle = colorsDict["revButton"];
         }
       } else if (activeUI == "wave") { //draw scope
         displayCanvCtx.lineWidth = 4;
