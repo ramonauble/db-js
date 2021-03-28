@@ -6,6 +6,17 @@ $(document).ready(function() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
   const distCurve = makeCurve(20); //generate distortion curve
+  //create voice
+  let voice1 = new Voice(synthCtx, distCurve);
+  //instantiate analyser node (for oscilloscope display)
+  var scope = synthCtx.createAnalyser();
+  scope.fftSize = 512;
+  //calculate reverb impulse response & assign to convolver node buffer
+  calcIR();
+  //init voice
+  voice1.mixGain.connect(scope);
+  voice1.reverb.connect(scope);
+  voice1.start();
 
   //reference canvas & get/configure context for drawing
   const $displayCanv = $("#displayCanv");
@@ -17,10 +28,6 @@ $(document).ready(function() {
   displayCanvCtx.strokeStyle = "#FFFFFF";
   displayCanvCtx.font = "30px monospace";
   displayCanvCtx.textAlign = "center";
-
-  //instantiate analyser node (for oscilloscope display)
-  var scope = synthCtx.createAnalyser();
-  scope.fftSize = 512;
 
   //configure variables for drawing canvas
   const pi = Math.PI;
@@ -90,14 +97,6 @@ $(document).ready(function() {
   //init active display page to info page
   var activeUI = "wave";
 
-  //create & init voice (test)
-  let voice1 = new Voice(synthCtx, distCurve);
-  voice1.mixGain.connect(scope);
-  voice1.reverb.connect(scope);
-  voice1.start();
-
-  //calculate reverb impulse response & assign to convolver node buffer
-  calcIR();
   //init oscillator frequencies
   changeFreqs(voice1.fundamental);
   //init sliders
@@ -136,7 +135,7 @@ $(document).ready(function() {
       voice1.sliderVals["revButton"][$this.attr("id")] = $this.val();
       var currentRevGain = voice1.revGainDict[$this.attr("id")];
       var currentDryGain = voice1.dryGainDict[$this.attr("id")];
-      currentDryGain.gain.setTargetAtTime(((255 - $this.val())/255.0), synthCtx.currentTime, .005);
+      currentDryGain.gain.setTargetAtTime(((255 - ($this.val()/2.0))/255.0), synthCtx.currentTime, .005);
       currentRevGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     }
   });
@@ -205,13 +204,13 @@ $(document).ready(function() {
           //draw vertical lines at center
           displayCanvCtx.lineWidth = 3;
           displayCanvCtx.beginPath();
-          displayCanvCtx.strokeStyle = "#FFFFFF"
-          displayCanvCtx.moveTo(55, 34); displayCanvCtx.lineTo(55, 56); displayCanvCtx.stroke();
-          displayCanvCtx.moveTo(150, 34); displayCanvCtx.lineTo(150, 56); displayCanvCtx.stroke();
-          displayCanvCtx.moveTo(245, 34); displayCanvCtx.lineTo(245, 56); displayCanvCtx.stroke();
-          displayCanvCtx.moveTo(55, 99); displayCanvCtx.lineTo(55, 121); displayCanvCtx.stroke();
-          displayCanvCtx.moveTo(150, 99); displayCanvCtx.lineTo(150, 121); displayCanvCtx.stroke();
-          displayCanvCtx.moveTo(245, 99); displayCanvCtx.lineTo(245, 121); displayCanvCtx.stroke();
+          displayCanvCtx.strokeStyle = "#d5f5dc"
+          displayCanvCtx.moveTo(55, 36.5); displayCanvCtx.lineTo(55, 53.5); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(150, 36.5); displayCanvCtx.lineTo(150, 53.5); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(245, 36.5); displayCanvCtx.lineTo(245, 53.5); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(55, 101.5); displayCanvCtx.lineTo(55, 118.5); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(150, 101.5); displayCanvCtx.lineTo(150, 118.5); displayCanvCtx.stroke();
+          displayCanvCtx.moveTo(245, 101.5); displayCanvCtx.lineTo(245, 118.5); displayCanvCtx.stroke();
           //draw characters to display active pan locations
           displayCanvCtx.fillStyle = "#FFFFFF";
           displayCanvCtx.font = "40px monospace"
@@ -223,6 +222,7 @@ $(document).ready(function() {
           displayCanvCtx.fillText("•", 215 + 60*(p6/255.0), 120.5);
           displayCanvCtx.font = "30px monospace"
           displayCanvCtx.fillStyle = colorsDict["panButton"];
+          displayCanvCtx.strokeStyle = "#FFFFFF"
         } else if (activePage == "revButton") {
           displayCanvCtx.lineWidth = 3;
           displayCanvCtx.beginPath();
@@ -281,7 +281,7 @@ $(document).ready(function() {
   }
 
   async function calcIR() {
-    let wavFile = await fetch("./wavData/1stbap_impulse_response.wav");
+    let wavFile = await fetch("./wavData/ir4.wav");
     let wavBuffer = await wavFile.arrayBuffer();
     voice1.reverb.buffer = await synthCtx.decodeAudioData(wavBuffer);
   }
