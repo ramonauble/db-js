@@ -8,6 +8,8 @@ class Voice {
     //create node dictionaries
     //call init
   constructor(synthCtx, distCurve) {
+    //instatiate convolver node for reverb
+    this.reverb = synthCtx.createConvolver();
     //instantiate oscillator nodes
     this.osc1 = synthCtx.createOscillator();
     this.osc2 = synthCtx.createOscillator();
@@ -76,8 +78,6 @@ class Voice {
     this.dryGain4 = synthCtx.createGain();
     this.dryGain5 = synthCtx.createGain();
     this.dryGain6 = synthCtx.createGain();
-    //instatiate convolver node for reverb
-    this.reverb = synthCtx.createConvolver();
     //instantiate stereo VCAs (2 per partial)
     this.LVCA1 = synthCtx.createGain();
     this.RVCA1 = synthCtx.createGain();
