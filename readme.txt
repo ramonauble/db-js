@@ -16,6 +16,17 @@ to play chromatically, the keys are mapped as follows:
 > to shift 1 octave up, press and hold SHIFT & press R ARROW
   • present range of -/+ 2 octaves from default position
 
+> by default, the "wave" page is selected, which displays an
+oscilloscope-like representation of the time domain waveform
+from the full mix (taken just prior to the outputs)
+  • selecting the wave button while the wave page is already active
+  will toggle between an oscilloscope display (x = time, y = amplitude)
+  and an x/y lissajous-style display (x = L amplitude, y = R amplitude)
+> there is also an "info" page, which displays parameter information
+(both numerical and graphical) in lieu of the waveform display
+  • pages 1 (oscillator mix), 2 (ratio) & 3 (waveshaper mix) are numerical
+  • pages 4 (L/R panning), 5 (amplitude envelope) & 6 (reverb) are graphical
+
 
 STRUCTURE
 ----------------------------------------------------------------------------
@@ -110,7 +121,7 @@ currently implemented:
     > using impulse response from Nashville First Baptist Church
     > (†) Adam Townsell (www.openairlib.net)
   • keyboard note change
-  • oscilloscope display
+  • oscilloscope & lissajous display
   • parameter value displays
     > OSC, RAT & OFX pages (numerical)
     > PAN & REV pages (visual)
