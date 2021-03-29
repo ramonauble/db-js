@@ -9,20 +9,27 @@ $(document).ready(function() {
   //create voice
   let voice1 = new Voice(synthCtx, distCurve);
   //instantiate analyser node (for oscilloscope display)
-  var scope = synthCtx.createAnalyser();
-  scope.fftSize = 512;
+  var scopeX = synthCtx.createAnalyser();
+  var scopeY = synthCtx.createAnalyser();
+  var scopeW = synthCtx.createAnalyser();
+  var scopeSplitter = synthCtx.createChannelSplitter();
+  scopeX.fftSize = 512;
+  scopeY.fftSize = 512;
+  scopeW.fftSize = 512;
   //calculate reverb impulse response & assign to convolver node buffer
   calcIR();
   //init voice
-  voice1.mixGain.connect(scope);
-  voice1.reverb.connect(scope);
+  voice1.mixGain.connect(scopeW); //oscilloscope analyzer
+  voice1.mixGain.connect(scopeSplitter); //lissajous analyzer
+  scopeSplitter.connect(scopeX, 0);
+  scopeSplitter.connect(scopeY, 1);
   voice1.start();
 
   //reference canvas & get/configure context for drawing
   const $displayCanv = $("#displayCanv");
   const displayCanvCtx = $displayCanv[0].getContext("2d");
-  const displayCanvWidth = displayCanv.width;
-  const displayCanvHeight = displayCanv.height;
+  const dCanvW = displayCanv.width;
+  const dCanvH = displayCanv.height;
   displayCanvCtx.fillStyle = "#5D2E7B";
   displayCanvCtx.lineWidth = 3;
   displayCanvCtx.strokeStyle = "#FFFFFF";
@@ -31,10 +38,11 @@ $(document).ready(function() {
 
   //configure variables for drawing canvas
   const pi = Math.PI;
-  var binLength = scope.frequencyBinCount; //fftSize/2 == 256
-  var tDomainWave = new Uint8Array(binLength); //256 unsigned bytes
-  var binWidth = (displayCanvWidth * 1.0) / binLength; //width of each "pixel"
-  var x = 0; //init vertical position
+  var binLength = scopeX.frequencyBinCount; //fftSize/2 == 256
+  var tdWaveX = new Float32Array(binLength); //256 floats [-1, 1]
+  var tdWaveY = new Float32Array(binLength); //256 floats [-1, 1]
+  var tdWaveW = new Float32Array(binLength); //256 floats [-1, 1]
+  var binWidth = (dCanvW * 1.0) / binLength; //width of each "pixel"
 
   //reference to page title DOM object
   var $pageTitle = $("#pageTitle");
@@ -135,7 +143,7 @@ $(document).ready(function() {
       voice1.sliderVals["revButton"][$this.attr("id")] = $this.val();
       var currentRevGain = voice1.revGainDict[$this.attr("id")];
       var currentDryGain = voice1.dryGainDict[$this.attr("id")];
-      currentDryGain.gain.setTargetAtTime(((255 - ($this.val()/2.0))/255.0), synthCtx.currentTime, .005);
+      currentDryGain.gain.setTargetAtTime(((255 - ($this.val()))/255.0), synthCtx.currentTime, .005);
       currentRevGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     }
   });
@@ -161,8 +169,7 @@ $(document).ready(function() {
   function drawCanvas(timestamp) {
     if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
       lastUpdate = timestamp; //record latest update time
-      scope.getByteTimeDomainData(tDomainWave); //grab TD waveform snapshot
-      displayCanvCtx.fillRect(0, 0, displayCanvWidth, displayCanvHeight); //clear canvas
+      displayCanvCtx.fillRect(0, 0, dCanvW, dCanvH); //clear canvas
 
       if (activeUI == "info") { //draw info
         let p1 = voice1.sliderVals[activePage]["s1"];
@@ -239,20 +246,35 @@ $(document).ready(function() {
           displayCanvCtx.fillStyle = colorsDict["revButton"];
         }
       } else if (activeUI == "wave") { //draw scope
+        scopeW.getFloatTimeDomainData(tdWaveW);
+        displayCanvCtx.lineWidth = 4;
+        displayCanvCtx.beginPath();
+        let xW = 0; //horizontal accumulator
+        for (let n = 0; n < binLength; n++) {
+          let yW = (dCanvH/2) - tdWaveW[n]*(dCanvH/2);
+          if (n == 0) {
+            displayCanvCtx.moveTo(xW, yW);
+          } else {
+            displayCanvCtx.lineTo(xW, yW);
+          }
+          xW += binWidth;
+        }
+        displayCanvCtx.stroke();
+      } else if (activeUI == "liss") { //draw lissajous curve
+        scopeX.getFloatTimeDomainData(tdWaveX); //grab TD waveforms for X/Y
+        scopeY.getFloatTimeDomainData(tdWaveY);
         displayCanvCtx.lineWidth = 4;
         displayCanvCtx.beginPath();
         for (let n = 0; n < binLength; n++) {
-          let m = tDomainWave[n] / 255.0; //normalize to [0, 1)
-          let y = m * (displayCanvHeight); //vert pos
+          let x = (dCanvW/2) + tdWaveX[n]*(dCanvW/2);
+          let y = (dCanvH/2) - tdWaveY[n]*(dCanvH/2);
           if (n == 0) {
-            displayCanvCtx.moveTo(x, y); //init pos (0, y)
+            displayCanvCtx.moveTo(x, y);
           } else {
-            displayCanvCtx.lineTo(x, y); //draw next segment
+            displayCanvCtx.lineTo(x, y);
           }
-          x += binWidth; //increment x by displayCanvWidth/binCount ~1.17px
         }
         displayCanvCtx.stroke();
-        x = 0;
       }
     }
     window.requestAnimationFrame(drawCanvas);
@@ -265,7 +287,11 @@ $(document).ready(function() {
     if ($this.attr("id") == "infoButton") {
       activeUI = "info";
     } else if ($this.attr("id") == "waveButton") {
-      activeUI = "wave";
+      if (activeUI == "wave") {
+        activeUI = "liss";
+      } else if (activeUI == "liss" || activeUI == "info") {
+        activeUI = "wave";
+      }
     }
   });
 
