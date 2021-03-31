@@ -7,15 +7,15 @@ it is designed to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
 
 to play chromatically, the keys are mapped as follows:
-    W   E       T   Y   U
-  A   S   D   F   G   H   J   K
-  -----------------------------
-    C#  D#      F#  G#  A#
-  C   D   E   F   G   A   B   C
+ *  W E   T Y U
+ * A S D F G H J K
 
-  * to shift 1 octave down, press and hold SHIFT & press L ARROW
-  * to shift 1 octave up, press and hold SHIFT & press R ARROW
-   * present range of -/+ 2 octaves from default position
+ *  C# D#   F# G# A#
+ * C  D  E F  G  A  B C
+
+ * to shift 1 octave down, press and hold SHIFT & press L ARROW
+ * to shift 1 octave up, press and hold SHIFT & press R ARROW
+  * present range of -/+ 2 octaves from default position
 
 
 ### STRUCTURE
