@@ -7,7 +7,7 @@ it is designed to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
 
 to play chromatically, the keys are mapped as follows:
- * A W S E D F T G Y H U J K
+ * A W  S E  D F T  G Y  H U  J K
  * C C# D D# E F F# G G# A A# B C
 
  * to shift 1 octave down, press and hold SHIFT & press L ARROW
@@ -43,9 +43,9 @@ they are as follows, in order from left to right:
  each partial also has an independent frequency, determined in reference to the fundamental of each note.
  frequencies are set by the corresponding ratio parameter on the RAT page.
  the sliders default to a simple harmonic series, similar to a sawtooth -
-  * 1st is quarter freq (.25x), 2nd is .5x, 3rd is 1x, 4th is 2x, 5th is 3x, 6th is 4x.
- the top 48 ratios (top 75%) range from 1.125x to 4.00x (overtones).
- the bottom 16 ratios (bottom 25%) range from 1.00x to .125x (fundamental & undertones).
+ 1st is quarter freq (.25x), 2nd is .5x, 3rd is 1x, 4th is 2x, 5th is 3x, 6th is 4x.
+ * the top 48 ratios (top 75%) range from 1.125x to 4.00x (overtones).
+ * the bottom 16 ratios (bottom 25%) range from 1.00x to .125x (fundamental & undertones).
 
 #### OFX
 ----------------------------------------------------
@@ -70,7 +70,7 @@ they are as follows, in order from left to right:
 
 #### REV
 ----------------------------------------------------
- the REV page is host to a stereo convolution reverb, based on an impulse response taken from the Nashville First Baptist Church (†).
+ the REV page is host to a stereo convolution reverb, based on an impulse response taken from the Innocent Railway Tunnel (†).
  the 6 sliders control the relative reverb send amounts for each of the 6 stereo panned waveshaper/oscillator pairings.
  the effect can thus be applied in varying amounts to each partial individually, offering granular control over the overall timbre of the reverberated signal.
  reverb send is represented visually by a single white circle (one per partial), which grows in size as the send for each partial is increased.
@@ -90,7 +90,7 @@ which begins sounding at receipt of user interaction (page select).
   * waveshapers & mix controls (page 3)
   * per partial pan & controls (page 4)
   * stereo convolution reverb  (page 6)
-    * using impulse response from Nashville First Baptist Church
+    * using impulse response from Innocent Railway Tunnel
     * (†) (www.openairlib.net)
   * keyboard note change
   * oscilloscope display
