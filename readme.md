@@ -7,15 +7,12 @@ it is designed to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
 
 to play chromatically, the keys are mapped as follows:
- *  W E   T Y U
- * A S D F G H J K
-
- *  C# D#   F# G# A#
- * C  D  E F  G  A  B C
+ * A W S E D F T G Y H U J K
+ * C C# D D# E F F# G G# A A# B C
 
  * to shift 1 octave down, press and hold SHIFT & press L ARROW
  * to shift 1 octave up, press and hold SHIFT & press R ARROW
-  * present range of -/+ 2 octaves from default position
+    * present range of -/+ 2 octaves from default position
 
 
 ### STRUCTURE
@@ -88,33 +85,33 @@ the current alpha build runs just a single voice,
 which begins sounding at receipt of user interaction (page select).
 
 #### currently implemented:
- * oscillators & mix controls (page 1)
- * ratio table & ratio select (page 2)
- * waveshapers & mix controls (page 3)
- * per partial pan & controls (page 4)
- * stereo convolution reverb  (page 6)
-  * using impulse response from Nashville First Baptist Church
-  * (†) (www.openairlib.net)
+  * oscillators & mix controls (page 1)
+  * ratio table & ratio select (page 2)
+  * waveshapers & mix controls (page 3)
+  * per partial pan & controls (page 4)
+  * stereo convolution reverb  (page 6)
+    * using impulse response from Nashville First Baptist Church
+    * (†) (www.openairlib.net)
   * keyboard note change
   * oscilloscope display
   * parameter value displays
-   * OSC, RAT & OFX pages (numerical)
-   * PAN & REV pages (visual)
+    * OSC, RAT & OFX pages (numerical)
+    * PAN & REV pages (visual)
 #### currently implementing:
- * parameter value display
-  * AMP page (envelope visualization)
+  * parameter value display
+    * AMP page (envelope visualization)
 #### to implement:
- * stereo envelopes & control (page 5)
- * 1 freely assignable LFO per page
-  * independent frequency, shape & depth controls per page
-  * freely routable to any combination of the 6 parameters
-  * toggle switch to change between free running & tempo locked
+  * stereo envelopes & control (page 5)
+  * 1 freely assignable LFO per page
+    * independent frequency, shape & depth controls per page
+    * freely routable to any combination of the 6 parameters
+    * toggle switch to change between free running & tempo locked
   * virtual (onscreen) keyboard
-   * for triggering the envelopes & changing the fundamental
-   * for programming notes into the sequencer
+    * for triggering the envelopes & changing the fundamental
+    * for programming notes into the sequencer
   * asymmetric note & trig sequencer
 #### wishful (not priority):
- * 3 part polyphony
- * midi controller support (WebMIDI API)
+  * 3 part polyphony
+  * midi controller support (WebMIDI API)
 
 <3
