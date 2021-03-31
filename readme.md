@@ -1,3 +1,4 @@
+![alt text](https://storage.googleapis.com/www.rsyn.co/db/assets/comb.png)
 ### OVERVIEW
 ----------------------------------------------------------------
 db is a 6 oscillator additive synthesizer based on WebAudioAPI,
