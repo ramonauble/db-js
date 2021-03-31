@@ -18,16 +18,16 @@ to play chromatically, the keys are mapped as follows:
 
 ### STRUCTURE
 ----------------------------------------------------------------
-the synthesis engine is comprised of 6 main sections
-each denoted by a different color & symbol
+the synthesis engine is comprised of 6 main sections,
+each denoted by a different color & symbol.
 they are as follows, in order from left to right:
 
- * oscillator (OSC, dark purple) - controls the relative amplitudes of each of the 6 partials
- * ratio      (RAT, light purple) - controls the tuning ratio of each partial, in reference to the fundamental
- * shape      (OFX, muted red) - applies a variable amount of waveshaping distortion to each partial
- * pan        (PAN, soft teal) - controls the L/R placement of each partial in the stereo field
- * envelope   (AMP, light blue) - controls the shape & curve of the ADSR envelope, applied in stereo
- * reverb     (REV, muted pink) - controls the relative send amounts for the stereo reverb
+ * **oscillator** (OSC, dark purple) - controls the relative amplitudes of each of the 6 partials
+ * **ratio**      (RAT, light purple) - controls the tuning ratio of each partial, in reference to the fundamental
+ * **shape**      (OFX, muted red) - applies a variable amount of waveshaping distortion to each partial
+ * **pan**        (PAN, soft teal) - controls the L/R placement of each partial in the stereo field
+ * **envelope**   (AMP, light blue) - controls the shape & curve of the ADSR envelope, applied in stereo
+ * **reverb**     (REV, muted pink) - controls the relative send amounts for the stereo convolution reverb
 
 #### OSC
 ----------------------------------------------------
