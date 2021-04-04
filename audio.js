@@ -18,6 +18,7 @@ $(document).ready(function() {
   scopeW.fftSize = 512;
   //calculate reverb impulse response & assign to convolver node buffer
   calcIR();
+  let testWorkletNode = createModMixNode(synthCtx, voice1);
   //init voice
   voice1.mixGain.connect(scopeW); //oscilloscope analyzer
   voice1.mixGain.connect(scopeSplitter); //lissajous analyzer
@@ -129,8 +130,8 @@ $(document).ready(function() {
       voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = voice1.distNodeDict[$this.attr("id")];
       var currentPre = voice1.preNodeDict[$this.attr("id")];
-      currentPre.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
-      currentDist.gain.setTargetAtTime(.9*($this.val()/256), synthCtx.currentTime, .005);
+      currentPre.gain.setTargetAtTime(.9*($this.val()/256), synthCtx.currentTime, .005);
+      currentDist.gain.setTargetAtTime(.75*($this.val()/256), synthCtx.currentTime, .005);
     } else if ($this.hasClass("panSlider")) {
       voice1.sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentLeft = voice1.leftGainDict[$this.attr("id")];
@@ -143,8 +144,29 @@ $(document).ready(function() {
       voice1.sliderVals["revButton"][$this.attr("id")] = $this.val();
       var currentRevGain = voice1.revGainDict[$this.attr("id")];
       var currentDryGain = voice1.dryGainDict[$this.attr("id")];
-      currentDryGain.gain.setTargetAtTime(((255 - ($this.val()))/255.0), synthCtx.currentTime, .005);
+      //currentDryGain.gain.setTargetAtTime(((255 - ($this.val()))/255.0), synthCtx.currentTime, .005);
       currentRevGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
+    }
+  });
+
+  $(".aSlider").on("input", function() {
+    let $this = $(this);
+    if ($this.attr("id") == "auxS1") {
+      voice1.lfoNodeDict[activePage].frequency
+      .setTargetAtTime(30*($this.val()/255.0), synthCtx.currentTime, .005);
+    } else if ($this.attr("id") == "auxS2") {
+      if ($this.val() == 1) { //sine
+        voice1.lfoNodeDict[activePage].type = "sine";
+      } else if ($this.val() == 2) { //triangle
+        voice1.lfoNodeDict[activePage].type = "triangle";
+      } else if ($this.val() == 3) { //square
+        voice1.lfoNodeDict[activePage].type = "square";
+      } else if ($this.val() == 4) { //sawtooth
+        voice1.lfoNodeDict[activePage].type = "sawtooth";
+      }
+    } else if ($this.attr("id") == "auxS3") {
+      voice1.lfoGainDict[activePage].gain
+      .setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     }
   });
 
@@ -378,3 +400,11 @@ $(document).ready(function() {
     (newFund*r6, synthCtx.currentTime, .00005);
   }
 });
+
+function createModMixNode(synthCtx, voice) {
+  synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
+    let modMixTest = new AudioWorkletNode(synthCtx, "mod-mix-processor");
+    modMixTest.connect(voice.oscGain1.gain);
+    return modMixTest;
+  });
+}

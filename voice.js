@@ -93,6 +93,19 @@ class Voice {
     this.RVCA6 = synthCtx.createGain();
     //instantiate final mixer node (unity gain)
     this.mixGain = synthCtx.createGain();
+    //instantiate oscillator & gain nodes for LFOs
+    this.lfo1 = synthCtx.createOscillator();
+    this.lfo2 = synthCtx.createOscillator();
+    this.lfo3 = synthCtx.createOscillator();
+    this.lfo4 = synthCtx.createOscillator();
+    this.lfo5 = synthCtx.createOscillator();
+    this.lfo6 = synthCtx.createOscillator();
+    this.lfoGain1 = synthCtx.createGain();
+    this.lfoGain2 = synthCtx.createGain();
+    this.lfoGain3 = synthCtx.createGain();
+    this.lfoGain4 = synthCtx.createGain();
+    this.lfoGain5 = synthCtx.createGain();
+    this.lfoGain6 = synthCtx.createGain();
 
     //define dictionaries for easy node selection
     //during parameter (slider) value changes
@@ -172,6 +185,25 @@ class Voice {
       s4: this.dryGain4,
       s5: this.dryGain5,
       s6: this.dryGain6
+    };
+
+    //dictionary for lfo oscillator node selection
+    this.lfoNodeDict = {
+      oscButton: this.lfo1,
+      ratButton: this.lfo2,
+      ofxButton: this.lfo3,
+      panButton: this.lfo4,
+      ampButton: this.lfo5,
+      revButton: this.lfo6
+    };
+    //dictionary for lfo gain node selection
+    this.lfoGainDict = {
+      oscButton: this.lfoGain1,
+      ratButton: this.lfoGain2,
+      ofxButton: this.lfoGain3,
+      panButton: this.lfoGain4,
+      ampButton: this.lfoGain5,
+      revButton: this.lfoGain6
     };
 
     //instantiate ratio LUT & parameter (slider) state memory
@@ -322,6 +354,21 @@ class Voice {
     //final mixer node before output - unity
     this.mixGain.gain.value = 1;
 
+    //init lfo oscillator frequency (1hz)
+    this.lfo1.frequency.value = 1;
+    this.lfo2.frequency.value = 1;
+    this.lfo3.frequency.value = 1;
+    this.lfo4.frequency.value = 1;
+    this.lfo5.frequency.value = 1;
+    this.lfo6.frequency.value = 1;
+    //init lfo gains (0)
+    this.lfoGain1.gain.value = 0;
+    this.lfoGain2.gain.value = 0;
+    this.lfoGain3.gain.value = 0;
+    this.lfoGain4.gain.value = 0;
+    this.lfoGain5.gain.value = 0;
+    this.lfoGain6.gain.value = 0;
+
     //route oscillators -> gain nodes
       //route gain outputs -> L/R gain nodes
     //route oscillators -> dist nodes -> dist gain nodes
@@ -397,14 +444,24 @@ class Voice {
       this.chMerge6.connect(this.revGain6).connect(this.reverb);
       this.chMerge6.connect(this.dryGain6).connect(this.mixGain);
 
-    //finalize signal path
+    //finalize audio signal path
       //route stereo reverb output -> audio destination
       //route stereo mixer output -> audio destination
     this.reverb.connect(synthCtx.destination);
     this.mixGain.connect(synthCtx.destination);
+
+    //make connections for LFOs
+      //route lfo output -> gain nodes
+      //no further connections needed (they are made dynamically)
+    this.lfo1.connect(this.lfoGain1);
+    this.lfo2.connect(this.lfoGain2);
+    this.lfo3.connect(this.lfoGain3);
+    this.lfo4.connect(this.lfoGain4);
+    this.lfo5.connect(this.lfoGain5);
+    this.lfo6.connect(this.lfoGain6);
   }
 
-  //start oscillators
+  //start oscillators & lfos
   start() {
     this.osc1.start();
     this.osc2.start();
@@ -412,5 +469,12 @@ class Voice {
     this.osc4.start();
     this.osc5.start();
     this.osc6.start();
+
+    this.lfo1.start();
+    this.lfo2.start();
+    this.lfo3.start();
+    this.lfo4.start();
+    this.lfo5.start();
+    this.lfo6.start();
   }
 };
