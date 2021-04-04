@@ -120,10 +120,8 @@ $(document).ready(function() {
     let $this = $(this);
     if ($this.hasClass("oscSlider")) {
       voice1.sliderVals["oscButton"][$this.attr("id")] = $this.val(); //save value
-      var currentModMix = voice1.modMixDictP1[$this.attr("id")];       //get gain node
       var currentGain = voice1.gainNodeDict[$this.attr("id")];
-      currentModMix.value = ($this.val()/255.0); //set gain
-      currentGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005); //set gain
+      currentGain.linearRampToValueAtTime(($this.val()/255.0), synthCtx.currentTime); //set gain
     } else if ($this.hasClass("ratSlider")) {
       voice1.sliderVals["ratButton"][$this.attr("id")] = $this.val();
       changeFreqs(voice1.fundamental);

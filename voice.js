@@ -17,13 +17,13 @@ class Voice {
     this.osc4 = synthCtx.createOscillator();
     this.osc5 = synthCtx.createOscillator();
     this.osc6 = synthCtx.createOscillator();
-    //instantiate oscillator gain nodes
+    /*//instantiate oscillator gain nodes
     this.oscGain1 = synthCtx.createGain();
     this.oscGain2 = synthCtx.createGain();
     this.oscGain3 = synthCtx.createGain();
     this.oscGain4 = synthCtx.createGain();
     this.oscGain5 = synthCtx.createGain();
-    this.oscGain6 = synthCtx.createGain();
+    this.oscGain6 = synthCtx.createGain();*/
     //instantiate pre-distortion gain nodes
     this.preGain1 = synthCtx.createGain();
     this.preGain2 = synthCtx.createGain();
@@ -108,42 +108,62 @@ class Voice {
     this.lfoGain6 = synthCtx.createGain();
 
     synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
-      this.modMixTest1 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
-      this.modMixTest2 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
-      this.modMixTest3 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
-      this.modMixTest4 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
-      this.modMixTest5 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
-      this.modMixTest6 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
-      this.modMixTest1.connect(this.oscGain1.gain);
-      this.modMixTest2.connect(this.oscGain2.gain);
-      this.modMixTest3.connect(this.oscGain3.gain);
-      this.modMixTest4.connect(this.oscGain4.gain);
-      this.modMixTest5.connect(this.oscGain5.gain);
-      this.modMixTest6.connect(this.oscGain6.gain);
-
+      this.oscGain1 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.oscGain2 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.oscGain3 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.oscGain4 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.oscGain5 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.oscGain6 = new AudioWorkletNode(synthCtx, "gainProcessor");
       //dictionary for mod mix node selection (page 1)
-      this.modMixDictP1 = {
-        s1: this.modMixTest1.parameters.get("staticVal"),
-        s2: this.modMixTest2.parameters.get("staticVal"),
-        s3: this.modMixTest3.parameters.get("staticVal"),
-        s4: this.modMixTest4.parameters.get("staticVal"),
-        s5: this.modMixTest5.parameters.get("staticVal"),
-        s6: this.modMixTest6.parameters.get("staticVal")
+      this.gainNodeDict = {
+        s1: this.oscGain1.parameters.get("staticGain"),
+        s2: this.oscGain2.parameters.get("staticGain"),
+        s3: this.oscGain3.parameters.get("staticGain"),
+        s4: this.oscGain4.parameters.get("staticGain"),
+        s5: this.oscGain5.parameters.get("staticGain"),
+        s6: this.oscGain6.parameters.get("staticGain")
       };
+
+      //init ampltitudes - sawtooth-like decay (1/N)
+      this.gainNodeDict["s1"].value = 1.0;
+      this.gainNodeDict["s2"].value = 0.5;
+      this.gainNodeDict["s3"].value = 0.25;
+      this.gainNodeDict["s4"].value = 0.125;
+      this.gainNodeDict["s5"].value = 0.0625;
+      this.gainNodeDict["s6"].value = 0.03125;
+
+      this.osc1.connect(this.oscGain1);
+        this.oscGain1.connect(this.LGain1);
+        this.oscGain1.connect(this.RGain1);
+      this.osc2.connect(this.oscGain2);
+        this.oscGain2.connect(this.LGain2);
+        this.oscGain2.connect(this.RGain2);
+      this.osc3.connect(this.oscGain3);
+        this.oscGain3.connect(this.LGain3);
+        this.oscGain3.connect(this.RGain3);
+      this.osc4.connect(this.oscGain4);
+        this.oscGain4.connect(this.LGain4);
+        this.oscGain4.connect(this.RGain4);
+      this.osc5.connect(this.oscGain5);
+        this.oscGain5.connect(this.LGain5);
+        this.oscGain5.connect(this.RGain5);
+      this.osc6.connect(this.oscGain6);
+        this.oscGain6.connect(this.LGain6);
+        this.oscGain6.connect(this.RGain6);
     });
 
     //define dictionaries for easy node selection
     //during parameter (slider) value changes
     //--------------------------------------
     //oscillator gain nodes
-    this.gainNodeDict = {
+    /*this.gainNodeDict = {
       s1: this.oscGain1,
       s2: this.oscGain2,
       s3: this.oscGain3,
       s4: this.oscGain4,
       s5: this.oscGain5,
       s6: this.oscGain6
-    };
+    };*/
 
     //oscillator nodes
     this.oscNodeDict = {
@@ -311,14 +331,6 @@ class Voice {
   //initalize voice properties & route nodes
   init(synthCtx, distCurve) {
 
-    //init ampltitudes - sawtooth-like decay (1/N)
-    this.oscGain1.gain.value = 1.0;
-    this.oscGain2.gain.value = 0.5;
-    this.oscGain3.gain.value = 0.25;
-    this.oscGain4.gain.value = 0.125;
-    this.oscGain5.gain.value = 0.0625;
-    this.oscGain6.gain.value = 0.03125;
-
     //init distortion gain & mix - all 0 (no distortion)
     this.preGain1.gain.value = 0;
     this.preGain2.gain.value = 0;
@@ -398,44 +410,26 @@ class Voice {
       //route gain outputs -> L/R gain nodes
     //route oscillators -> dist nodes -> dist gain nodes
       //route dist gain outputs -> L/R gain nodes -> stereo VCAs
-    this.osc1.connect(this.oscGain1);
-      this.oscGain1.connect(this.LGain1);
-      this.oscGain1.connect(this.RGain1);
     this.osc1.connect(this.preGain1).connect(this.dist1).connect(this.distGain1);
       this.distGain1.connect(this.LGain1).connect(this.LVCA1);
       this.distGain1.connect(this.RGain1).connect(this.RVCA1);
 
-    this.osc2.connect(this.oscGain2);
-      this.oscGain2.connect(this.LGain2);
-      this.oscGain2.connect(this.RGain2);
     this.osc2.connect(this.preGain2).connect(this.dist2).connect(this.distGain2);
       this.distGain2.connect(this.LGain2).connect(this.LVCA2);
       this.distGain2.connect(this.RGain2).connect(this.RVCA2);
 
-    this.osc3.connect(this.oscGain3);
-      this.oscGain3.connect(this.LGain3);
-      this.oscGain3.connect(this.RGain3);
     this.osc3.connect(this.preGain3).connect(this.dist3).connect(this.distGain3);
       this.distGain3.connect(this.LGain3).connect(this.LVCA3);
       this.distGain3.connect(this.RGain3).connect(this.RVCA3);
 
-    this.osc4.connect(this.oscGain4);
-      this.oscGain4.connect(this.LGain4);
-      this.oscGain4.connect(this.RGain4);
     this.osc4.connect(this.preGain4).connect(this.dist4).connect(this.distGain4);
       this.distGain4.connect(this.LGain4).connect(this.LVCA4);
       this.distGain4.connect(this.RGain4).connect(this.RVCA4);
 
-    this.osc5.connect(this.oscGain5);
-      this.oscGain5.connect(this.LGain5);
-      this.oscGain5.connect(this.RGain5);
     this.osc5.connect(this.preGain5).connect(this.dist5).connect(this.distGain5);
       this.distGain5.connect(this.LGain5).connect(this.LVCA5);
       this.distGain5.connect(this.RGain5).connect(this.RVCA5);
 
-    this.osc6.connect(this.oscGain6);
-      this.oscGain6.connect(this.LGain6);
-      this.oscGain6.connect(this.RGain6);
     this.osc6.connect(this.preGain6).connect(this.dist6).connect(this.distGain6);
       this.distGain6.connect(this.LGain6).connect(this.LVCA6);
       this.distGain6.connect(this.RGain6).connect(this.RVCA6);
