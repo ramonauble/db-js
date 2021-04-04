@@ -40,6 +40,7 @@ $(document).ready(function() {
   };
 
   var $pageSliders = $(".pSlider");
+  var $auxSliders = $(".aSlider");
 
   var $activePage = $pageDict[activePage];
   var $activePageSelect = $pageSelectDict[activePage];
@@ -74,8 +75,10 @@ $(document).ready(function() {
         $this.css("opacity", "100%");
         $pageSelectDict[activePage].css("opacity", "20%");
         $pageSliders.removeClass(sliderClassDict[activePage]);
+        $auxSliders.removeClass(sliderClassDict[activePage]);
         activePage = $this.attr("id");
         $pageSliders.addClass(sliderClassDict[activePage]);
+        $auxSliders.addClass(sliderClassDict[activePage]);
         $activePage = $pageDict[activePage];
         $pageSelectDict[activePage].css("opacity", "100%");
         let newBgColor = $pageSelectDict[activePage].css("background");

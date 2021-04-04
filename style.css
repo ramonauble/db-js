@@ -265,10 +265,6 @@
     cursor:pointer;
     border-radius:3px;
   }
-    .aSlider::-webkit-slider-thumb {
-      background:#5D2E7B;
-    }
-
     .oscSlider::-webkit-slider-thumb {
       background:#5D2E7B;
     }
