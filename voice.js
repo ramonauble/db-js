@@ -124,7 +124,7 @@ class Voice {
         s6: this.oscGain6.parameters.get("staticGain")
       };
 
-      //init ampltitudes - sawtooth-like decay (1/N)
+      //init ampltitudes - sawtooth-like decay (1/N)f
       this.gainNodeDict["s1"].value = 1.0;
       this.gainNodeDict["s2"].value = 0.5;
       this.gainNodeDict["s3"].value = 0.25;
