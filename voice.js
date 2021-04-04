@@ -107,6 +107,31 @@ class Voice {
     this.lfoGain5 = synthCtx.createGain();
     this.lfoGain6 = synthCtx.createGain();
 
+    synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
+      this.modMixTest1 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
+      this.modMixTest2 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
+      this.modMixTest3 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
+      this.modMixTest4 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
+      this.modMixTest5 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
+      this.modMixTest6 = new AudioWorkletNode(synthCtx, "mod-mix-processor");
+      this.modMixTest1.connect(this.oscGain1.gain);
+      this.modMixTest2.connect(this.oscGain2.gain);
+      this.modMixTest3.connect(this.oscGain3.gain);
+      this.modMixTest4.connect(this.oscGain4.gain);
+      this.modMixTest5.connect(this.oscGain5.gain);
+      this.modMixTest6.connect(this.oscGain6.gain);
+
+      //dictionary for mod mix node selection (page 1)
+      this.modMixDictP1 = {
+        s1: this.modMixTest1.parameters.get("staticVal"),
+        s2: this.modMixTest2.parameters.get("staticVal"),
+        s3: this.modMixTest3.parameters.get("staticVal"),
+        s4: this.modMixTest4.parameters.get("staticVal"),
+        s5: this.modMixTest5.parameters.get("staticVal"),
+        s6: this.modMixTest6.parameters.get("staticVal")
+      };
+    });
+
     //define dictionaries for easy node selection
     //during parameter (slider) value changes
     //--------------------------------------

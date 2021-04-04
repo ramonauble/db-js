@@ -3,9 +3,7 @@ class modMixProcessor extends AudioWorkletProcessor {
     return [
       {
         name: "staticVal",
-        defaultValue: .5,
-        minValue: 0,
-        maxValue: 1
+        defaultValue: 0
       }
     ];
   }
@@ -16,13 +14,13 @@ class modMixProcessor extends AudioWorkletProcessor {
 
   process(inputs, outputs, parameters) {
     const staticVal = parameters.staticVal;
-    for (let i = 0; i < inputs.length; i++) { //move through each input
+    for (let i = 0; i < outputs.length; i++) { //move through each output
       let currentIn = inputs[i][0]; //input in, channel 0
       let currentOut = outputs[i][0]; //output in, channel 0
       for (let samp = 0; samp < currentOut.length; samp++) { //run thru each sample
-        if (staticVal.length == 1) {
+        if (staticVal.length == 1) {  //k rate
           currentOut[samp] = staticVal[0];
-        } else if (staticVal.length == 128) {
+        } else if (staticVal.length == 128) { //a rate
           currentOut[samp] = staticVal[samp];
         }
       }

@@ -18,7 +18,6 @@ $(document).ready(function() {
   scopeW.fftSize = 512;
   //calculate reverb impulse response & assign to convolver node buffer
   calcIR();
-  let testWorkletNode = createModMixNode(synthCtx, voice1);
   //init voice
   voice1.mixGain.connect(scopeW); //oscilloscope analyzer
   voice1.mixGain.connect(scopeSplitter); //lissajous analyzer
@@ -121,8 +120,10 @@ $(document).ready(function() {
     let $this = $(this);
     if ($this.hasClass("oscSlider")) {
       voice1.sliderVals["oscButton"][$this.attr("id")] = $this.val(); //save value
-      var currentGain = voice1.gainNodeDict[$this.attr("id")];       //get gain node
-      currentGain.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);              //set gain
+      var currentModMix = voice1.modMixDictP1[$this.attr("id")];       //get gain node
+      var currentGain = voice1.gainNodeDict[$this.attr("id")];
+      currentModMix.value = ($this.val()/255.0); //set gain
+      currentGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005); //set gain
     } else if ($this.hasClass("ratSlider")) {
       voice1.sliderVals["ratButton"][$this.attr("id")] = $this.val();
       changeFreqs(voice1.fundamental);
@@ -400,11 +401,3 @@ $(document).ready(function() {
     (newFund*r6, synthCtx.currentTime, .00005);
   }
 });
-
-function createModMixNode(synthCtx, voice) {
-  synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
-    let modMixTest = new AudioWorkletNode(synthCtx, "mod-mix-processor");
-    modMixTest.connect(voice.oscGain1.gain);
-    return modMixTest;
-  });
-}
