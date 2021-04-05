@@ -150,6 +150,8 @@ class Voice {
       this.osc6.connect(this.oscGain6);
         this.oscGain6.connect(this.LGain6);
         this.oscGain6.connect(this.RGain6);
+
+      this.lfoGain1.connect(this.oscGain6.parameters.get("modGain"));
     });
 
     //define dictionaries for easy node selection
