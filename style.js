@@ -39,8 +39,18 @@ $(document).ready(function() {
     revButton: "revSlider"
   };
 
+  var colorDict = {
+    oscButton: "#5D2E7B",
+    ratButton: "#A15ECE",
+    ofxButton: "#C75858",
+    panButton: "#8AC497",
+    ampButton: "#848EDF",
+    revButton: "#DB689C"
+  };
+
   var $pageSliders = $(".pSlider");
-  var $auxSliders = $(".aSlider");
+  var $lfoSliders = $(".aSlider");
+  var $lfoTitle = $("#lfoTitle");
 
   var $activePage = $pageDict[activePage];
   var $activePageSelect = $pageSelectDict[activePage];
@@ -75,10 +85,11 @@ $(document).ready(function() {
         $this.css("opacity", "100%");
         $pageSelectDict[activePage].css("opacity", "20%");
         $pageSliders.removeClass(sliderClassDict[activePage]);
-        $auxSliders.removeClass(sliderClassDict[activePage]);
+        $lfoSliders.removeClass(sliderClassDict[activePage]);
         activePage = $this.attr("id");
         $pageSliders.addClass(sliderClassDict[activePage]);
-        $auxSliders.addClass(sliderClassDict[activePage]);
+        $lfoSliders.addClass(sliderClassDict[activePage]);
+        $lfoTitle.css("color", colorDict[activePage]);
         $activePage = $pageDict[activePage];
         $pageSelectDict[activePage].css("opacity", "100%");
         let newBgColor = $pageSelectDict[activePage].css("background");

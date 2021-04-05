@@ -57,13 +57,21 @@
 					<div class="pageSelect" id="ampSelect"></div>
 					<div class="pageSelect" id="revSelect"></div>
 				</div>
-				<div class="auxGroup">
-					<input id="auxS1" class="slider aSlider oscSlider" type="range" min="1" max="255"
+				<div class="lfoTitleGroup">
+					<p id="lfoTitle">lfo</p>
+				</div>
+				<div class="lfoGroup">
+					<input id="lfoS1" class="slider aSlider oscSlider" type="range" min="1" max="255"
 					value="1" step=".25"></input>
-					<input id="auxS2" class="slider aSlider oscSlider" type="range" min="1" max="4"
+					<input id="lfoS2" class="slider aSlider oscSlider" type="range" min="1" max="4"
 					value="1" step="1"></input>
-					<input id="auxS3" class="slider aSlider oscSlider" type="range" min="1" max="255"
+					<input id="lfoS3" class="slider aSlider oscSlider" type="range" min="1" max="255"
 					value="1" step=".25"></input>
+				</div>
+				<div class="lfoInfo">
+					<p id="lfoInfo1">speed: <span id="lfoSpeed">20.0</span>hz</p>
+					<p id="lfoInfo2">shape: <span id="lfoShape">tri</span></p>
+					<p id="lfoInfo3">depth: <span id="lfoDepth">100%</span></p>
 				</div>
 			</div>
     </div>
