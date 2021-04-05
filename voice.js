@@ -359,6 +359,57 @@ class Voice {
       }
     };
 
+    this.patchStates = {
+      oscButton: {
+        PS1: 0,
+        PS2: 0,
+        PS3: 0,
+        PS4: 0,
+        PS5: 0,
+        PS6: 1
+      },
+      ratButton: {
+        PS1: 0,
+        PS2: 0,
+        PS3: 0,
+        PS4: 0,
+        PS5: 0,
+        PS6: 0
+      },
+      ofxButton: {
+        PS1: 0,
+        PS2: 0,
+        PS3: 0,
+        PS4: 0,
+        PS5: 0,
+        PS6: 0
+      },
+      panButton: {
+        PS1: 0,
+        PS2: 0,
+        PS3: 0,
+        PS4: 0,
+        PS5: 0,
+        PS6: 0
+      },
+      ampButton: {
+        PS1: 0,
+        PS2: 0,
+        PS3: 0,
+        PS4: 0,
+        PS5: 0,
+        PS6: 0
+      },
+      revButton: {
+        PS1: 0,
+        PS2: 0,
+        PS3: 0,
+        PS4: 0,
+        PS5: 0,
+        PS6: 0
+      }
+    };
+
     //initialize node parameters
     this.init(synthCtx, distCurve);
   }
@@ -427,12 +478,12 @@ class Voice {
     this.mixGain.gain.value = 1;
 
     //init lfo oscillator frequency (1hz)
-    this.lfo1.frequency.value = 1;
-    this.lfo2.frequency.value = 1;
-    this.lfo3.frequency.value = 1;
-    this.lfo4.frequency.value = 1;
-    this.lfo5.frequency.value = 1;
-    this.lfo6.frequency.value = 1;
+    this.lfo1.frequency.value = .1;
+    this.lfo2.frequency.value = .1;
+    this.lfo3.frequency.value = .1;
+    this.lfo4.frequency.value = .1;
+    this.lfo5.frequency.value = .1;
+    this.lfo6.frequency.value = .1;
     //init lfo gains (0)
     this.lfoGain1.gain.value = 0;
     this.lfoGain2.gain.value = 0;
