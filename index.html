@@ -60,18 +60,26 @@
 				<div class="lfoTitleGroup">
 					<p id="lfoTitle">lfo</p>
 				</div>
-				<div class="lfoGroup">
-					<input id="lfoS1" class="slider aSlider oscSlider" type="range" min="1" max="255"
-					value="1" step=".25"></input>
-					<input id="lfoS2" class="slider aSlider oscSlider" type="range" min="1" max="4"
-					value="1" step="1"></input>
-					<input id="lfoS3" class="slider aSlider oscSlider" type="range" min="1" max="255"
-					value="1" step=".25"></input>
+				<div class="lfoPatch">
+					<div class="patchSelect oscPatch" id="PS1"></div>
+					<div class="patchSelect oscPatch" id="PS2"></div>
+					<div class="patchSelect oscPatch" id="PS3"></div>
+					<div class="patchSelect oscPatch" id="PS4"></div>
+					<div class="patchSelect oscPatch" id="PS5"></div>
+					<div class="patchSelect oscPatch selected" id="PS6"></div>
 				</div>
 				<div class="lfoInfo">
-					<p id="lfoInfo1">speed: <span id="lfoSpeed">20.0</span>hz</p>
+					<p id="lfoInfo1">speed: <span id="lfoSpeed">20.0hz</span></p>
 					<p id="lfoInfo2">shape: <span id="lfoShape">tri</span></p>
 					<p id="lfoInfo3">depth: <span id="lfoDepth">100%</span></p>
+				</div>
+				<div class="lfoGroup">
+					<input id="lfoS1" class="slider aSlider oscSlider" type="range" min=".1" max="30"
+					value=".1" step=".1"></input>
+					<input id="lfoS2" class="slider aSlider oscSlider" type="range" min="1" max="4"
+					value="1" step="1"></input>
+					<input id="lfoS3" class="slider aSlider oscSlider" type="range" min="0" max="100"
+					value="0" step="1"></input>
 				</div>
 			</div>
     </div>
