@@ -36,6 +36,13 @@ $(document).ready(function() {
   displayCanvCtx.font = "30px monospace";
   displayCanvCtx.textAlign = "center";
 
+  //reference lfo parameter span elements
+  const $lfoInfo = {
+    lfoS1: $("#lfoInfo1"),
+    lfoS2: $("#lfoInfo2"),
+    lfoS3: $("#lfoInfo3")
+  };
+
   //configure variables for drawing canvas
   const pi = Math.PI;
   var binLength = scopeX.frequencyBinCount; //fftSize/2 == 256
@@ -56,6 +63,18 @@ $(document).ready(function() {
     s4: $("#s4"),
     s5: $("#s5"),
     s6: $("#s6")
+  };
+  //same for lfo sliders
+  var $lfoSliderDict = {
+    lfoS1: $("#lfoS1"),
+    lfoS2: $("#lfoS2"),
+    lfoS3: $("#lfoS3")
+  };
+  var lfoShapeDict = {
+    1: "sin",
+    2: "tri",
+    3: "sqr",
+    4: "saw"
   };
 
   //color dictionary to assocate page selection
@@ -150,20 +169,30 @@ $(document).ready(function() {
 
   $(".aSlider").on("input", function() {
     let $this = $(this);
-    if ($this.attr("id") == "auxS1") {
+    let id = $this.attr("id");
+    if (id == "lfoS1") {
+      $lfoInfo[id].html("speed: " + parseFloat(30*($this.val()/255)).toFixed(1) + "hz");
+      voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
       voice1.lfoNodeDict[activePage].frequency
       .setTargetAtTime(30*($this.val()/255.0), synthCtx.currentTime, .005);
-    } else if ($this.attr("id") == "auxS2") {
+    } else if (id == "lfoS2") {
+      $lfoInfo[id].html("shape: " + lfoShapeDict[$this.val()]);
       if ($this.val() == 1) { //sine
+        voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
         voice1.lfoNodeDict[activePage].type = "sine";
       } else if ($this.val() == 2) { //triangle
+        voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
         voice1.lfoNodeDict[activePage].type = "triangle";
       } else if ($this.val() == 3) { //square
+        voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
         voice1.lfoNodeDict[activePage].type = "square";
       } else if ($this.val() == 4) { //sawtooth
+        voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
         voice1.lfoNodeDict[activePage].type = "sawtooth";
       }
-    } else if ($this.attr("id") == "auxS3") {
+    } else if (id == "lfoS3") {
+      $lfoInfo[id].html("depth: " + parseFloat(100*($this.val()/255)).toFixed(1) + "%");
+      voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
       voice1.lfoGainDict[activePage].gain
       .setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     }
@@ -181,6 +210,13 @@ $(document).ready(function() {
     $sliderDict["s4"].val(voice1.sliderVals[newPage]["s4"]);
     $sliderDict["s5"].val(voice1.sliderVals[newPage]["s5"]);
     $sliderDict["s6"].val(voice1.sliderVals[newPage]["s6"]);
+
+    $lfoSliderDict["lfoS1"].val(voice1.lfoVals[newPage]["lfoS1"]);
+    $lfoSliderDict["lfoS2"].val(voice1.lfoVals[newPage]["lfoS2"]);
+    $lfoSliderDict["lfoS3"].val(voice1.lfoVals[newPage]["lfoS3"]);
+    $lfoInfo["lfoS1"].html("speed: " + 30*(voice1.lfoVals[newPage]["lfoS1"]/255.0).toFixed(1) + "hz");
+    $lfoInfo["lfoS2"].html("shape: " + lfoShapeDict[voice1.lfoVals[newPage]["lfoS2"]]);
+    $lfoInfo["lfoS3"].html("depth: " + 100*(voice1.lfoVals[newPage]["lfoS3"]/255.0).toFixed(1) + "%");
   }
 
   //draw info & scope displays at ~60fps

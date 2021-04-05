@@ -323,7 +323,40 @@ class Voice {
         s4: 0,
         s5: 0,
         s6: 0
+      }
+    };
+
+    this.lfoVals = {
+      oscButton: {
+        lfoS1: 0.1,
+        lfoS2: 1,
+        lfoS3: 0
       },
+      ratButton: {
+        lfoS1: 0.1,
+        lfoS2: 1,
+        lfoS3: 0
+      },
+      ofxButton: {
+        lfoS1: 0.1,
+        lfoS2: 1,
+        lfoS3: 0
+      },
+      panButton: {
+        lfoS1: 0.1,
+        lfoS2: 1,
+        lfoS3: 0
+      },
+      ampButton: {
+        lfoS1: 0.1,
+        lfoS2: 1,
+        lfoS3: 0
+      },
+      revButton: {
+        lfoS1: 0.1,
+        lfoS2: 1,
+        lfoS3: 0
+      }
     };
 
     //initialize node parameters
