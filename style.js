@@ -49,8 +49,9 @@ $(document).ready(function() {
   };
 
   var $pageSliders = $(".pSlider");
-  var $lfoSliders = $(".aSlider");
+  var $auxSliders = $(".aSlider");
   var $lfoTitle = $("#lfoTitle");
+  var $lfoPatch = $(".patchSelect");
 
   var $activePage = $pageDict[activePage];
   var $activePageSelect = $pageSelectDict[activePage];
@@ -63,6 +64,15 @@ $(document).ready(function() {
   $activeUI.css("opacity", "100%");
   $activeUISelect.css("opacity", "100%");
 
+  $(".patchSelect").hover(function() {
+    if (!$(this).hasClass("selected")) {
+      $(this).css("opacity", "81%");
+    }
+  }, function() {
+    if (!$(this).hasClass("selected")) {
+      $(this).css("opacity", "33%");
+    }
+  });
 
   $(".uiButton, .pageButton").hover(function() {
     $(this).css("opacity", "100%");
@@ -85,11 +95,12 @@ $(document).ready(function() {
         $this.css("opacity", "100%");
         $pageSelectDict[activePage].css("opacity", "20%");
         $pageSliders.removeClass(sliderClassDict[activePage]);
-        $lfoSliders.removeClass(sliderClassDict[activePage]);
+        $auxSliders.removeClass(sliderClassDict[activePage]);
         activePage = $this.attr("id");
         $pageSliders.addClass(sliderClassDict[activePage]);
-        $lfoSliders.addClass(sliderClassDict[activePage]);
+        $auxSliders.addClass(sliderClassDict[activePage]);
         $lfoTitle.css("color", colorDict[activePage]);
+        $lfoPatch.css("background", colorDict[activePage]);
         $activePage = $pageDict[activePage];
         $pageSelectDict[activePage].css("opacity", "100%");
         let newBgColor = $pageSelectDict[activePage].css("background");

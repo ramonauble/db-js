@@ -64,6 +64,7 @@
   font-family:monospace;
   font-size:1.0em;
   width:102px;
+  font-weight:bold;
 }
   #lfoInfo1 {
 
@@ -231,7 +232,29 @@
   min-width:180px;
   max-width:320px;
   bottom:0px;
-  margin-bottom:-44px;
+  margin-bottom:-46px;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:row;
+}
+.lfoPatch {
+  position:absolute;
+  min-width:180px;
+  max-width:320px;
+  bottom:0px;
+  margin-bottom:-83px;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:row;
+}
+.lfoInfo {
+  position:absolute;
+  min-width:180px;
+  max-width:320px;
+  bottom:0px;
+  margin-bottom:-142px;
   display:inline-flex;
   justify-content:center;
   align-items:center;
@@ -242,24 +265,30 @@
   min-width:180px;
   max-width:320px;
   bottom:0px;
-  margin-bottom:-96px;
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:row;
-}
-
-.lfoInfo {
-  position:absolute;
-  min-width:180px;
-  max-width:320px;
-  bottom:0px;
   margin-bottom:-120px;
   display:inline-flex;
   justify-content:center;
   align-items:center;
   flex-direction:row;
 }
+
+.patchSelect {
+  display:inline-flex;
+  width:18px;
+  height:18px;
+  background:white;
+  border-radius:3px;
+  margin-top:3px;
+  margin-bottom:-11px;
+  margin-left: 2px;
+  margin-right: 2px;
+  box-sizing:border-box;
+  opacity:33%;
+  cursor: pointer;
+}
+  .selected {
+    opacity: 100%;
+  }
 
 .centerGroup {
   margin:0 auto;
@@ -308,21 +337,21 @@
     cursor:pointer;
     border-radius:3px;
   }
-    .oscSlider::-webkit-slider-thumb {
+    .oscSlider::-webkit-slider-thumb, .oscPatch {
       background:#5D2E7B;
     }
-    .ratSlider::-webkit-slider-thumb {
+    .ratSlider::-webkit-slider-thumb, .ratPatch {
       background:#A15ECE;
     }
-    .ofxSlider::-webkit-slider-thumb {
+    .ofxSlider::-webkit-slider-thumb, .ofxPatch {
       background:#C75858;
     }
-    .panSlider::-webkit-slider-thumb {
+    .panSlider::-webkit-slider-thumb, .panPatch {
       background:#8AC497;
     }
-    .ampSlider::-webkit-slider-thumb {
+    .ampSlider::-webkit-slider-thumb, .ampPatch {
       background:#848EDF;
     }
-    .revSlider::-webkit-slider-thumb {
+    .revSlider::-webkit-slider-thumb, .revPatch {
       background:#DB689C;
     }
