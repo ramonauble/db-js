@@ -65,9 +65,9 @@ class gainProcessor extends AudioWorkletProcessor {
           for (let samp = 0; samp < currentOut.length; samp++) {
             //output = input * staticGain[0] (constant)
             let tempOut = currentIn[samp] * staticGain[0];
-            if (tempOut > 1.33) {
-              currentOut[samp] = 1.33;
-            } else if (tempOut < -1.33) {
+            if (tempOut > 1) {
+              currentOut[samp] = 1;
+            } else if (tempOut < -1) {
               currentOut[samp] = -1;
             } else {
               currentOut[samp] = tempOut;
