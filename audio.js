@@ -173,7 +173,7 @@ $(document).ready(function() {
       voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = voice1.distNodeDict[$this.attr("id")];
       var currentPre = voice1.preNodeDict[$this.attr("id")];
-      currentPre.gain.setTargetAtTime(.9*($this.val()/256), synthCtx.currentTime, .005);
+      currentPre.setTargetAtTime(.9*($this.val()/256), synthCtx.currentTime, .005);
       currentDist.gain.setTargetAtTime(.75*($this.val()/256), synthCtx.currentTime, .005);
     } else if ($this.hasClass("panSlider")) {
       voice1.sliderVals["panButton"][$this.attr("id")] = $this.val();
@@ -463,12 +463,20 @@ $(document).ready(function() {
   $(".patchSelect").click(function() {
     let $this = $(this);
     if (voice1.patchStates[activePage][$this.attr("id")] == 1) {
-      voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
+      if (activePage != "ratButton") {
+        voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
+      } else {
+        voice1.lfoGainDict[activePage].disconnect(voice1.oscNodeDictP[$this.attr("id")].detune);
+      }
       voice1.patchStates[activePage][$this.attr("id")] = 0;
       $this.css("opacity", "33%");
       $this.removeClass("selected");
     } else if (voice1.patchStates[activePage][$this.attr("id")] == 0) {
-      voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
+      if (activePage != "ratButton") {
+        voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
+      } else {
+        voice1.lfoGainDict[activePage].connect(voice1.oscNodeDictP[$this.attr("id")].detune);
+      }
       voice1.patchStates[activePage][$this.attr("id")] = 1;
       $this.css("opacity", "100%");
       $this.addClass("selected");

@@ -114,6 +114,13 @@ class Voice {
       this.oscGain4 = new AudioWorkletNode(synthCtx, "gainProcessor");
       this.oscGain5 = new AudioWorkletNode(synthCtx, "gainProcessor");
       this.oscGain6 = new AudioWorkletNode(synthCtx, "gainProcessor");
+
+      this.preGain1 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.preGain2 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.preGain3 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.preGain4 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.preGain5 = new AudioWorkletNode(synthCtx, "gainProcessor");
+      this.preGain6 = new AudioWorkletNode(synthCtx, "gainProcessor");
       //dictionary for mod mix node selection (page 1)
       this.gainNodeDict = {
         s1: this.oscGain1.parameters.get("staticGain"),
@@ -122,6 +129,14 @@ class Voice {
         s4: this.oscGain4.parameters.get("staticGain"),
         s5: this.oscGain5.parameters.get("staticGain"),
         s6: this.oscGain6.parameters.get("staticGain")
+      };
+      this.preNodeDict = {
+        s1: this.preGain1.parameters.get("staticGain"),
+        s2: this.preGain2.parameters.get("staticGain"),
+        s3: this.preGain3.parameters.get("staticGain"),
+        s4: this.preGain4.parameters.get("staticGain"),
+        s5: this.preGain5.parameters.get("staticGain"),
+        s6: this.preGain6.parameters.get("staticGain")
       };
 
       this.modDestDict = {
@@ -132,7 +147,15 @@ class Voice {
           PS4: this.oscGain4.parameters.get("modGain"),
           PS5: this.oscGain5.parameters.get("modGain"),
           PS6: this.oscGain6.parameters.get("modGain")
-        }
+        },
+        ofxButton: {
+          PS1: this.preGain1.parameters.get("modGain"),
+          PS2: this.preGain2.parameters.get("modGain"),
+          PS3: this.preGain3.parameters.get("modGain"),
+          PS4: this.preGain4.parameters.get("modGain"),
+          PS5: this.preGain5.parameters.get("modGain"),
+          PS6: this.preGain6.parameters.get("modGain")
+        },
       }
 
       //init ampltitudes - sawtooth-like decay (1/N)f
@@ -142,6 +165,14 @@ class Voice {
       this.gainNodeDict["s4"].value = 0.125;
       this.gainNodeDict["s5"].value = 0.0625;
       this.gainNodeDict["s6"].value = 0.03125;
+
+      //init ampltitudes - sawtooth-like decay (1/N)f
+      this.preNodeDict["s1"].value = 0;
+      this.preNodeDict["s2"].value = 0;
+      this.preNodeDict["s3"].value = 0;
+      this.preNodeDict["s4"].value = 0;
+      this.preNodeDict["s5"].value = 0;
+      this.preNodeDict["s6"].value = 0;
 
       this.osc1.connect(this.oscGain1);
         this.oscGain1.connect(this.LGain1);
@@ -161,22 +192,20 @@ class Voice {
       this.osc6.connect(this.oscGain6);
         this.oscGain6.connect(this.LGain6);
         this.oscGain6.connect(this.RGain6);
+
+      this.osc1.connect(this.preGain1).connect(this.dist1);
+      this.osc2.connect(this.preGain2).connect(this.dist2);
+      this.osc3.connect(this.preGain3).connect(this.dist3);
+      this.osc4.connect(this.preGain4).connect(this.dist4);
+      this.osc5.connect(this.preGain5).connect(this.dist5);
+      this.osc6.connect(this.preGain6).connect(this.dist6);
     });
 
     //define dictionaries for easy node selection
     //during parameter (slider) value changes
     //--------------------------------------
-    //oscillator gain nodes
-    /*this.gainNodeDict = {
-      s1: this.oscGain1,
-      s2: this.oscGain2,
-      s3: this.oscGain3,
-      s4: this.oscGain4,
-      s5: this.oscGain5,
-      s6: this.oscGain6
-    };*/
 
-    //oscillator nodes
+    //oscillator nodes - slider change
     this.oscNodeDict = {
       s1: this.osc1,
       s2: this.osc2,
@@ -185,15 +214,14 @@ class Voice {
       s5: this.osc5,
       s6: this.osc6
     };
-
-    //waveshaper pre-gain nodes
-    this.preNodeDict = {
-      s1: this.preGain1,
-      s2: this.preGain2,
-      s3: this.preGain3,
-      s4: this.preGain4,
-      s5: this.preGain5,
-      s6: this.preGain6
+    //oscillator nodes - patch change
+    this.oscNodeDictP = {
+      PS1: this.osc1,
+      PS2: this.osc2,
+      PS3: this.osc3,
+      PS4: this.osc4,
+      PS5: this.osc5,
+      PS6: this.osc6
     };
     //waveshaper post-gain nodes
     this.distNodeDict = {
@@ -427,12 +455,6 @@ class Voice {
   init(synthCtx, distCurve) {
 
     //init distortion gain & mix - all 0 (no distortion)
-    this.preGain1.gain.value = 0;
-    this.preGain2.gain.value = 0;
-    this.preGain3.gain.value = 0;
-    this.preGain4.gain.value = 0;
-    this.preGain5.gain.value = 0;
-    this.preGain6.gain.value = 0;
     this.distGain1.gain.value = 0;
     this.distGain2.gain.value = 0;
     this.distGain3.gain.value = 0;
@@ -505,27 +527,27 @@ class Voice {
       //route gain outputs -> L/R gain nodes
     //route oscillators -> dist nodes -> dist gain nodes
       //route dist gain outputs -> L/R gain nodes -> stereo VCAs
-    this.osc1.connect(this.preGain1).connect(this.dist1).connect(this.distGain1);
+    this.dist1.connect(this.distGain1);
       this.distGain1.connect(this.LGain1).connect(this.LVCA1);
       this.distGain1.connect(this.RGain1).connect(this.RVCA1);
 
-    this.osc2.connect(this.preGain2).connect(this.dist2).connect(this.distGain2);
+    this.dist2.connect(this.distGain2);
       this.distGain2.connect(this.LGain2).connect(this.LVCA2);
       this.distGain2.connect(this.RGain2).connect(this.RVCA2);
 
-    this.osc3.connect(this.preGain3).connect(this.dist3).connect(this.distGain3);
+    this.dist3.connect(this.distGain3);
       this.distGain3.connect(this.LGain3).connect(this.LVCA3);
       this.distGain3.connect(this.RGain3).connect(this.RVCA3);
 
-    this.osc4.connect(this.preGain4).connect(this.dist4).connect(this.distGain4);
+    this.dist4.connect(this.distGain4);
       this.distGain4.connect(this.LGain4).connect(this.LVCA4);
       this.distGain4.connect(this.RGain4).connect(this.RVCA4);
 
-    this.osc5.connect(this.preGain5).connect(this.dist5).connect(this.distGain5);
+    this.dist5.connect(this.distGain5);
       this.distGain5.connect(this.LGain5).connect(this.LVCA5);
       this.distGain5.connect(this.RGain5).connect(this.RVCA5);
 
-    this.osc6.connect(this.preGain6).connect(this.dist6).connect(this.distGain6);
+    this.dist6.connect(this.distGain6);
       this.distGain6.connect(this.LGain6).connect(this.LVCA6);
       this.distGain6.connect(this.RGain6).connect(this.RVCA6);
 
