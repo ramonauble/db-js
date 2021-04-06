@@ -262,7 +262,7 @@ $(document).ready(function() {
         let p6 = voice1.sliderVals[activePage]["s6"];
         //draw oscillator & shape mix values
         if (activePage == "oscButton" || activePage == "ofxButton") {
-          displayCanvCtx.lineWidth = 3;
+          displayCanvCtx.lineWidth = 2.33;
           displayCanvCtx.strokeText(Math.trunc(100*(p1/255.0)) + "%", 55, 55);
           displayCanvCtx.strokeText(Math.trunc(100*(p2/255.0)) + "%", 150, 55);
           displayCanvCtx.strokeText(Math.trunc(100*(p3/255.0)) + "%", 245, 55);
@@ -271,7 +271,7 @@ $(document).ready(function() {
           displayCanvCtx.strokeText(Math.trunc(100*(p6/255.0)) + "%", 245, 120);
         //draw ratio values
         } else if (activePage == "ratButton") {
-          displayCanvCtx.lineWidth = 3;
+          displayCanvCtx.lineWidth = 2.33;
           displayCanvCtx.strokeText((voice1.ratioDict[p1 >>> 2]).toFixed(2), 55, 55);
           displayCanvCtx.strokeText((voice1.ratioDict[p2 >>> 2]).toFixed(2), 150, 55);
           displayCanvCtx.strokeText((voice1.ratioDict[p3 >>> 2]).toFixed(2), 245, 55);
@@ -463,10 +463,12 @@ $(document).ready(function() {
   $(".patchSelect").click(function() {
     let $this = $(this);
     if (voice1.patchStates[activePage][$this.attr("id")] == 1) {
+      voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
       voice1.patchStates[activePage][$this.attr("id")] = 0;
       $this.css("opacity", "33%");
       $this.removeClass("selected");
     } else if (voice1.patchStates[activePage][$this.attr("id")] == 0) {
+      voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
       voice1.patchStates[activePage][$this.attr("id")] = 1;
       $this.css("opacity", "100%");
       $this.addClass("selected");

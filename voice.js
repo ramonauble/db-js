@@ -124,6 +124,17 @@ class Voice {
         s6: this.oscGain6.parameters.get("staticGain")
       };
 
+      this.modDestDict = {
+        oscButton: {
+          PS1: this.oscGain1.parameters.get("modGain"),
+          PS2: this.oscGain2.parameters.get("modGain"),
+          PS3: this.oscGain3.parameters.get("modGain"),
+          PS4: this.oscGain4.parameters.get("modGain"),
+          PS5: this.oscGain5.parameters.get("modGain"),
+          PS6: this.oscGain6.parameters.get("modGain")
+        }
+      }
+
       //init ampltitudes - sawtooth-like decay (1/N)f
       this.gainNodeDict["s1"].value = 1.0;
       this.gainNodeDict["s2"].value = 0.5;
@@ -150,8 +161,6 @@ class Voice {
       this.osc6.connect(this.oscGain6);
         this.oscGain6.connect(this.LGain6);
         this.oscGain6.connect(this.RGain6);
-
-      this.lfoGain1.connect(this.oscGain6.parameters.get("modGain"));
     });
 
     //define dictionaries for easy node selection
@@ -366,7 +375,7 @@ class Voice {
         PS3: 0,
         PS4: 0,
         PS5: 0,
-        PS6: 1
+        PS6: 0
       },
       ratButton: {
         PS1: 0,
