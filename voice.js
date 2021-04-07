@@ -121,6 +121,13 @@ class Voice {
       this.preGain4 = new AudioWorkletNode(synthCtx, "gainProcessor");
       this.preGain5 = new AudioWorkletNode(synthCtx, "gainProcessor");
       this.preGain6 = new AudioWorkletNode(synthCtx, "gainProcessor");
+
+      /*this.panNodeTest = new AudioWorkletNode(synthCtx, "panProcessor", {
+        outputChannelCount: [2],
+        numberOfInputs: 1,
+        numberOfOutputs: 1
+      });*/
+
       //dictionary for mod mix node selection (page 1)
       this.gainNodeDict = {
         s1: this.oscGain1.parameters.get("staticGain"),
