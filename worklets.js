@@ -1,34 +1,3 @@
-class modMixProcessor extends AudioWorkletProcessor {
-  static get parameterDescriptors() {
-    return [
-      {
-        name: "staticVal",
-        defaultValue: 0,
-      }
-    ];
-  }
-
-  constructor() {
-    super();
-  }
-
-  process(inputs, outputs, parameters) {
-    const staticVal = parameters.staticVal;
-    for (let i = 0; i < outputs.length; i++) { //move through each output
-      let currentIn = inputs[i][0]; //input in, channel 0
-      let currentOut = outputs[i][0]; //output in, channel 0
-      for (let samp = 0; samp < currentOut.length; samp++) { //run thru each sample
-        if (staticVal.length == 1) {  //k rate
-          currentOut[samp] = staticVal[0];
-        } else if (staticVal.length == 128) { //a rate
-          currentOut[samp] = staticVal[samp];
-        }
-      }
-    }
-    return true;
-  }
-}
-
 class gainProcessor extends AudioWorkletProcessor {
   static get parameterDescriptors() {
     return [
@@ -116,5 +85,57 @@ class gainProcessor extends AudioWorkletProcessor {
   }
 }
 
-registerProcessor("mod-mix-processor", modMixProcessor);
+class panProcessor extends AudioWorkletProcessor {
+  static get parameterDescriptors() {
+    return [
+      {
+        name: "panPosition",
+        defaultValue: .5,
+        minValue: 0,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "modPosition",
+        defaultValue: 0,
+        minValue: -1,
+        maxValue: 1,
+        automationRate: "a-rate"
+      }
+    ];
+  }
+
+  constructor() {
+    super();
+  }
+
+  process(inputs, outputs, parameters) {
+    //get parameters
+    const pan = parameters.panPosition;
+    const mod = parameters.modPosition;
+    const input = inputs[0][0]; //mono input
+    const outputL = outputs[0][0]; //left out
+    const outputR = outputs[0][1]; //right out
+    //flags to discern if params are k or a rate this quantum
+    const panHasChanged = !(pan.length === 1);
+    const modHasChanged = !(mod.length === 1);
+    let panVal = pan[0];
+    let modVal = mod[0];
+
+    //loop through mono input
+    for (let i = 0; i < input.length; i++) {
+      if (panHasChanged) {
+        panVal = pan[i];
+      }
+      if (modHasChanged) {
+        modVal = mod[i];
+      }
+      outputL[i] = input[i] * (1 - panVal);
+      outputR[i] = input[i] * panVal;
+    }
+    return true;
+  }
+}
+
 registerProcessor("gainProcessor", gainProcessor);
+registerProcessor("panProcessor", panProcessor);
