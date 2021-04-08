@@ -117,7 +117,7 @@ which begins sounding at receipt of user interaction (page select).
     * OSC, RAT & OFX pages (numerical)
     * PAN & REV pages (visual)
   * LFOs/routing matrix
-   * pages 1 & 3
+    * pages 1 & 3
 #### currently implementing:
     LFOs/routing matrix
     * pages 2, 4, 5 & 6
