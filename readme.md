@@ -119,7 +119,7 @@ which begins sounding at receipt of user interaction (page select).
   * LFOs/routing matrix
     * pages 1 & 3
 #### currently implementing:
-    LFOs/routing matrix
+  * LFOs/routing matrix
     * pages 2, 4, 5 & 6
 #### to implement:
   * stereo envelopes & control (page 5)
