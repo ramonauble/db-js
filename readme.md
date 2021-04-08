@@ -1,5 +1,5 @@
 ![alt text](https://storage.googleapis.com/www.rsyn.co/db/assets/comb.png)
-### OVERVIEW
+## OVERVIEW
 ----------------------------------------------------------------
 db is a 6 oscillator additive synthesizer based on WebAudioAPI,
 inspired in part by the ethos of the drawbar organ.
@@ -16,7 +16,7 @@ to play chromatically, the keys are mapped as follows:
     * present range of -/+ 2 octaves from default position
 
 
-### STRUCTURE
+## STRUCTURE
 ----------------------------------------------------------------
 the synthesis engine is comprised of 6 main sections,
 each denoted by a different color & symbol.
@@ -28,6 +28,9 @@ they are as follows, in order from left to right:
  * **pan**        (PAN, soft teal) - controls the L/R placement of each partial in the stereo field
  * **envelope**   (AMP, light blue) - controls the shape & curve of the ADSR envelope, applied in stereo
  * **reverb**     (REV, muted pink) - controls the relative send amounts for the stereo convolution reverb
+
+### SYNTHESIS
+----------------------------------------------------------------
 
 #### OSC
 ----------------------------------------------------
@@ -84,7 +87,7 @@ they are as follows, in order from left to right:
 
 ### DISPLAY MODES
 ----------------------------------------------------------------
- there are three different display modes for the central canvas. selectable using the display mode buttons at the top center of the console. they are as follows.
+ there are three different display modes for the central canvas, selectable using the display mode buttons at the top center of the console. they are as follows.
 
 #### information page
  select this page using the **left display button** (containing the "i" symbol). this page displays information about the 6 parameter states for the selected synthesis page. pages 1, 2 & 3 display numerical values for each of the 6 parameters; pages 4, 5 & 6 display graphical representations of their parameters. this page is useful for fine tuning of the parameters via the sliders.
@@ -94,7 +97,7 @@ they are as follows, in order from left to right:
  select this page by pressing the **right display button** twice. on second press, the oscilloscope will turn into the x/y display. this mode preserves the stereo information of the signal - panning the oscillators will exert the most noticeable affect on its shape. in this mode, the **horizontal axis** is the left channel, and the **vertical axis** is the right.
  * note: to toggle between the x/y & oscilloscope display, just press the right display button again. doing so continually will alternate between them in succession.
 
-### NOTES
+## NOTES
 ----------------------------------------------------------------
 this project is still very much in development; the aforementioned structure is mostly
 finalized, but may be subject to change as the project moves toward completion.
