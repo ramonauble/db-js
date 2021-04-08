@@ -124,7 +124,7 @@ which begins sounding at receipt of user interaction (page select).
 #### to implement:
   * stereo envelopes & control (page 5)
   * parameter value display
-   * AMP page (envelope visualization)
+    * AMP page (envelope visualization)
   * virtual (onscreen) keyboard
     * for triggering the envelopes & changing the fundamental
     * for programming notes into the sequencer
