@@ -83,7 +83,7 @@ they are as follows, in order from left to right:
 ----------------------------------------------------------------
  each parameter page features its own independent LFO, offering
  separate control over LFO speed, shape & depth, using the 3 horizontal sliders positioned beneath the synthesis window.
- the LFO parameter states are displayed beneath each of the sliders. each page also offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page. each button acts as a toggle switch, instantly enabling or disabling the connection of the LFO to the corresponding page parameter. the 6 switches are 1:1 with the 6 parameters, from right to left.
+ the LFO parameter states are displayed beneath each of the sliders. each page also offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page. each button acts as a toggle switch, instantly enabling or disabling the connection of the LFO to the corresponding page parameter. the 6 switches are 1:1 with the 6 parameters, from left to right.
 
 ### DISPLAY MODES
 ----------------------------------------------------------------
@@ -125,13 +125,16 @@ which begins sounding at receipt of user interaction (page select).
   * LFOs/routing matrix
     * pages 2 (RAT), 5 (AMP) & 6 (REV)
 #### to implement:
-  * stereo envelopes & control (page 5)
+  * amp envelope & controls (page 5)
   * parameter value display
     * AMP page (envelope visualization)
   * virtual (onscreen) keyboard
     * for triggering the envelopes & changing the fundamental
     * for programming notes into the sequencer
   * asymmetric note & trig sequencer
+  * custom additive oscillator nodes
+  * parameter group control
+  * parameter modulation display (on canvas)
 #### wishful (not priority):
   * 3 part polyphony
   * midi controller support (WebMIDI API)
