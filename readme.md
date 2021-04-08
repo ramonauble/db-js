@@ -76,6 +76,23 @@ they are as follows, in order from left to right:
  the effect can thus be applied in varying amounts to each partial individually, offering granular control over the overall timbre of the reverberated signal.
  reverb send is represented visually by a single white circle (one per partial), which grows in size as the send for each partial is increased.
 
+### LFOS
+----------------------------------------------------------------
+ each parameter page features its own independent LFO, offering
+ separate control over LFO speed, shape & depth, using the 3 horizontal sliders positioned beneath the synthesis window.
+ the LFO parameter states are displayed beneath each of the sliders. each page also offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page. each button acts as a toggle switch, instantly enabling or disabling the connection of the LFO to the corresponding page parameter. the 6 switches are 1:1 with the 6 parameters, from right to left.
+
+### DISPLAY MODES
+----------------------------------------------------------------
+ there are three different display modes for the central canvas. selectable using the display mode buttons at the top center of the console. they are as follows.
+
+#### information page
+ select this page using the **left display button** (containing the "i" symbol). this page displays information about the 6 parameter states for the selected synthesis page. pages 1, 2 & 3 display numerical values for each of the 6 parameters; pages 4, 5 & 6 display graphical representations of their parameters. this page is useful for fine tuning of the parameters via the sliders.
+#### oscilloscope display
+ select this page by pressing the **right display button** once (containing a graphic of one cycle of a triangle wave). this page displays an oscilloscope-like representation of the current output. the samples are taken after the final mix, so all parameters will affect the shape in some way. in this mode, the **horizontal axis** is time, and the **vertical axis** is amplitude.
+#### x/y stereo display
+ select this page by pressing the **right display button** twice. on second press, the oscilloscope will turn into the x/y display. this mode preserves the stereo information of the signal - panning the oscillators will exert the most noticeable affect on its shape. in this mode, the **horizontal axis** is the left channel, and the **vertical axis** is the right.
+ * note: to toggle between the x/y & oscilloscope display, just press the right display button again. doing so continually will alternate between them in succession.
 
 ### NOTES
 ----------------------------------------------------------------
@@ -95,18 +112,19 @@ which begins sounding at receipt of user interaction (page select).
     * (†) (www.openairlib.net)
   * keyboard note change
   * oscilloscope display
+  * x/y stereo display
   * parameter value displays
     * OSC, RAT & OFX pages (numerical)
     * PAN & REV pages (visual)
+  * LFOs/routing matrix
+   * pages 1 & 3
 #### currently implementing:
-  * parameter value display
-    * AMP page (envelope visualization)
+    LFOs/routing matrix
+    * pages 2, 4, 5 & 6
 #### to implement:
   * stereo envelopes & control (page 5)
-  * 1 freely assignable LFO per page
-    * independent frequency, shape & depth controls per page
-    * freely routable to any combination of the 6 parameters
-    * toggle switch to change between free running & tempo locked
+  * parameter value display
+   * AMP page (envelope visualization)
   * virtual (onscreen) keyboard
     * for triggering the envelopes & changing the fundamental
     * for programming notes into the sequencer
