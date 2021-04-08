@@ -130,6 +130,7 @@ class panProcessor extends AudioWorkletProcessor {
       if (modHasChanged) {
         modVal = mod[i];
       }
+      panVal = panVal;
       outputL[i] = input[i] * (1 - panVal);
       outputR[i] = input[i] * panVal;
     }
