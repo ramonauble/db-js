@@ -177,10 +177,10 @@ $(document).ready(function() {
       currentDist.gain.setTargetAtTime(.75*($this.val()/256), synthCtx.currentTime, .005);
     } else if ($this.hasClass("panSlider")) {
       voice1.sliderVals["panButton"][$this.attr("id")] = $this.val();
-      var currentLeft = voice1.leftGainDict[$this.attr("id")];
-      var currentRight = voice1.rightGainDict[$this.attr("id")];
-      currentLeft.gain.setTargetAtTime((.75*((255 - $this.val())/255)), synthCtx.currentTime, .005);
-      currentRight.gain.setTargetAtTime((.75*(($this.val())/255)), synthCtx.currentTime, .005);
+      var currentOscP = voice1.oscPanDict[$this.attr("id")];
+      var currentDistP = voice1.distPanDict[$this.attr("id")];
+      currentOscP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
+      currentDistP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     } else if ($this.hasClass("ampSlider")) {
       voice1.sliderVals["ampButton"][$this.attr("id")] = $this.val();
     } else if ($this.hasClass("revSlider")) {
@@ -463,19 +463,25 @@ $(document).ready(function() {
   $(".patchSelect").click(function() {
     let $this = $(this);
     if (voice1.patchStates[activePage][$this.attr("id")] == 1) {
-      if (activePage != "ratButton") {
-        voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
-      } else {
+      if (activePage == "ratButton") {
         voice1.lfoGainDict[activePage].disconnect(voice1.oscNodeDictP[$this.attr("id")].detune);
+      } else if (activePage == "oscButton" || activePage == "ofxButton") {
+        voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
+      } else if (activePage == "panButton") {
+        voice1.lfoGainDict[activePage].disconnect(voice1.oscPanModDict[$this.attr("id")]);
+        voice1.lfoGainDict[activePage].disconnect(voice1.distPanModDict[$this.attr("id")]);
       }
       voice1.patchStates[activePage][$this.attr("id")] = 0;
       $this.css("opacity", "33%");
       $this.removeClass("selected");
     } else if (voice1.patchStates[activePage][$this.attr("id")] == 0) {
-      if (activePage != "ratButton") {
-        voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
-      } else {
+      if (activePage == "ratButton") {
         voice1.lfoGainDict[activePage].connect(voice1.oscNodeDictP[$this.attr("id")].detune);
+      } else if (activePage == "oscButton" || activePage == "ofxButton") {
+        voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
+      } else if (activePage == "panButton") {
+        voice1.lfoGainDict[activePage].connect(voice1.oscPanModDict[$this.attr("id")]);
+        voice1.lfoGainDict[activePage].connect(voice1.distPanModDict[$this.attr("id")]);
       }
       voice1.patchStates[activePage][$this.attr("id")] = 1;
       $this.css("opacity", "100%");
