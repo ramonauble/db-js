@@ -503,7 +503,7 @@ class Voice {
     this.dryGain6.gain.value = 1;
 
     //final mixer node before output - unity
-    this.mixGain.gain.value = 1;
+    this.mixGain.gain.value = .5;
 
     //init lfo oscillator frequency (1hz)
     this.lfo1.frequency.value = .1;
@@ -541,7 +541,7 @@ class Voice {
     //finalize audio signal path
       //route stereo reverb output -> audio destination
       //route stereo mixer output -> audio destination
-    this.reverb.connect(synthCtx.destination);
+    this.reverb.connect(this.mixGain);
     this.mixGain.connect(synthCtx.destination);
 
     //make connections for LFOs

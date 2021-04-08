@@ -173,8 +173,8 @@ $(document).ready(function() {
       voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = voice1.distNodeDict[$this.attr("id")];
       var currentPre = voice1.preNodeDict[$this.attr("id")];
-      currentPre.setTargetAtTime(.9*($this.val()/256), synthCtx.currentTime, .005);
-      currentDist.gain.setTargetAtTime(.75*($this.val()/256), synthCtx.currentTime, .005);
+      currentPre.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
+      currentDist.gain.setTargetAtTime(($this.val()/256), synthCtx.currentTime, .005);
     } else if ($this.hasClass("panSlider")) {
       voice1.sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentOscP = voice1.oscPanDict[$this.attr("id")];
