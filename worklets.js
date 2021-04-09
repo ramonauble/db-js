@@ -138,5 +138,67 @@ class panProcessor extends AudioWorkletProcessor {
   }
 }
 
+class additiveOsc extends AudioWorkletProcessor {
+  static get parameterDescriptors() {
+    return [
+      {
+        name: "frequency",
+        defaultValue: 440.0,
+        minValue: 0,
+        maxValue: 22050,
+        automationRate: "a-rate"
+      },
+      {
+        name: "ratio",
+        defaultValue: 1.00,
+        minValue: 0,
+        maxValue: 4.00,
+        automationRate: "a-rate"
+      }
+    ];
+  }
+
+  constructor() {
+    super();
+    this.phase = new Uint32Array(1); //init accumulator
+    this.max = (Math.pow(2, 32)) - 1;
+    this.incr = 0;
+  }
+
+  process(inputs, outputs, parameters) {
+    let frequency = parameters.frequency;
+    let ratio = parameters.ratio;
+    let iFreq = parameters.frequency[0];
+    let iRatio = parameters.ratio[0];
+    let freqHasChanged = !(frequency.length === 1);
+    let ratioHasChanged = !(ratio.length === 1);
+    const pi = Math.PI;
+
+    for (let i = 0; i < outputs[0][0].length; i++) {
+      if (freqHasChanged) {
+        iFreq = frequency[i];
+      }
+      if (ratioHasChanged) {
+        iRatio = ratio[i];
+      }
+      let newFreq = iRatio * iFreq; //calc new frequency
+      //calculate phase increment
+        //newFreq/sampleRate gives # of cycles per sample
+        //multiplying by max gives accumulator increment
+      this.incr = this.max * (newFreq/(sampleRate));
+      this.phase[0] += this.incr; //increment accumulator
+      let normPhase = this.phase[0]/(this.max);
+      let newPhase = 2*pi*normPhase; //normalized to radians
+      let newSamp = Math.sin(newPhase);
+      for (let n = 0; n < outputs.length; n++) {
+        //output n, channel 0, sample i
+        outputs[n][0][i] = newSamp;
+      }
+    }
+    return true;
+  }
+}
+
 registerProcessor("gainProcessor", gainProcessor);
 registerProcessor("panProcessor", panProcessor);
+registerProcessor("additiveOsc", additiveOsc);
