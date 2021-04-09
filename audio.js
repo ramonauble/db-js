@@ -4,7 +4,7 @@ $(document).ready(function() {
   document.body.addEventListener('touchstart', resume, false);
   //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const synthCtx = new AudioContext({sampleRate: 44100});
+  const synthCtx = new AudioContext();
   const distCurve = makeCurve(20); //generate distortion curve
   //create voice
   let voice1 = new Voice(synthCtx, distCurve);
@@ -150,7 +150,7 @@ $(document).ready(function() {
   var activeUI = "wave";
 
   //init oscillator frequencies
-  //changeFreqs(voice1.fundamental);
+  changeFreqs(voice1.fundamental);
   //init sliders
   pageChange("oscButton");
   //start test
@@ -168,9 +168,7 @@ $(document).ready(function() {
       currentGain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005); //set gain
     } else if ($this.hasClass("ratSlider")) {
       voice1.sliderVals["ratButton"][$this.attr("id")] = $this.val();
-      var currentRat = voice1.oscRatDict[$this.attr("id")];
-      var newRat = voice1.ratioDict[$this.val() >>> 2];
-      currentRat.setTargetAtTime(newRat, synthCtx.currentTime, .005);
+      changeFreqs(voice1.fundamental);
     } else if ($this.hasClass("ofxSlider")) {
       voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = voice1.distNodeDict[$this.attr("id")];
@@ -209,8 +207,13 @@ $(document).ready(function() {
     } else if (id == "lfoS3") {
       $lfoInfo[id].html("depth: " + parseFloat($this.val()).toFixed(1) + "%");
       voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
-      voice1.lfoGainDict[activePage].gain
-      .setTargetAtTime(($this.val()/100.0), synthCtx.currentTime, .005);
+      if (activePage == "ratButton") {
+        voice1.lfoGainDict[activePage].gain
+        .setTargetAtTime(($this.val()), synthCtx.currentTime, .005);
+      } else {
+        voice1.lfoGainDict[activePage].gain
+        .setTargetAtTime(($this.val()/100.0), synthCtx.currentTime, .005);
+      }
     }
   });
 
@@ -466,7 +469,7 @@ $(document).ready(function() {
     let $this = $(this);
     if (voice1.patchStates[activePage][$this.attr("id")] == 1) {
       if (activePage == "ratButton") {
-        voice1.lfoGainDict[activePage].disconnect(voice1.oscNodeDictP[$this.attr("id")].detune);
+        voice1.lfoGainDict[activePage].disconnect(voice1.oscNodeDictP[$this.attr("id")]);
       } else if (activePage == "oscButton" || activePage == "ofxButton") {
         voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
       } else if (activePage == "panButton") {
@@ -478,7 +481,7 @@ $(document).ready(function() {
       $this.removeClass("selected");
     } else if (voice1.patchStates[activePage][$this.attr("id")] == 0) {
       if (activePage == "ratButton") {
-        voice1.lfoGainDict[activePage].connect(voice1.oscNodeDictP[$this.attr("id")].detune);
+        voice1.lfoGainDict[activePage].connect(voice1.oscNodeDictP[$this.attr("id")]);
       } else if (activePage == "oscButton" || activePage == "ofxButton") {
         voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
       } else if (activePage == "panButton") {

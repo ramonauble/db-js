@@ -11,12 +11,12 @@ class Voice {
     //instatiate convolver node for reverb
     this.reverb = synthCtx.createConvolver();
     //instantiate oscillator nodes
-    /*this.osc1 = synthCtx.createOscillator();
+    this.osc1 = synthCtx.createOscillator();
     this.osc2 = synthCtx.createOscillator();
     this.osc3 = synthCtx.createOscillator();
     this.osc4 = synthCtx.createOscillator();
     this.osc5 = synthCtx.createOscillator();
-    this.osc6 = synthCtx.createOscillator();*/
+    this.osc6 = synthCtx.createOscillator();
     //instantiate pre-distortion gain nodes
     this.preGain1 = synthCtx.createGain();
     this.preGain2 = synthCtx.createGain();
@@ -82,9 +82,9 @@ class Voice {
       numberOfOutputs: 1
     };
     this.oscNodeCfg = {
-      outputChannelCount: [1, 1],
+      outputChannelCount: [1],
       numberOfInputs: 0,
-      numberOfOutputs: 2
+      numberOfOutputs: 1
     };
 
     synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
@@ -94,13 +94,6 @@ class Voice {
       this.oscGain4 = new AudioWorkletNode(synthCtx, "gainProcessor");
       this.oscGain5 = new AudioWorkletNode(synthCtx, "gainProcessor");
       this.oscGain6 = new AudioWorkletNode(synthCtx, "gainProcessor");
-
-      this.osc1 = new AudioWorkletNode(synthCtx, "additiveOsc", this.oscNodeCfg);
-      this.osc2 = new AudioWorkletNode(synthCtx, "additiveOsc", this.oscNodeCfg);
-      this.osc3 = new AudioWorkletNode(synthCtx, "additiveOsc", this.oscNodeCfg);
-      this.osc4 = new AudioWorkletNode(synthCtx, "additiveOsc", this.oscNodeCfg);
-      this.osc5 = new AudioWorkletNode(synthCtx, "additiveOsc", this.oscNodeCfg);
-      this.osc6 = new AudioWorkletNode(synthCtx, "additiveOsc", this.oscNodeCfg);
 
       this.preGain1 = new AudioWorkletNode(synthCtx, "gainProcessor");
       this.preGain2 = new AudioWorkletNode(synthCtx, "gainProcessor");
@@ -135,14 +128,6 @@ class Voice {
         s5: this.oscGain5.parameters.get("staticGain"),
         s6: this.oscGain6.parameters.get("staticGain")
       };
-      this.oscRatDict = {
-        s1: this.osc1.parameters.get("ratio"),
-        s2: this.osc2.parameters.get("ratio"),
-        s3: this.osc3.parameters.get("ratio"),
-        s4: this.osc4.parameters.get("ratio"),
-        s5: this.osc5.parameters.get("ratio"),
-        s6: this.osc6.parameters.get("ratio")
-      };
       this.preNodeDict = {
         s1: this.preGain1.parameters.get("staticGain"),
         s2: this.preGain2.parameters.get("staticGain"),
@@ -176,14 +161,6 @@ class Voice {
           PS4: this.oscGain4.parameters.get("modGain"),
           PS5: this.oscGain5.parameters.get("modGain"),
           PS6: this.oscGain6.parameters.get("modGain")
-        },
-        ratButton: {
-          PS1: this.osc1.parameters.get("frequency"),
-          PS2: this.osc2.parameters.get("frequency"),
-          PS3: this.osc3.parameters.get("frequency"),
-          PS4: this.osc4.parameters.get("frequency"),
-          PS5: this.osc5.parameters.get("frequency"),
-          PS6: this.osc6.parameters.get("frequency")
         },
         ofxButton: {
           PS1: this.preGain1.parameters.get("modGain"),
@@ -267,23 +244,23 @@ class Voice {
     //--------------------------------------
 
     //oscillator nodes - slider change
-    /*this.oscNodeDict = {
+    this.oscNodeDict = {
       s1: this.osc1,
       s2: this.osc2,
       s3: this.osc3,
       s4: this.osc4,
       s5: this.osc5,
       s6: this.osc6
-    };*/
+    };
     //oscillator nodes - patch change
-    /*this.oscNodeDictP = {
-      PS1: this.osc1,
-      PS2: this.osc2,
-      PS3: this.osc3,
-      PS4: this.osc4,
-      PS5: this.osc5,
-      PS6: this.osc6
-    };*/
+    this.oscNodeDictP = {
+      PS1: this.osc1.frequency,
+      PS2: this.osc2.frequency,
+      PS3: this.osc3.frequency,
+      PS4: this.osc4.frequency,
+      PS5: this.osc5.frequency,
+      PS6: this.osc6.frequency
+    };
     //waveshaper post-gain nodes
     this.distNodeDict = {
       s1: this.distGain1,
@@ -588,12 +565,12 @@ class Voice {
 
   //start oscillators & lfos
   start() {
-    /*this.osc1.start();
+    this.osc1.start();
     this.osc2.start();
     this.osc3.start();
     this.osc4.start();
     this.osc5.start();
-    this.osc6.start();*/
+    this.osc6.start();
 
     this.lfo1.start();
     this.lfo2.start();
