@@ -4,7 +4,7 @@ $(document).ready(function() {
   document.body.addEventListener('touchstart', resume, false);
   //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const synthCtx = new AudioContext();
+  const synthCtx = new AudioContext({sampleRate: 44100});
   const distCurve = makeCurve(20); //generate distortion curve
   //create voice
   let voice1 = new Voice(synthCtx, distCurve);
@@ -150,7 +150,7 @@ $(document).ready(function() {
   var activeUI = "wave";
 
   //init oscillator frequencies
-  changeFreqs(voice1.fundamental);
+  //changeFreqs(voice1.fundamental);
   //init sliders
   pageChange("oscButton");
   //start test
@@ -168,7 +168,9 @@ $(document).ready(function() {
       currentGain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005); //set gain
     } else if ($this.hasClass("ratSlider")) {
       voice1.sliderVals["ratButton"][$this.attr("id")] = $this.val();
-      changeFreqs(voice1.fundamental);
+      var currentRat = voice1.oscRatDict[$this.attr("id")];
+      var newRat = voice1.ratioDict[$this.val() >>> 2];
+      currentRat.setTargetAtTime(newRat, synthCtx.currentTime, .005);
     } else if ($this.hasClass("ofxSlider")) {
       voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = voice1.distNodeDict[$this.attr("id")];
