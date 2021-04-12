@@ -120,12 +120,12 @@ which begins sounding at receipt of user interaction (page select).
     * OSC, RAT & OFX pages (numerical)
     * PAN & REV pages (visual)
   * LFOs/routing matrix
-    * pages 1 (OSC), 3 (OFX) & 4 (PAN)
+    * pages 1 (OSC), 2 (RAT), 3 (OFX) & 4 (PAN)
 #### currently implementing:
-  * LFOs/routing matrix
-    * pages 2 (RAT), 5 (AMP) & 6 (REV)
-#### to implement:
   * amp envelope & controls (page 5)
+  * LFOs/routing matrix
+    * pages 5 (AMP) & 6 (REV)
+#### to implement:
   * parameter value display
     * AMP page (envelope visualization)
   * virtual (onscreen) keyboard
