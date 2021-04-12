@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 $(document).ready(function() {
   document.body.addEventListener('touchstart', resume, false);
@@ -183,6 +183,8 @@ $(document).ready(function() {
       currentDistP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     } else if ($this.hasClass("ampSlider")) {
       voice1.sliderVals["ampButton"][$this.attr("id")] = $this.val();
+      var currentEnvP = voice1.envParamDict[$this.attr("id")];
+      currentEnvP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     } else if ($this.hasClass("revSlider")) {
       voice1.sliderVals["revButton"][$this.attr("id")] = $this.val();
       var currentRevGain = voice1.revGainDict[$this.attr("id")];
@@ -419,6 +421,7 @@ $(document).ready(function() {
     let root = 261.625565301; //C5
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
+      voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime);
       expOffset += (12*octaveOffset); //account for octave
       let newFreq = root*(2**(expOffset/12.0)); //12tet
       changeFreqs(newFreq);
@@ -437,7 +440,10 @@ $(document).ready(function() {
 
   //catch shift release & change shift state
   $(document).keyup(function(event) {
-    if (event.which == 16) {
+    let expOffset = keyDict[event.which];
+    if (expOffset !== undefined) {
+      voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
+    } else if (event.which == 16) {
       shiftPressed = false;
     }
   });

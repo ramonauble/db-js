@@ -86,6 +86,11 @@ class Voice {
       numberOfInputs: 0,
       numberOfOutputs: 1
     };
+    this.envNodeCfg = {
+      outputChannelCount: [1],
+      numberOfInputs: 0,
+      numberOfOutputs: 1
+    };
 
     synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
       this.oscGain1 = new AudioWorkletNode(synthCtx, "gainProcessor");
@@ -116,10 +121,19 @@ class Voice {
       this.distPan5 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
       this.distPan6 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
 
-      //this.testOsc1 = new AudioWorkletNode(synthCtx, "additiveOsc", this.oscNodeCfg);
-      //this.testOsc1.connect(synthCtx.destination);
+      this.ampEnv = new AudioWorkletNode(synthCtx, "envelopeNode", this.envNodeCfg);
+      //this.ampEnv.parameters.get("state").value = 1;
+      this.ampEnv.connect(this.mixGain.gain);
 
-      //dictionary for mod mix node selection (page 1)
+      this.trigEnv = this.ampEnv.parameters.get("state");
+      this.envParamDict = {
+        s1: this.ampEnv.parameters.get("attack"),
+        s2: this.ampEnv.parameters.get("decay"),
+        s3: this.ampEnv.parameters.get("sustain"),
+        s4: this.ampEnv.parameters.get("release")
+      };
+
+      //dictionaries for node selection
       this.gainNodeDict = {
         s1: this.oscGain1.parameters.get("staticGain"),
         s2: this.oscGain2.parameters.get("staticGain"),
@@ -511,7 +525,7 @@ class Voice {
     this.dryGain6.gain.value = 1;
 
     //final mixer node before output - unity
-    this.mixGain.gain.value = .5;
+    this.mixGain.gain.value = 0;
 
     //init lfo oscillator frequency (1hz)
     this.lfo1.frequency.value = .1;
