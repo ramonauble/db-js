@@ -122,7 +122,6 @@ class Voice {
       this.distPan6 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
 
       this.ampEnv = new AudioWorkletNode(synthCtx, "envelopeNode", this.envNodeCfg);
-      //this.ampEnv.parameters.get("state").value = 1;
       this.ampEnv.connect(this.mixGain.gain);
 
       this.trigEnv = this.ampEnv.parameters.get("state");
