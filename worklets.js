@@ -307,9 +307,9 @@ class envelopeNode extends AudioWorkletProcessor {
       }
 
       if (this.prevState == 0 && sampleState == 1) { //note on
-        this.acc = 0; //init accumulator
-        this.prevAcc = 0;
-        this.accBuff = 0;
+        //this.acc = 0; //init accumulator
+        //this.prevAcc = 0;
+        //this.accBuff = 0;
         this.stage = 1; //initiate attack stage
         this.prevState = sampleState; //save state for current sample
       } else if (this.prevState == 1 && sampleState == 0) { //note off

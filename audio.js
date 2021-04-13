@@ -424,12 +424,10 @@ $(document).ready(function() {
     let root = 261.625565301; //C5
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
-      if (numKeys == 0) {
-        console.log("first trig");
-        voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime);
-      }
       if (!keysDict.includes(expOffset)) {  //if key not in dictionary
         numKeys = keysDict.push(expOffset); //add key to end of dictionary
+        voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
+        voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
       }
       expOffset += (12*octaveOffset); //account for octave
       let newFreq = root*(2**(expOffset/12.0)); //12tet
