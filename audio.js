@@ -413,6 +413,9 @@ $(document).ready(function() {
     }, 0);
   };
 
+  var keysDict = [];  //dictionary for unique keys held
+  var numKeys = 0; //number of keys held at any instant
+
   //catches input for the following:
   //  keyboard press - recalculates new fundamental
   //  shift press - logs shift state
@@ -421,7 +424,13 @@ $(document).ready(function() {
     let root = 261.625565301; //C5
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
-      voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime);
+      if (numKeys == 0) {
+        console.log("first trig");
+        voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime);
+      }
+      if (!keysDict.includes(expOffset)) {  //if key not in dictionary
+        numKeys = keysDict.push(expOffset); //add key to end of dictionary
+      }
       expOffset += (12*octaveOffset); //account for octave
       let newFreq = root*(2**(expOffset/12.0)); //12tet
       changeFreqs(newFreq);
@@ -442,7 +451,13 @@ $(document).ready(function() {
   $(document).keyup(function(event) {
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
-      voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
+      if (numKeys == 1) {
+        voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
+      }
+      if (keysDict.includes(expOffset)) {
+        keysDict = keysDict.filter(key => key != expOffset);
+      }
+      numKeys = keysDict.length;
     } else if (event.which == 16) {
       shiftPressed = false;
     }
