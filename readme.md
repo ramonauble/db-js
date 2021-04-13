@@ -14,15 +14,24 @@ to play chromatically, the keys are mapped as follows:\
     C#  D#      F#  G#  A#\
   C   D   E   F   G   A   B   C2
 
- to shift 1 octave down, press and hold SHIFT & press L ARROW
+ to shift 1 octave down, press and hold SHIFT & press L ARROW\
  to shift 1 octave up, press and hold SHIFT & press R ARROW
   * present range of -/+ 2 octaves from default position
+
+current state:
+  * pages 1, 2, 3, & 4 are fully implemented
+  * page 5 (envelope) - only the first four params. currently work
+    * attack, decay, sustain, release
+    * LFO & last two params (A/D curve shapes) not yet implemented
+  * page 6 (reverb) - all params work, LFO not yet implemented
+    * this page is tentative - may evolve into a bitcrusher/SR reducer effect.
+
 
 
 ## STRUCTURE
 ----------------------------------------------------------------
 the synthesis engine is comprised of 6 main sections,
-each denoted by a different color & symbol.
+each denoted by a different color & symbol.\
 they are as follows, in order from left to right:
 
  * **oscillator** (OSC, dark purple) - controls the relative amplitudes of each of the 6 partials
@@ -37,18 +46,18 @@ they are as follows, in order from left to right:
 
 #### OSC
 ----------------------------------------------------
- each "partial" is comprised of a single sine wave.
- the gain of each sinusoid is controlled by the corresponding drawbar on the OSC page.
- each partial is thus assigned its own independent pre-mix level bounded between 0 & unity gain.
+ each "partial" is comprised of a single sine wave.\
+ the gain of each sinusoid is controlled by the corresponding drawbar on the OSC page.\
+ each partial is thus assigned its own independent pre-mix level bounded between 0 & unity gain.\
  the default positions fall in line with a simple harmonic series,
- with each partial N [N == 1 to 6] being 1/N the maximum amplitude (unity).
+ with each partial N [N == 1 to 6] being 1/N the maximum amplitude (unity).\
  coupled with the default ratio settings (below), this creates a starting sound
  similar in character to a sawtooth wave.
 
 #### RAT
 ----------------------------------------------------
- each partial also has an independent frequency, determined in reference to the fundamental of each note.
- frequencies are set by the corresponding ratio parameter on the RAT page.
+ each partial also has an independent frequency, determined in reference to the fundamental of each note.\
+ frequencies are set by the corresponding ratio parameter on the RAT page.\
  the sliders default to a simple harmonic series, similar to a sawtooth -
  1st is quarter freq (.25x), 2nd is .5x, 3rd is 1x, 4th is 2x, 5th is 3x, 6th is 4x.
  * the top 48 ratios (top 75%) range from 1.125x to 4.00x (overtones).
@@ -56,48 +65,59 @@ they are as follows, in order from left to right:
 
 #### OFX
 ----------------------------------------------------
- each partial also has its own independent waveshaping distortion applied to it.
- the distortion mix level for each partial is set by the corresponding drawbar on the OFX page, starting with no distortion (bottom position, default state) to full distortion (top position).
+ each partial also has its own independent waveshaping distortion applied to it.\
+ the distortion mix level for each partial is set by the corresponding drawbar on the OFX page, starting with no distortion (bottom position, default state) to full distortion (top position).\
  the distortion itself takes the form of a nonlinear waveshaper, using a sigmoid curve to generate rich harmonics from a simple sine wave
   * note: the distortion is applied as a mix, which is to say that both the oscillator & distortion are mixed together in the amounts determined by their drawbars, prior to being panned, attenuated & sent to the reverb.
 
 #### PAN
 ----------------------------------------------------
- the PAN page allows each partial to be panned to a specific region of the stereo field, prior to being mixed down, attenuated & sent to the stereo reverb.
- the exact L/R placement of each partial is controlled by the corresponding drawbar.
- the graphic display represents the current panning location as a moving white dot atop a horizontal black line.
- default position is center (equal panning) for all partials.
+ the PAN page allows each partial to be panned to a specific region of the stereo field, prior to being mixed down, attenuated & sent to the stereo reverb.\
+ the exact L/R placement of each partial is controlled by the corresponding drawbar.\
+ the graphic display represents the current panning location as a moving white dot atop a horizontal black line.\
+ default position is center (equal panning) for all partials.\
  top position is fully right, bottom position is fully left.
 
 #### AMP
 ----------------------------------------------------
- the AMP page contains one stereo ADSR envelope, with controls for attack, decay, sustain and release.
- an additional control allows for a time offset to be introduced between the stereo envelopes, delaying the trigger of either the left or right envelope by a configurable amount.
- another control introduces an amount of attenuated randomness into the delay parameter, allowing the trigger times to continually vary by a small, chaotic amount.
+ the AMP page contains one stereo ADSR envelope, with controls for attack, decay, sustain and release.\
+ the final two controls will affect the curve shape of the attack & decay/release stages, respectively.\
+
 
 #### REV
 ----------------------------------------------------
- the REV page is host to a stereo convolution reverb, based on an impulse response taken from the Innocent Railway Tunnel (†).
- the 6 sliders control the relative reverb send amounts for each of the 6 stereo panned waveshaper/oscillator pairings.
- the effect can thus be applied in varying amounts to each partial individually, offering granular control over the overall timbre of the reverberated signal.
+ the REV page is host to a stereo convolution reverb, based on an impulse response taken from the Innocent Railway Tunnel (†).\
+ the 6 sliders control the relative reverb send amounts for each of the 6 stereo panned waveshaper/oscillator pairings.\
+ the effect can thus be applied in varying amounts to each partial individually, offering granular control over the overall timbre of the reverberated signal.\
  reverb send is represented visually by a single white circle (one per partial), which grows in size as the send for each partial is increased.
 
 ### LFOS
 ----------------------------------------------------------------
  each parameter page features its own independent LFO, offering
- separate control over LFO speed, shape & depth, using the 3 horizontal sliders positioned beneath the synthesis window.
- the LFO parameter states are displayed beneath each of the sliders. each page also offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page. each button acts as a toggle switch, instantly enabling or disabling the connection of the LFO to the corresponding page parameter. the 6 switches are 1:1 with the 6 parameters, from left to right.
+ separate control over LFO speed, shape & depth, using the 3 horizontal sliders positioned beneath the synthesis window.\
+ the LFO parameter states are displayed beneath each of the sliders. each page also offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page.\
+ each button acts as a toggle switch, instantly enabling or disabling the connection of the LFO to the corresponding page parameter.\
+ the 6 switches are 1:1 with the 6 parameters, from left to right.
 
 ### DISPLAY MODES
 ----------------------------------------------------------------
  there are three different display modes for the central canvas, selectable using the display mode buttons at the top center of the console. they are as follows.
 
 #### information page
- select this page using the **left display button** (containing the "i" symbol). this page displays information about the 6 parameter states for the selected synthesis page. pages 1, 2 & 3 display numerical values for each of the 6 parameters; pages 4, 5 & 6 display graphical representations of their parameters. this page is useful for fine tuning of the parameters via the sliders.
+ select this page using the **left display button** (containing the "i" symbol).\
+ this page displays information about the 6 parameter states for the selected synthesis page.\
+ pages 1, 2 & 3 display numerical values for each of the 6 parameters.\
+ pages 4, 5 & 6 display graphical representations of their parameters.\
+ this page is useful for fine tuning of the parameters via the sliders.
 #### oscilloscope display
- select this page by pressing the **right display button** once (containing a graphic of one cycle of a triangle wave). this page displays an oscilloscope-like representation of the current output. the samples are taken after the final mix, so all parameters will affect the shape in some way. in this mode, the **horizontal axis** is time, and the **vertical axis** is amplitude.
+ select this page by pressing the **right display button** once (containing a graphic of one cycle of a triangle wave).\
+ this page displays an oscilloscope-like representation of the current output.\
+ the samples are taken after the final mix, so all parameters will affect the shape in some way.\
+ in this mode, the **horizontal axis** is time, and the **vertical axis** is amplitude.
 #### x/y stereo display
- select this page by pressing the **right display button** twice. on second press, the oscilloscope will turn into the x/y display. this mode preserves the stereo information of the signal - panning the oscillators will exert the most noticeable affect on its shape. in this mode, the **horizontal axis** is the left channel, and the **vertical axis** is the right.
+ select this page by pressing the **right display button** twice. on second press, the oscilloscope will turn into the x/y display.\
+ this mode preserves the stereo information of the signal - panning the oscillators (or utilizing the PAN LFO) will exert the most noticeable affect on its shape.\
+ in this mode, the **horizontal axis** is the left channel, and the **vertical axis** is the right.
  * note: to toggle between the x/y & oscilloscope display, just press the right display button again. doing so continually will alternate between them in succession.
 
 ## NOTES
