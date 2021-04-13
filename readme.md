@@ -8,8 +8,11 @@ it is designed to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
 
 to play chromatically, the keys are mapped as follows:
- * A W  S E  D F T  G Y  H U  J K
- * C C# D D# E F F# G G# A A# B C
+    W   E       T   Y   U\
+  A   S   D   F   G   H   J   K\
+\
+    C#  D#      F#  G#  A#\
+  C   D   E   F   G   A   B   C2\
 
  * to shift 1 octave down, press and hold SHIFT & press L ARROW
  * to shift 1 octave up, press and hold SHIFT & press R ARROW
