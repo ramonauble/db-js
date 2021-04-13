@@ -18,7 +18,7 @@ to play chromatically, the keys are mapped as follows:\
  to shift 1 octave up, press and hold SHIFT & press R ARROW
   * present range of -/+ 2 octaves from default position
 
-current state:
+current state:\
   * pages 1, 2, 3, & 4 are fully implemented
   * page 5 (envelope) - only the first four params. currently work
     * attack, decay, sustain, release
