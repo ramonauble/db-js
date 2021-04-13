@@ -7,16 +7,16 @@ inspired in part by the ethos of the drawbar organ.
 it is designed to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
 
-to play chromatically, the keys are mapped as follows:
+to play chromatically, the keys are mapped as follows:\
     W   E       T   Y   U\
   A   S   D   F   G   H   J   K\
 \
     C#  D#      F#  G#  A#\
-  C   D   E   F   G   A   B   C2\
+  C   D   E   F   G   A   B   C2
 
- * to shift 1 octave down, press and hold SHIFT & press L ARROW
- * to shift 1 octave up, press and hold SHIFT & press R ARROW
-    * present range of -/+ 2 octaves from default position
+ to shift 1 octave down, press and hold SHIFT & press L ARROW
+ to shift 1 octave up, press and hold SHIFT & press R ARROW
+  * present range of -/+ 2 octaves from default position
 
 
 ## STRUCTURE
