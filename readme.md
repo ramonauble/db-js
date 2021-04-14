@@ -18,16 +18,6 @@ to play chromatically, the keys are mapped as follows:\
  to shift 1 octave up, press and hold SHIFT & press R ARROW
   * present range of -/+ 2 octaves from default position
 
-current state:
-  * pages 1, 2, 3, & 4 are fully implemented
-  * page 5 (envelope) - only the first four params. currently work
-    * attack, decay, sustain, release
-    * LFO & last two params (A/D curve shapes) not yet implemented
-  * page 6 (reverb) - all params work, LFO not yet implemented
-    * this page is tentative - may evolve into a bitcrusher/SR reducer effect.
-
-
-
 ## STRUCTURE
 ----------------------------------------------------------------
 the synthesis engine is comprised of 6 main sections,
@@ -80,9 +70,10 @@ they are as follows, in order from left to right:
 
 #### AMP
 ----------------------------------------------------
- the AMP page contains one ADSR envelope, with controls for attack, decay, sustain and release.\
- the final two controls will affect the curve shape of the attack & decay/release stages, respectively.
-
+ the AMP page contains one ADSR envelope, applied to the master VCA, to allow control over the dynamics of the sound.\
+ the envelope is retriggered whenever a NOTE ON event is received. it will always retrigger from its previous position (level). the release stage is executed on the final NOTE OFF event (last held key released).\
+ the sliders provide control over attack, decay, sustain and release, in order from left to right.\
+ the final two sliders determine the shape of the attack & decay/release stages, respectively. **fully up** is **fully linear**; **fully down** is **fully exponential**; in between gives a gradual linear interpolation between the two.
 
 #### REV
 ----------------------------------------------------
