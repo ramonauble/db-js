@@ -210,7 +210,7 @@ class envelopeNode extends AudioWorkletProcessor {
       {
         name: "attack",
         defaultValue: .1,
-        minValue: 0,
+        minValue: .001,
         maxValue: 1,
         automationRate: "a-rate"
       },
@@ -236,8 +236,22 @@ class envelopeNode extends AudioWorkletProcessor {
         automationRate: "a-rate"
       },
       {
+        name: "aCurve",
+        defaultValue: .5,
+        minValue: 0,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "drCurve",
+        defaultValue: .5,
+        minValue: 0,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
         name: "state",
-        defaultValue: 0,
+        defaultValue: .5,
         minValue: 0,
         maxValue: 1,
         automationRate: "a-rate"
@@ -255,30 +269,43 @@ class envelopeNode extends AudioWorkletProcessor {
     this.inc = 0; //sample increment for current stage
     this.prevState = 0; //previous envelope state
     this.stage = 0; //init stage to not running
-      //1 - attack, 2 - decay, 3 - sustain, 4 - release
+    this.normAcc //normalized value bounded between 0-1 - acc/max
   }
 
   process(inputs, outputs, parameters) {
+    //initialize output channe;
     let output = outputs[0][0]; //output 0, channel 0
 
+    //parameter value arrays for current quantum
     let currentState = parameters.state;
     let currentAttack = parameters.attack;
     let currentDecay = parameters.decay;
     let currentSustain = parameters.sustain;
     let currentRelease = parameters.release;
+    let currentACurve = parameters.aCurve;
+    let currentDRCurve = parameters.drCurve;
 
+    //flags to discern parameter states for current quantum
+      //true is a-rate, false is k-rate
     let stateHasChanged = !(currentState.length === 1);
     let attackHasChanged = !(currentAttack.length === 1);
     let decayHasChanged = !(currentDecay.length === 1);
     let sustainHasChanged = !(currentSustain.length === 1);
     let releaseHasChanged = !(currentRelease.length === 1);
+    let aCurveHasChanged = !(currentACurve.length === 1);
+    let drCurveHasChanged = !(currentDRCurve.length === 1);
 
+    //vars to hold parameter value for current sample
     let sampleState;
     let sampleAttack;
     let sampleDecay;
     let sampleSustain;
     let sampleRelease;
+    let sampleACurve;
+    let sampleDRCurve;
 
+    //assign parameter values for current sample based on flag states
+      //to prevent access of undefined elements
     for (let i = 0; i < output.length; i++) {
       if (stateHasChanged) {
         sampleState = currentState[i];
@@ -305,11 +332,19 @@ class envelopeNode extends AudioWorkletProcessor {
       } else {
         sampleRelease = currentRelease[0];
       }
+      if (aCurveHasChanged) {
+        sampleACurve = currentACurve[i];
+      } else {
+        sampleACurve = currentACurve[0];
+      }
+      if (drCurveHasChanged) {
+        sampleDRCurve = currentDRCurve[i];
+      } else {
+        sampleDRCurve = currentDRCurve[0];
+      }
 
+      //note on/off when state changes state :]
       if (this.prevState == 0 && sampleState == 1) { //note on
-        //this.acc = 0; //init accumulator
-        //this.prevAcc = 0;
-        //this.accBuff = 0;
         this.stage = 1; //initiate attack stage
         this.prevState = sampleState; //save state for current sample
       } else if (this.prevState == 1 && sampleState == 0) { //note off
@@ -317,6 +352,7 @@ class envelopeNode extends AudioWorkletProcessor {
         this.prevState = sampleState; //save state for current sample
       }
 
+      //ADSR envelope implementation
       if (this.stage == 1) { //attack stage
         if (sampleAttack == 0) {
           this.inc = this.max;  //instant attack
@@ -327,7 +363,8 @@ class envelopeNode extends AudioWorkletProcessor {
         this.prevAcc = this.acc;  //save current accumulator state
         this.acc += this.inc;          //increment accumulator
         if (this.acc < this.max) {  //attack phase still in progress
-          output[i] = this.acc/this.max //output between 0-1
+          this.normAcc = this.acc/this.max;
+          output[i] = (sampleACurve*this.normAcc) + (1 - sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1); //output between 0-1
         } else {              //accumulator overflow - trigger decay stage
           this.acc = this.max;//set accumulator to maximum
           output[i] = 1.0;    //end of sttack - output at max
@@ -344,7 +381,8 @@ class envelopeNode extends AudioWorkletProcessor {
         this.prevAcc = this.acc;
         this.acc -= this.inc; //decrement to sustain
         if (this.acc > (this.max*sampleSustain)) {
-          output[i] = this.acc/this.max //output between 0-1
+          this.normAcc = this.acc/this.max;
+          output[i] = (sampleACurve*this.normAcc) + (1 - sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1); //output between 0-1
         } else {
           this.acc = this.max * sampleSustain;
           output[i] = 1.0 * sampleSustain;
@@ -365,7 +403,8 @@ class envelopeNode extends AudioWorkletProcessor {
         this.prevAcc = this.acc;
         this.acc -= this.inc;
         if (this.acc > 0) {
-          output[i] = this.acc/this.max;
+          this.normAcc = this.acc/this.max;
+          output[i] = (sampleACurve*this.normAcc) + (1 - sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1);
         } else {
           output[i] = 0;
           this.stage = 0; //end envelope

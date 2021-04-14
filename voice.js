@@ -129,7 +129,9 @@ class Voice {
         s1: this.ampEnv.parameters.get("attack"),
         s2: this.ampEnv.parameters.get("decay"),
         s3: this.ampEnv.parameters.get("sustain"),
-        s4: this.ampEnv.parameters.get("release")
+        s4: this.ampEnv.parameters.get("release"),
+        s5: this.ampEnv.parameters.get("aCurve"),
+        s6: this.ampEnv.parameters.get("drCurve")
       };
 
       //dictionaries for node selection
@@ -382,8 +384,8 @@ class Voice {
         s2: 127,
         s3: 0,
         s4: 127,
-        s5: 0,
-        s6: 0
+        s5: 127,
+        s6: 127
       },
       revButton: {
         s1: 0,
