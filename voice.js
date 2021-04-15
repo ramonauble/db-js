@@ -53,12 +53,7 @@ class Voice {
     this.dryGain5 = synthCtx.createGain();
     this.dryGain6 = synthCtx.createGain();
 
-    this.VCA1 = synthCtx.createGain();
-    this.VCA2 = synthCtx.createGain();
-    this.VCA3 = synthCtx.createGain();
-    this.VCA4 = synthCtx.createGain();
-    this.VCA5 = synthCtx.createGain();
-    this.VCA6 = synthCtx.createGain();
+    this.VCA = synthCtx.createGain();
 
     //instantiate final mixer node (unity gain)
     this.mixGain = synthCtx.createGain();
@@ -122,7 +117,7 @@ class Voice {
       this.distPan6 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
 
       this.ampEnv = new AudioWorkletNode(synthCtx, "envelopeNode", this.envNodeCfg);
-      this.ampEnv.connect(this.mixGain.gain);
+      this.ampEnv.connect(this.VCA.gain);
 
       this.trigEnv = this.ampEnv.parameters.get("state");
       this.envParamDict = {
@@ -221,17 +216,17 @@ class Voice {
       this.preNodeDict["s6"].value = 0;
 
       this.osc1.connect(this.oscGain1);
-        this.oscGain1.connect(this.oscPan1).connect(this.VCA1);
+        this.oscGain1.connect(this.oscPan1).connect(this.VCA);
       this.osc2.connect(this.oscGain2);
-        this.oscGain2.connect(this.oscPan2).connect(this.VCA2);
+        this.oscGain2.connect(this.oscPan2).connect(this.VCA);
       this.osc3.connect(this.oscGain3);
-        this.oscGain3.connect(this.oscPan3).connect(this.VCA3);
+        this.oscGain3.connect(this.oscPan3).connect(this.VCA);
       this.osc4.connect(this.oscGain4);
-        this.oscGain4.connect(this.oscPan4).connect(this.VCA4);
+        this.oscGain4.connect(this.oscPan4).connect(this.VCA);
       this.osc5.connect(this.oscGain5);
-        this.oscGain5.connect(this.oscPan5).connect(this.VCA5);
+        this.oscGain5.connect(this.oscPan5).connect(this.VCA);
       this.osc6.connect(this.oscGain6);
-        this.oscGain6.connect(this.oscPan6).connect(this.VCA6);
+        this.oscGain6.connect(this.oscPan6).connect(this.VCA);
 
       this.osc1.connect(this.preGain1).connect(this.dist1);
       this.osc2.connect(this.preGain2).connect(this.dist2);
@@ -241,17 +236,17 @@ class Voice {
       this.osc6.connect(this.preGain6).connect(this.dist6);
 
       this.dist1.connect(this.distGain1);
-        this.distGain1.connect(this.distPan1).connect(this.VCA1);
+        this.distGain1.connect(this.distPan1).connect(this.VCA);
       this.dist2.connect(this.distGain2);
-        this.distGain2.connect(this.distPan2).connect(this.VCA2);
+        this.distGain2.connect(this.distPan2).connect(this.VCA);
       this.dist3.connect(this.distGain3);
-        this.distGain3.connect(this.distPan3).connect(this.VCA3);
+        this.distGain3.connect(this.distPan3).connect(this.VCA);
       this.dist4.connect(this.distGain4);
-        this.distGain4.connect(this.distPan4).connect(this.VCA4);
+        this.distGain4.connect(this.distPan4).connect(this.VCA);
       this.dist5.connect(this.distGain5);
-        this.distGain5.connect(this.distPan5).connect(this.VCA5);
+        this.distGain5.connect(this.distPan5).connect(this.VCA);
       this.dist6.connect(this.distGain6);
-        this.distGain6.connect(this.distPan6).connect(this.VCA6);
+        this.distGain6.connect(this.distPan6).connect(this.VCA);
     });
 
     //define dictionaries for easy node selection
@@ -289,11 +284,11 @@ class Voice {
     //reverb input gain nodes (wet)
     this.revGainDict = {
       s1: this.revGain1,
-      s2: this.revGain2,
-      s3: this.revGain3,
-      s4: this.revGain4,
-      s5: this.revGain5,
-      s6: this.revGain6
+      s2: this.revGain1,
+      s3: this.revGain1,
+      s4: this.revGain1,
+      s5: this.revGain1,
+      s6: this.revGain1
     };
     //reverb bypass gain nodes (dry)
     this.dryGainDict = {
@@ -526,7 +521,7 @@ class Voice {
     this.dryGain6.gain.value = 1;
 
     //final mixer node before output - unity
-    this.mixGain.gain.value = 0;
+    this.mixGain.gain.value = .5;
 
     //init lfo oscillator frequency (1hz)
     this.lfo1.frequency.value = .1;
@@ -543,23 +538,15 @@ class Voice {
     this.lfoGain5.gain.value = 0;
     this.lfoGain6.gain.value = 0;
 
+    this.VCA.gain.value = 0;
+
     //route oscillators -> gain nodes
       //route gain outputs -> L/R gain nodes
     //route oscillators -> dist nodes -> dist gain nodes
       //route dist gain outputs -> L/R gain nodes -> stereo VCAs
 
-    this.VCA1.connect(this.dryGain1).connect(this.mixGain);
-    this.VCA1.connect(this.revGain1).connect(this.reverb);
-    this.VCA2.connect(this.dryGain2).connect(this.mixGain);
-    this.VCA2.connect(this.revGain2).connect(this.reverb);
-    this.VCA3.connect(this.dryGain3).connect(this.mixGain);
-    this.VCA3.connect(this.revGain3).connect(this.reverb);
-    this.VCA4.connect(this.dryGain4).connect(this.mixGain);
-    this.VCA4.connect(this.revGain4).connect(this.reverb);
-    this.VCA5.connect(this.dryGain5).connect(this.mixGain);
-    this.VCA5.connect(this.revGain5).connect(this.reverb);
-    this.VCA6.connect(this.dryGain6).connect(this.mixGain);
-    this.VCA6.connect(this.revGain6).connect(this.reverb);
+    this.VCA.connect(this.dryGain1).connect(this.mixGain);
+    this.VCA.connect(this.revGain1).connect(this.reverb);
 
     //finalize audio signal path
       //route stereo reverb output -> audio destination
