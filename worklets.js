@@ -25,59 +25,29 @@ class gainProcessor extends AudioWorkletProcessor {
   process(inputs, outputs, parameters) {
     const staticGain = parameters.staticGain;
     const modGain = parameters.modGain;
-    for (let i = 0; i < outputs.length; i++) { //move through each mono output
-      let currentIn = inputs[i][0]; //input i, channel 0
-      let currentOut = outputs[i][0]; //output i, channel 0
-      if (modGain.length == 1) {  //modGain not being modulated
-        if (staticGain.length == 1) { //staticGain hasn't changed this quantum
-          //run through each sample
-          for (let samp = 0; samp < currentOut.length; samp++) {
-            //output = input * staticGain[0] (constant)
-            let tempOut = currentIn[samp] * staticGain[0];
-            if (tempOut > 1) {
-              currentOut[samp] = 1;
-            } else if (tempOut < -1) {
-              currentOut[samp] = -1;
-            } else {
-              currentOut[samp] = tempOut;
-            }
+
+    let staticGHasChanged = !(staticGain.length === 1);
+    let modGHasChanged = !(modGain.length === 1);
+
+    let sampleStaticGain = staticGain[0];
+    let sampleModGain = modGain[0];
+
+    for (let i = 0; i < outputs.length; i++) { //move through each output
+      for (let c = 0; c < outputs[i].length; c++) { //move through each channel
+        let currentIn = inputs[0][0]; //input 0, channel 0
+        let currentOut = outputs[i][c]; //output i, channel 0
+        for (let s = 0; s < outputs[i][c].length; s++) {
+          if (staticGHasChanged) {
+            sampleStaticGain = staticGain[s];
+          } else {
+            sampleStaticGain = staticGain[0];
           }
-        } else if (staticGain.length == 128) { //staticGain HAS changed this quantum
-          //output = input * staticGain[i] (changing)
-          for (let samp = 0; samp < currentOut.length; samp++) {
-            let tempOut = currentIn[samp] * staticGain[samp];
-            if (tempOut > 1) {
-              currentOut[samp] = 1;
-            } else if (tempOut < -1) {
-              currentOut[samp] = -1;
-            } else {
-              currentOut[samp] = tempOut;
-            }
+          if (modGHasChanged) {
+            sampleModGain = modGain[s];
+          } else {
+            sampleModGain = modGain[0];
           }
-        }
-      } else if (modGain.length == 128) { //modGain being modulated
-        if (staticGain.length == 1) {
-          for (let samp = 0; samp < currentOut.length; samp++) {
-            let tempOut = currentIn[samp] * (staticGain[0] + modGain[samp]);
-            if (tempOut > 1) {
-              currentOut[samp] = 1;
-            } else if (tempOut < -1) {
-              currentOut[samp] = -1;
-            } else {
-              currentOut[samp] = tempOut;
-            }
-          }
-        } else if (staticGain.length == 128) {
-          for (let samp = 0; samp < currentOut.length; samp++) {
-            let tempOut = currentIn[samp] * (staticGain[samp] + modGain[samp]);
-            if (tempOut > 1) {
-              currentOut[samp] = 1;
-            } else if (tempOut < -1) {
-              currentOut[samp] = -1;
-            } else {
-              currentOut[samp] = tempOut;
-            }
-          }
+          currentOut[s] = currentIn[s] * (sampleStaticGain + sampleModGain);
         }
       }
     }
