@@ -1,7 +1,6 @@
 //'use strict';
 
 $(document).ready(function() {
-  document.body.addEventListener('touchstart', resume, false);
   //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const synthCtx = new AudioContext();
@@ -247,7 +246,6 @@ $(document).ready(function() {
         $patchButtons[patch].removeClass("selected");
         $patchButtons[patch].css("opacity", "33%");
       }
-
     }
   }
 
@@ -406,11 +404,6 @@ $(document).ready(function() {
   var resume = function() {
     synthCtx.resume();
     voice1.start();
-    setTimeout(function() {
-      if (synthCtx.state === 'running') {
-        document.body.removeEventListener('touchstart', resume, false);
-      }
-    }, 0);
   };
 
   var keysDict = [];  //dictionary for unique keys held
@@ -425,13 +418,13 @@ $(document).ready(function() {
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
       if (!keysDict.includes(expOffset)) {  //if key not in dictionary
-        numKeys = keysDict.push(expOffset); //add key to end of dictionary
+        numKeys = keysDict.push(expOffset); //add key to end of dictionary & trigger envelope
         voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
         voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
       }
       expOffset += (12*octaveOffset); //account for octave
       let newFreq = root*(2**(expOffset/12.0)); //12tet
-      changeFreqs(newFreq);
+      changeFreqs(newFreq); //change oscillatgor frequencies
     } else if (event.which == 16) { //catch shift press
       shiftPressed = true;
     } else if (event.which == 37 && shiftPressed) {

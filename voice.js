@@ -40,18 +40,8 @@ class Voice {
     this.dist6 = synthCtx.createWaveShaper();
 
     //instantiate reverb input gain nodes - wet & dry
-    this.revGain1 = synthCtx.createGain();
-    this.revGain2 = synthCtx.createGain();
-    this.revGain3 = synthCtx.createGain();
-    this.revGain4 = synthCtx.createGain();
-    this.revGain5 = synthCtx.createGain();
-    this.revGain6 = synthCtx.createGain();
-    this.dryGain1 = synthCtx.createGain();
-    this.dryGain2 = synthCtx.createGain();
-    this.dryGain3 = synthCtx.createGain();
-    this.dryGain4 = synthCtx.createGain();
-    this.dryGain5 = synthCtx.createGain();
-    this.dryGain6 = synthCtx.createGain();
+    this.revGain = synthCtx.createGain();
+    this.dryGain = synthCtx.createGain();
 
     this.VCA = synthCtx.createGain();
 
@@ -200,12 +190,12 @@ class Voice {
       };
 
       //init ampltitudes - sawtooth-like decay (1/N)f
-      this.gainNodeDict["s1"].value = 1.0;
-      this.gainNodeDict["s2"].value = 0.5;
-      this.gainNodeDict["s3"].value = 0.25;
-      this.gainNodeDict["s4"].value = 0.125;
-      this.gainNodeDict["s5"].value = 0.0625;
-      this.gainNodeDict["s6"].value = 0.03125;
+      this.gainNodeDict["s1"].value = 0;
+      this.gainNodeDict["s2"].value = 0;
+      this.gainNodeDict["s3"].value = 0;
+      this.gainNodeDict["s4"].value = 0;
+      this.gainNodeDict["s5"].value = 0;
+      this.gainNodeDict["s6"].value = 0;
 
       //init ampltitudes - sawtooth-like decay (1/N)f
       this.preNodeDict["s1"].value = 0;
@@ -283,21 +273,21 @@ class Voice {
 
     //reverb input gain nodes (wet)
     this.revGainDict = {
-      s1: this.revGain1,
-      s2: this.revGain1,
-      s3: this.revGain1,
-      s4: this.revGain1,
-      s5: this.revGain1,
-      s6: this.revGain1
+      s1: this.revGain,
+      s2: this.revGain,
+      s3: this.revGain,
+      s4: this.revGain,
+      s5: this.revGain,
+      s6: this.revGain
     };
     //reverb bypass gain nodes (dry)
     this.dryGainDict = {
-      s1: this.dryGain1,
-      s2: this.dryGain2,
-      s3: this.dryGain3,
-      s4: this.dryGain4,
-      s5: this.dryGain5,
-      s6: this.dryGain6
+      s1: this.dryGain,
+      s2: this.dryGain,
+      s3: this.dryGain,
+      s4: this.dryGain,
+      s5: this.dryGain,
+      s6: this.dryGain
     };
 
     //dictionary for lfo oscillator node selection
@@ -343,20 +333,20 @@ class Voice {
     //instantiate memory for all instantaneous param. states
     this.sliderVals = {
       oscButton: {
-        s1: 255,
-        s2: 127,
-        s3: 63,
-        s4: 31,
-        s5: 15,
-        s6: 7
+        s1: 0,
+        s2: 0,
+        s3: 0,
+        s4: 0,
+        s5: 0,
+        s6: 0
       },
       ratButton: {
-        s1: 12,
-        s2: 28,
-        s3: 60,
-        s4: 124,
-        s5: 188,
-        s6: 252
+        s1: 60,
+        s2: 92,
+        s3: 124,
+        s4: 156,
+        s5: 28,
+        s6: 44
       },
       ofxButton: {
         s1: 0,
@@ -506,19 +496,9 @@ class Voice {
     this.dist6.curve = distCurve;
 
     //no input to reverb by default
-    this.revGain1.gain.value = 0;
-    this.revGain2.gain.value = 0;
-    this.revGain3.gain.value = 0;
-    this.revGain4.gain.value = 0;
-    this.revGain5.gain.value = 0;
-    this.revGain6.gain.value = 0;
+    this.revGain.gain.value = 0;
     //full reverb bypass by default
-    this.dryGain1.gain.value = 1;
-    this.dryGain2.gain.value = 1;
-    this.dryGain3.gain.value = 1;
-    this.dryGain4.gain.value = 1;
-    this.dryGain5.gain.value = 1;
-    this.dryGain6.gain.value = 1;
+    this.dryGain.gain.value = 1;
 
     //final mixer node before output - unity
     this.mixGain.gain.value = .5;
@@ -545,8 +525,8 @@ class Voice {
     //route oscillators -> dist nodes -> dist gain nodes
       //route dist gain outputs -> L/R gain nodes -> stereo VCAs
 
-    this.VCA.connect(this.dryGain1).connect(this.mixGain);
-    this.VCA.connect(this.revGain1).connect(this.reverb);
+    this.VCA.connect(this.dryGain).connect(this.mixGain);
+    this.VCA.connect(this.revGain).connect(this.reverb);
 
     //finalize audio signal path
       //route stereo reverb output -> audio destination
