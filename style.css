@@ -204,75 +204,39 @@
   flex-direction: row;
 }
 
-.pageGroup {
+.pageGroup, .pageSelectGroup, .lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoGroup, .lfoModeGroup {
   position:absolute;
   min-width:180px;
   max-width:320px;
   bottom:0px;
-  margin-bottom:-24px;
   display:inline-flex;
   justify-content:center;
   align-items:center;
   flex-direction:row;
 }
+  .pageGroup {
+    margin-bottom:-24px;
+  }
+  .pageSelectGroup {
+    margin-bottom:-40px;
+  }
+  .lfoTitleGroup {
+    margin-bottom:-46px;
+  }
+  .lfoPatch {
+    margin-bottom:-83px;
+  }
+  .lfoGroup {
+    margin-bottom:-120px;
+  }
+  .lfoInfo {
+    margin-bottom:-142px;
+  }
+  .lfoModeGroup {
+    margin-bottom:-142px;
+  }
 
-.pageSelectGroup {
-  position:absolute;
-  min-width:180px;
-  max-width:320px;
-  bottom:0px;
-  margin-bottom:-40px;
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:row;
-}
-.lfoTitleGroup {
-  position:absolute;
-  min-width:180px;
-  max-width:320px;
-  bottom:0px;
-  margin-bottom:-46px;
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:row;
-}
-.lfoPatch {
-  position:absolute;
-  min-width:180px;
-  max-width:320px;
-  bottom:0px;
-  margin-bottom:-83px;
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:row;
-}
-.lfoInfo {
-  position:absolute;
-  min-width:180px;
-  max-width:320px;
-  bottom:0px;
-  margin-bottom:-142px;
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:row;
-}
-.lfoGroup {
-  position:absolute;
-  min-width:180px;
-  max-width:320px;
-  bottom:0px;
-  margin-bottom:-120px;
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:row;
-}
-
-.patchSelect {
+.patchSelect, .modeSelect {
   display:inline-flex;
   width:18px;
   height:18px;
@@ -283,11 +247,28 @@
   margin-left: 2px;
   margin-right: 2px;
   box-sizing:border-box;
-  opacity:33%;
   cursor: pointer;
 }
+  .patchSelect {
+    opacity:33%;
+  }
+  .modeSelect {
+    opacity:67%;
+  }
   .selected {
     opacity: 100%;
+  }
+  #MS1, #MS2, #MS3 {
+    background-size: contain;
+  }
+  #MS1 {
+    background-image: url("./assets/modeButtons/fixedLFO.png")
+  }
+  #MS2 {
+    background-image: url("./assets/modeButtons/tempoLFO.png")
+  }
+  #MS3 {
+    background-image: url("./assets/modeButtons/tunedLFO.png")
   }
 
 .centerGroup {
