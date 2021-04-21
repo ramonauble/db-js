@@ -74,6 +74,16 @@ $(document).ready(function() {
     }
   });
 
+  $(".modeSelect").hover(function() {
+    if (!$(this).hasClass("selected")) {
+      $(this).css("opacity", "100%");
+    }
+  }, function() {
+    if (!$(this).hasClass("selected")) {
+      $(this).css("opacity", "50%");
+    }
+  });
+
   $(".uiButton, .pageButton").hover(function() {
     $(this).css("opacity", "100%");
   }, function() {
