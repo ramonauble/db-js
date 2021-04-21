@@ -308,6 +308,15 @@ class Voice {
       ampButton: this.lfoGain5,
       revButton: this.lfoGain6
     };
+    //dictionary for base frequencies of each LFO
+    this.lfoFreqDict = {
+      oscButton: 8,
+      ratButton: 8,
+      ofxButton: 8,
+      panButton: 8,
+      ampButton: 8,
+      revButton: 8
+    };
 
     //instantiate ratio LUT & parameter (slider) state memory
     //-------------------------------------------------------
@@ -384,32 +393,32 @@ class Voice {
 
     this.lfoVals = {
       oscButton: {
-        lfoS1: 0.1,
+        lfoS1: 15,
         lfoS2: 1,
         lfoS3: 0
       },
       ratButton: {
-        lfoS1: 0.1,
+        lfoS1: 15,
         lfoS2: 1,
         lfoS3: 0
       },
       ofxButton: {
-        lfoS1: 0.1,
+        lfoS1: 15,
         lfoS2: 1,
         lfoS3: 0
       },
       panButton: {
-        lfoS1: 0.1,
+        lfoS1: 15,
         lfoS2: 1,
         lfoS3: 0
       },
       ampButton: {
-        lfoS1: 0.1,
+        lfoS1: 15,
         lfoS2: 1,
         lfoS3: 0
       },
       revButton: {
-        lfoS1: 0.1,
+        lfoS1: 15,
         lfoS2: 1,
         lfoS3: 0
       }
@@ -464,6 +473,15 @@ class Voice {
         PS5: 0,
         PS6: 0
       }
+    };
+
+    this.modeStates = {
+      oscButton: "MS1",
+      ratButton: "MS1",
+      ofxButton: "MS1",
+      panButton: "MS1",
+      envButton: "MS1",
+      revButton: "MS1"
     };
 
     //initialize node parameters

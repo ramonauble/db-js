@@ -41,6 +41,10 @@ $(document).ready(function() {
     lfoS2: $("#lfoInfo2"),
     lfoS3: $("#lfoInfo3")
   };
+  const $lfoInfo2 = {
+    base: $("#lfoBase"),
+    freq: $("#lfoFreq")
+  };
 
   //reference lfo patch state elements & index with integers
   const $patchButtons = {
@@ -60,6 +64,7 @@ $(document).ready(function() {
     5: "PS5",
     6: "PS6"
   };
+  const $modeButtons = $(".modeSelect"); //lfo mode select divs
 
   //configure variables for drawing canvas
   const pi = Math.PI;
@@ -197,10 +202,11 @@ $(document).ready(function() {
     let $this = $(this);
     let id = $this.attr("id");
     if (id == "lfoS1") {
-      $lfoInfo[id].html("speed: " + parseFloat($this.val()).toFixed(1) + "hz");
+      let newLFOFreq = voice1.lfoFreqDict[activePage]*voice1.ratioDict[$this.val()]
+      $lfoInfo[id].html("speed: " + voice1.ratioDict[$this.val()].toFixed(2) + "x");
+      $lfoInfo2["freq"].html("freq: " + newLFOFreq.toFixed(2) + "Hz");
       voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
-      voice1.lfoNodeDict[activePage].frequency
-      .setTargetAtTime($this.val(), synthCtx.currentTime, .005);
+      voice1.lfoNodeDict[activePage].frequency.setTargetAtTime(newLFOFreq, synthCtx.currentTime, .005);
     } else if (id == "lfoS2") {
       $lfoInfo[id].html("shape: " + lfoShapeDict[$this.val()]);
       voice1.lfoVals[activePage][$this.attr("id")] = $this.val();
@@ -234,9 +240,12 @@ $(document).ready(function() {
     $lfoSliderDict["lfoS1"].val(voice1.lfoVals[newPage]["lfoS1"]);
     $lfoSliderDict["lfoS2"].val(voice1.lfoVals[newPage]["lfoS2"]);
     $lfoSliderDict["lfoS3"].val(voice1.lfoVals[newPage]["lfoS3"]);
-    $lfoInfo["lfoS1"].html("speed: " + parseFloat(voice1.lfoVals[newPage]["lfoS1"]).toFixed(1) + "hz");
+    $lfoInfo["lfoS1"].html("speed: " + parseFloat(voice1.ratioDict[voice1.lfoVals[newPage]["lfoS1"]]).toFixed(2) + "x");
     $lfoInfo["lfoS2"].html("shape: " + lfoShapeDict[voice1.lfoVals[newPage]["lfoS2"]]);
     $lfoInfo["lfoS3"].html("depth: " + parseFloat(voice1.lfoVals[newPage]["lfoS3"]).toFixed(1) + "%");
+    $lfoInfo2["base"].html("base: " + voice1.lfoFreqDict[activePage].toFixed(2) + "Hz");
+    $lfoInfo2["freq"].html("freq: " + (voice1.lfoFreqDict[activePage]*
+    voice1.ratioDict[voice1.lfoVals[activePage]["lfoS1"]]).toFixed(2) + "Hz");
 
     for (let patch = 1; patch <= 6; patch++) {
       if (voice1.patchStates[activePage][patchConv[patch]] == 1) {
@@ -247,6 +256,12 @@ $(document).ready(function() {
         $patchButtons[patch].css("opacity", "33%");
       }
     }
+
+    let $currentMode = $("#" + voice1.modeStates[activePage]);
+    $modeButtons.css("opacity", "50%");
+    $modeButtons.removeClass("selected");
+    $currentMode.css("opacity", "100%");
+    $currentMode.addClass("selected");
   }
 
   //draw info & scope displays at ~60fps
@@ -504,5 +519,18 @@ $(document).ready(function() {
       $this.css("opacity", "100%");
       $this.addClass("selected");
     }
+  });
+
+  $(".modeSelect").click(function() {
+    let $this = $(this);
+    let $currentMode = $("#" + voice1.modeStates[activePage]);
+    if (!$this.hasClass("selected")) {
+      $currentMode.removeClass("selected");
+      $currentMode.css("opacity", "50%");
+      voice1.modeStates[activePage] = $this.attr("id");
+      $this.addClass("selected");
+      $this.css("opacity", "100%");
+    }
+
   });
 });
