@@ -480,7 +480,7 @@ class Voice {
       ratButton: "MS1",
       ofxButton: "MS1",
       panButton: "MS1",
-      envButton: "MS1",
+      ampButton: "MS1",
       revButton: "MS1"
     };
 
@@ -522,12 +522,12 @@ class Voice {
     this.mixGain.gain.value = .5;
 
     //init lfo oscillator frequency (1hz)
-    this.lfo1.frequency.value = .1;
-    this.lfo2.frequency.value = .1;
-    this.lfo3.frequency.value = .1;
-    this.lfo4.frequency.value = .1;
-    this.lfo5.frequency.value = .1;
-    this.lfo6.frequency.value = .1;
+    this.lfo1.frequency.value = 8.00;
+    this.lfo2.frequency.value = 8.00;
+    this.lfo3.frequency.value = 8.00;
+    this.lfo4.frequency.value = 8.00;
+    this.lfo5.frequency.value = 8.00;
+    this.lfo6.frequency.value = 8.00;
     //init lfo gains (0)
     this.lfoGain1.gain.value = 0;
     this.lfoGain2.gain.value = 0;

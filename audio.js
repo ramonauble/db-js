@@ -7,6 +7,7 @@ $(document).ready(function() {
   const distCurve = makeCurve(20); //generate distortion curve
   //create voice
   let voice1 = new Voice(synthCtx, distCurve);
+  var bpm = 120.0; //current tempo of sequencer & reference for LFOs (mode 2)
   //instantiate analyser node (for oscilloscope display)
   var scopeX = synthCtx.createAnalyser();
   var scopeY = synthCtx.createAnalyser();
@@ -45,6 +46,8 @@ $(document).ready(function() {
     base: $("#lfoBase"),
     freq: $("#lfoFreq")
   };
+  var aRateModDict = []; //array to hold pages with a rate LFO mod
+  var bpmModDict = []; //array to hold pages with bpm LFO mod
 
   //reference lfo patch state elements & index with integers
   const $patchButtons = {
@@ -272,7 +275,6 @@ $(document).ready(function() {
     if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
       lastUpdate = timestamp; //record latest update time
       displayCanvCtx.fillRect(0, 0, dCanvW, dCanvH); //clear canvas
-
       if (activeUI == "info") { //draw info
         let p1 = voice1.sliderVals[activePage]["s1"];
         let p2 = voice1.sliderVals[activePage]["s2"];
@@ -436,10 +438,10 @@ $(document).ready(function() {
         numKeys = keysDict.push(expOffset); //add key to end of dictionary & trigger envelope
         voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
         voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
+        expOffset += (12*octaveOffset); //account for octave
+        let newFreq = root*(2**(expOffset/12.0)); //12tet
+        changeFreqs(newFreq); //change oscillatgor frequencies
       }
-      expOffset += (12*octaveOffset); //account for octave
-      let newFreq = root*(2**(expOffset/12.0)); //12tet
-      changeFreqs(newFreq); //change oscillatgor frequencies
     } else if (event.which == 16) { //catch shift press
       shiftPressed = true;
     } else if (event.which == 37 && shiftPressed) {
@@ -490,6 +492,16 @@ $(document).ready(function() {
     (newFund*r5, synthCtx.currentTime, .00005);
     voice1.oscNodeDict["s6"].frequency.setTargetAtTime
     (newFund*r6, synthCtx.currentTime, .00005);
+    for (let i = 0; i < aRateModDict.length; i++) {
+      voice1.lfoFreqDict[aRateModDict[i]] = newFund; //set new base frequency
+      let currentLFORatio = voice1.ratioDict[voice1.lfoVals[aRateModDict[i]]["lfoS1"]];
+      let newLFOFreq = newFund * currentLFORatio; //calc new LFO frequency
+      voice1.lfoNodeDict[aRateModDict[i]].frequency.setTargetAtTime(newLFOFreq, synthCtx.currentTime, .0005); //set freq
+      if (activePage == aRateModDict[i]) {
+        $lfoInfo2["base"].html("base: " + voice1.lfoFreqDict[activePage].toFixed(2) + "Hz");
+        $lfoInfo2["freq"].html("freq: " + newLFOFreq.toFixed(2) + "Hz");
+      }
+    }
   }
 
   $(".patchSelect").click(function() {
@@ -530,7 +542,24 @@ $(document).ready(function() {
       voice1.modeStates[activePage] = $this.attr("id");
       $this.addClass("selected");
       $this.css("opacity", "100%");
+      let currentLFORatio = voice1.ratioDict[voice1.lfoVals[activePage]["lfoS1"]];
+      if (voice1.modeStates[activePage] == "MS1") { //mode 1 - fixed base
+        aRateModDict = aRateModDict.filter(page => page != activePage); //remove active page
+        bpmModDict = bpmModDict.filter(page => page != activePage);     //from both mod dicts
+        voice1.lfoFreqDict[activePage] = 8.0; //set current LFO base to fixed frequency
+      } else if (voice1.modeStates[activePage] == "MS2") { //mode 2 - tempo base
+        bpmModDict.push(activePage); //add current page to audio rate mod dict
+        aRateModDict = bpmModDict.filter(page => page != activePage); //remove active page from bpm mod dict
+        voice1.lfoFreqDict[activePage] = bpm/60.0; //set current LFO base to 1/60th BPM (quarter notes per second)
+      } else if (voice1.modeStates[activePage] == "MS3") { //mode 3 - fundamental base
+        aRateModDict.push(activePage); //add current page to bpm mod dict
+        bpmModDict = bpmModDict.filter(page => page != activePage); //remove active page from bpm mod dict
+        voice1.lfoFreqDict[activePage] = voice1.fundamental; //set current LFO base to fundamental frequency
+      }
+      let newLFOFreq = voice1.lfoFreqDict[activePage]*currentLFORatio; //calc new LFO freq
+      voice1.lfoNodeDict[activePage].frequency.setTargetAtTime(newLFOFreq, synthCtx.currentTime, .0005); //set freq
+      $lfoInfo2["base"].html("base: " + voice1.lfoFreqDict[activePage].toFixed(2) + "Hz");
+      $lfoInfo2["freq"].html("freq: " + newLFOFreq.toFixed(2) + "Hz");
     }
-
   });
 });
