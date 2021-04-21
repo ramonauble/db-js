@@ -59,21 +59,18 @@
   #lfoTitle {
     margin:12px auto -30px;
   }
-#lfoInfo1, #lfoInfo2, #lfoInfo3 {
-  margin:0px auto 9px;
+#lfoInfo1, #lfoInfo2, #lfoInfo3, #lfoBase, #lfoFreq {
   font-family:monospace;
-  font-size:1.0em;
   width:102px;
   font-weight:bold;
 }
-  #lfoInfo1 {
-
+  #lfoInfo1, #lfoInfo2, #lfoInfo3 {
+    margin:0px auto 9px;
+    font-size:1.0em;
   }
-  #lfoInfo2 {
-
-  }
-  #lfoInfo1 {
-
+  #lfoBase, #lfoFreq {
+    margin:0px auto;
+    font-size:.9em;
   }
 
 #displayCanv {
@@ -204,7 +201,7 @@
   flex-direction: row;
 }
 
-.pageGroup, .pageSelectGroup, .lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoGroup, .lfoModeGroup {
+.pageGroup, .pageSelectGroup, .lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoInfo2, .lfoGroup, .lfoModeGroup {
   position:absolute;
   min-width:180px;
   max-width:320px;
@@ -224,16 +221,19 @@
     margin-bottom:-46px;
   }
   .lfoPatch {
-    margin-bottom:-83px;
+    margin-bottom:-82px;
+  }
+  .lfoInfo2 {
+    margin-bottom:-108px;
   }
   .lfoGroup {
-    margin-bottom:-120px;
+    margin-bottom:-131px;
   }
   .lfoInfo {
-    margin-bottom:-142px;
+    margin-bottom:-153px;
   }
   .lfoModeGroup {
-    margin-bottom:-142px;
+    margin-bottom:-153px;
   }
 
 .patchSelect, .modeSelect {
@@ -253,7 +253,7 @@
     opacity:33%;
   }
   .modeSelect {
-    opacity:67%;
+    opacity:50%;
   }
   .selected {
     opacity: 100%;

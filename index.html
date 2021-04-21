@@ -60,6 +60,10 @@
 				<div class="lfoTitleGroup">
 					<p id="lfoTitle">lfo</p>
 				</div>
+				<div class="lfoInfo2">
+					<p id="lfoBase">base: <span id="lfoBaseVal">20.0hz</span></p>
+					<p id="lfoFreq">freq: <span id="lfoFreqVal">20.0hz</span></p>
+				</div>
 				<div class="lfoPatch">
 					<div class="patchSelect oscPatch" id="PS1"></div>
 					<div class="patchSelect oscPatch" id="PS2"></div>
@@ -74,15 +78,15 @@
 					<p id="lfoInfo3">depth: <span id="lfoDepth">100%</span></p>
 				</div>
 				<div class="lfoGroup">
-					<input id="lfoS1" class="slider aSlider oscSlider" type="range" min=".1" max="60"
-					value=".1" step=".1"></input>
+					<input id="lfoS1" class="slider aSlider oscSlider" type="range" min="0" max="63"
+					value="32" step="1"></input>
 					<input id="lfoS2" class="slider aSlider oscSlider" type="range" min="1" max="4"
 					value="1" step="1"></input>
 					<input id="lfoS3" class="slider aSlider oscSlider" type="range" min="0" max="100"
 					value="0" step="1"></input>
 				</div>
 				<div class="lfoModeGroup">
-					<div class="modeSelect" id="MS1"></div>
+					<div class="modeSelect selected" id="MS1"></div>
 					<div class="modeSelect" id="MS2"></div>
 					<div class="modeSelect" id="MS3"></div>
 				</div>
