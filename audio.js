@@ -127,7 +127,7 @@ $(document).ready(function() {
     ofxButton: "shape",
     panButton: "pan",
     ampButton: "envelope",
-    revButton: "reverb"
+    revButton: "crush"
   };
 
   //define exponent numerators for calculating frequencies
@@ -194,10 +194,6 @@ $(document).ready(function() {
       currentEnvP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     } else if ($this.hasClass("revSlider")) {
       voice1.sliderVals["revButton"][$this.attr("id")] = $this.val();
-      var currentRevGain = voice1.revGainDict[$this.attr("id")];
-      var currentDryGain = voice1.dryGainDict[$this.attr("id")];
-      //currentDryGain.gain.setTargetAtTime(((255 - ($this.val()))/255.0), synthCtx.currentTime, .005);
-      currentRevGain.gain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     }
   });
 
@@ -225,6 +221,32 @@ $(document).ready(function() {
         .setTargetAtTime(($this.val()/100.0), synthCtx.currentTime, .005);
       }
     }
+  });
+
+  $bpmDisp = $("#bpmDisp");
+  $reverbDisp = $("#reverbDisp");
+  $("#bpmSlider").on("input", function() {
+    let $this = $(this);
+    var newBPM = $this.val();
+    bpm = newBPM*1.0;
+    let newBase = (bpm/60.0);
+    $bpmDisp.html("bpm: " + bpm.toFixed(1));
+    for (let i = 0; i < bpmModDict.length; i++) {
+      voice1.lfoFreqDict[bpmModDict[i]] = newBase; //set new base frequency
+      let currentLFORatio = voice1.ratioDict[voice1.lfoVals[bpmModDict[i]]["lfoS1"]];
+      let newLFOFreq = newBase * currentLFORatio; //calc new LFO frequency
+      voice1.lfoNodeDict[bpmModDict[i]].frequency.setTargetAtTime(newLFOFreq, synthCtx.currentTime, .00005); //set freq
+      if (activePage == bpmModDict[i]) {
+        $lfoInfo2["base"].html("base: " + voice1.lfoFreqDict[activePage].toFixed(2) + "Hz");
+        $lfoInfo2["freq"].html("freq: " + newLFOFreq.toFixed(2) + "Hz");
+      }
+    }
+  });
+  $("#reverbSlider").on("input", function() {
+    let $this = $(this);
+    var newRevGain = $this.val()/255.0; //calc new reverb gain
+    voice1.revGain.gain.setTargetAtTime(newRevGain, synthCtx.currentTime, .005);
+    $reverbDisp.html("reverb: " + (100*newRevGain).toFixed(1) + "%");
   });
 
   //change fill color & update slider values on page change
@@ -549,7 +571,7 @@ $(document).ready(function() {
         voice1.lfoFreqDict[activePage] = 8.0; //set current LFO base to fixed frequency
       } else if (voice1.modeStates[activePage] == "MS2") { //mode 2 - tempo base
         bpmModDict.push(activePage); //add current page to audio rate mod dict
-        aRateModDict = bpmModDict.filter(page => page != activePage); //remove active page from bpm mod dict
+        aRateModDict = aRateModDict.filter(page => page != activePage); //remove active page from aRate mod dict
         voice1.lfoFreqDict[activePage] = bpm/60.0; //set current LFO base to 1/60th BPM (quarter notes per second)
       } else if (voice1.modeStates[activePage] == "MS3") { //mode 3 - fundamental base
         aRateModDict.push(activePage); //add current page to bpm mod dict
