@@ -17,6 +17,13 @@ class Voice {
     this.osc4 = synthCtx.createOscillator();
     this.osc5 = synthCtx.createOscillator();
     this.osc6 = synthCtx.createOscillator();
+    //instantiate oscillator gain nodes
+    this.oscGain1 = synthCtx.createGain();
+    this.oscGain2 = synthCtx.createGain();
+    this.oscGain3 = synthCtx.createGain();
+    this.oscGain4 = synthCtx.createGain();
+    this.oscGain5 = synthCtx.createGain();
+    this.oscGain6 = synthCtx.createGain();
     //instantiate pre-distortion gain nodes
     this.preGain1 = synthCtx.createGain();
     this.preGain2 = synthCtx.createGain();
@@ -78,20 +85,6 @@ class Voice {
     };
 
     synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
-      this.oscGain1 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.oscGain2 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.oscGain3 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.oscGain4 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.oscGain5 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.oscGain6 = new AudioWorkletNode(synthCtx, "gainProcessor");
-
-      this.preGain1 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.preGain2 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.preGain3 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.preGain4 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.preGain5 = new AudioWorkletNode(synthCtx, "gainProcessor");
-      this.preGain6 = new AudioWorkletNode(synthCtx, "gainProcessor");
-
       this.oscPan1 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
       this.oscPan2 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
       this.oscPan3 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
@@ -121,20 +114,20 @@ class Voice {
 
       //dictionaries for node selection
       this.gainNodeDict = {
-        s1: this.oscGain1.parameters.get("staticGain"),
-        s2: this.oscGain2.parameters.get("staticGain"),
-        s3: this.oscGain3.parameters.get("staticGain"),
-        s4: this.oscGain4.parameters.get("staticGain"),
-        s5: this.oscGain5.parameters.get("staticGain"),
-        s6: this.oscGain6.parameters.get("staticGain")
+        s1: this.oscGain1.gain,
+        s2: this.oscGain2.gain,
+        s3: this.oscGain3.gain,
+        s4: this.oscGain4.gain,
+        s5: this.oscGain5.gain,
+        s6: this.oscGain6.gain
       };
       this.preNodeDict = {
-        s1: this.preGain1.parameters.get("staticGain"),
-        s2: this.preGain2.parameters.get("staticGain"),
-        s3: this.preGain3.parameters.get("staticGain"),
-        s4: this.preGain4.parameters.get("staticGain"),
-        s5: this.preGain5.parameters.get("staticGain"),
-        s6: this.preGain6.parameters.get("staticGain")
+        s1: this.preGain1.gain,
+        s2: this.preGain2.gain,
+        s3: this.preGain3.gain,
+        s4: this.preGain4.gain,
+        s5: this.preGain5.gain,
+        s6: this.preGain6.gain
       };
       this.oscPanDict = {
         s1: this.oscPan1.parameters.get("panPosition"),
@@ -155,21 +148,21 @@ class Voice {
 
       this.modDestDict = {
         oscButton: {
-          PS1: this.oscGain1.parameters.get("modGain"),
-          PS2: this.oscGain2.parameters.get("modGain"),
-          PS3: this.oscGain3.parameters.get("modGain"),
-          PS4: this.oscGain4.parameters.get("modGain"),
-          PS5: this.oscGain5.parameters.get("modGain"),
-          PS6: this.oscGain6.parameters.get("modGain")
+          PS1: this.oscGain1.gain,
+          PS2: this.oscGain2.gain,
+          PS3: this.oscGain3.gain,
+          PS4: this.oscGain4.gain,
+          PS5: this.oscGain5.gain,
+          PS6: this.oscGain6.gain
         },
         ofxButton: {
-          PS1: this.preGain1.parameters.get("modGain"),
-          PS2: this.preGain2.parameters.get("modGain"),
-          PS3: this.preGain3.parameters.get("modGain"),
-          PS4: this.preGain4.parameters.get("modGain"),
-          PS5: this.preGain5.parameters.get("modGain"),
-          PS6: this.preGain6.parameters.get("modGain")
-        },
+          PS1: this.preGain1.gain,
+          PS2: this.preGain2.gain,
+          PS3: this.preGain3.gain,
+          PS4: this.preGain4.gain,
+          PS5: this.preGain5.gain,
+          PS6: this.preGain6.gain
+        }
       }
 
       this.oscPanModDict = {
