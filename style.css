@@ -31,7 +31,7 @@
 #title {
   margin:-3px auto 0px;
   font-family:monospace;
-  font-size:4.8em;
+  font-size:3.6em;
   text-decoration:underline;
 }
 
@@ -59,18 +59,24 @@
   #lfoTitle {
     margin:12px auto -30px;
   }
-#lfoInfo1, #lfoInfo2, #lfoInfo3, #lfoBase, #lfoFreq {
+#lfoInfo1, #lfoInfo2, #lfoInfo3, #lfoBase, #lfoFreq, #bpmDisp, #reverbDisp {
   font-family:monospace;
-  width:102px;
   font-weight:bold;
 }
   #lfoInfo1, #lfoInfo2, #lfoInfo3 {
+    width:102px;
     margin:0px auto 9px;
     font-size:1.0em;
   }
   #lfoBase, #lfoFreq {
+    width:102px;
     margin:0px auto;
     font-size:.9em;
+  }
+  #bpmDisp, #reverbDisp {
+    width:154px;
+    margin:0px auto 9px;
+    font-size:1.0em;
   }
 
 #displayCanv {
@@ -201,7 +207,7 @@
   flex-direction: row;
 }
 
-.pageGroup, .pageSelectGroup, .lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoInfo2, .lfoGroup, .lfoModeGroup {
+.pageGroup, .pageSelectGroup, .lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoInfo2, .lfoGroup, .trSliderGroup, .trInfo, .lfoModeGroup {
   position:absolute;
   min-width:180px;
   max-width:320px;
@@ -212,28 +218,34 @@
   flex-direction:row;
 }
   .pageGroup {
-    margin-bottom:-24px;
+    margin-bottom:-22px;
   }
   .pageSelectGroup {
-    margin-bottom:-40px;
+    margin-bottom:-38px;
+  }
+  .trSliderGroup {
+    margin-bottom:-69px;
+  }
+  .trInfo {
+    margin-bottom:-90px;
   }
   .lfoTitleGroup {
-    margin-bottom:-46px;
+    margin-bottom:-72px;
   }
   .lfoPatch {
-    margin-bottom:-82px;
-  }
-  .lfoInfo2 {
     margin-bottom:-108px;
   }
+  .lfoInfo2 {
+    margin-bottom:-134px;
+  }
   .lfoGroup {
-    margin-bottom:-131px;
+    margin-bottom:-157px;
   }
   .lfoInfo {
-    margin-bottom:-153px;
+    margin-bottom:-179px;
   }
   .lfoModeGroup {
-    margin-bottom:-153px;
+    margin-bottom:-179px;
   }
 
 .patchSelect, .modeSelect {
@@ -308,6 +320,12 @@
     padding:3px 0px;
     margin:3px;
   }
+  .trSlider {
+    width:147px;
+    height:12px;
+    padding:3px 0px;
+    margin:3px;
+  }
   .slider:hover {
     opacity:1;
   }
@@ -335,4 +353,10 @@
     }
     .revSlider::-webkit-slider-thumb, .revPatch {
       background:#DB689C;
+    }
+    .bpmSlider::-webkit-slider-thumb {
+      background:#3f1e54;
+    }
+    .reverbSlider::-webkit-slider-thumb {
+      background:#3f1e54;
     }
