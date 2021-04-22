@@ -330,7 +330,7 @@ class envelopeNode extends AudioWorkletProcessor {
         }
         this.prevAcc = this.acc;
         this.acc -= this.inc; //decrement to sustain
-        if (this.acc > (this.max*this.sampleSustain)) {
+        if (this.acc > (this.max*this.sampleSustain + this.inc)) {
           this.normAcc = this.acc/this.max;
           this.output[this.i] = (this.sampleACurve*this.normAcc) + (1 - this.sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1); //output between 0-1
         } else {
@@ -352,7 +352,7 @@ class envelopeNode extends AudioWorkletProcessor {
         }
         this.prevAcc = this.acc;
         this.acc -= this.inc;
-        if (this.acc > 0) {
+        if (this.acc > this.inc) {
           this.normAcc = this.acc/this.max;
           this.output[this.i] = (this.sampleACurve*this.normAcc) + (1 - this.sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1);
         } else {
