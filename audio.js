@@ -192,6 +192,10 @@ $(document).ready(function() {
       currentEnvP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     } else if ($this.hasClass("revSlider")) {
       voice1.sliderVals["revButton"][$this.attr("id")] = $this.val();
+      var currentCrushRate = voice1.crushRateDict[$this.attr("id")];
+      var currentCrushDepth = voice1.crushDepthDict[$this.attr("id")];
+      currentCrushRate.setTargetAtTime((1 - ($this.val()/255.0)), synthCtx.currentTime, .005);
+      currentCrushDepth.setTargetAtTime((1 - ($this.val()/255.0)), synthCtx.currentTime, .005);
     }
   });
 

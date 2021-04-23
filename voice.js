@@ -80,16 +80,16 @@ class Voice {
       numberOfInputs: 1,
       numberOfOutputs: 1
     };
-    this.oscNodeCfg = {
-      outputChannelCount: [1],
-      numberOfInputs: 0,
-      numberOfOutputs: 1
-    };
     this.envNodeCfg = {
       outputChannelCount: [1],
       numberOfInputs: 0,
       numberOfOutputs: 1
     };
+    this.crushNodeCfg = {
+      outputChannelCount: [1],
+      numberOfInputs: 1,
+      numberOfOutputs: 1
+    }
 
     synthCtx.audioWorklet.addModule("./worklets.js").then(() => {
       this.oscPan1 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
@@ -98,6 +98,13 @@ class Voice {
       this.oscPan4 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
       this.oscPan5 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
       this.oscPan6 = new AudioWorkletNode(synthCtx, "panProcessor", this.panNodeCfg);
+
+      this.crushNode1 = new AudioWorkletNode(synthCtx, "bitCrushNode", this.crushNodeCfg);
+      this.crushNode2 = new AudioWorkletNode(synthCtx, "bitCrushNode", this.crushNodeCfg);
+      this.crushNode3 = new AudioWorkletNode(synthCtx, "bitCrushNode", this.crushNodeCfg);
+      this.crushNode4 = new AudioWorkletNode(synthCtx, "bitCrushNode", this.crushNodeCfg);
+      this.crushNode5 = new AudioWorkletNode(synthCtx, "bitCrushNode", this.crushNodeCfg);
+      this.crushNode6 = new AudioWorkletNode(synthCtx, "bitCrushNode", this.crushNodeCfg);
 
       this.ampEnv = new AudioWorkletNode(synthCtx, "envelopeNode", this.envNodeCfg);
       this.ampEnv.connect(this.VCA.gain);
@@ -110,6 +117,23 @@ class Voice {
         s4: this.ampEnv.parameters.get("release"),
         s5: this.ampEnv.parameters.get("aCurve"),
         s6: this.ampEnv.parameters.get("drCurve")
+      };
+
+      this.crushRateDict = {
+        s1: this.crushNode1.parameters.get("sampleRate"),
+        s2: this.crushNode2.parameters.get("sampleRate"),
+        s3: this.crushNode3.parameters.get("sampleRate"),
+        s4: this.crushNode4.parameters.get("sampleRate"),
+        s5: this.crushNode5.parameters.get("sampleRate"),
+        s6: this.crushNode6.parameters.get("sampleRate")
+      };
+      this.crushDepthDict = {
+        s1: this.crushNode1.parameters.get("bitDepth"),
+        s2: this.crushNode2.parameters.get("bitDepth"),
+        s3: this.crushNode3.parameters.get("bitDepth"),
+        s4: this.crushNode4.parameters.get("bitDepth"),
+        s5: this.crushNode5.parameters.get("bitDepth"),
+        s6: this.crushNode6.parameters.get("bitDepth")
       };
 
       //dictionaries for node selection
@@ -187,13 +211,13 @@ class Voice {
       this.dist4.connect(this.distGain4).connect(this.panMix4);
       this.dist5.connect(this.distGain5).connect(this.panMix5);
       this.dist6.connect(this.distGain6).connect(this.panMix6);
-      //pan mixer nodes -> panner nodes -> VCA
-      this.panMix1.connect(this.oscPan1).connect(this.VCA);
-      this.panMix2.connect(this.oscPan2).connect(this.VCA);
-      this.panMix3.connect(this.oscPan3).connect(this.VCA);
-      this.panMix4.connect(this.oscPan4).connect(this.VCA);
-      this.panMix5.connect(this.oscPan5).connect(this.VCA);
-      this.panMix6.connect(this.oscPan6).connect(this.VCA);
+      //pan mixer nodes -> bit crush nodes -> panner nodes -> VCA
+      this.panMix1.connect(this.crushNode1).connect(this.oscPan1).connect(this.VCA);
+      this.panMix2.connect(this.crushNode2).connect(this.oscPan2).connect(this.VCA);
+      this.panMix3.connect(this.crushNode3).connect(this.oscPan3).connect(this.VCA);
+      this.panMix4.connect(this.crushNode4).connect(this.oscPan4).connect(this.VCA);
+      this.panMix5.connect(this.crushNode5).connect(this.oscPan5).connect(this.VCA);
+      this.panMix6.connect(this.crushNode6).connect(this.oscPan6).connect(this.VCA);
     });
 
     //define dictionaries for easy node selection
