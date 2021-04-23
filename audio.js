@@ -185,9 +185,7 @@ $(document).ready(function() {
     } else if ($this.hasClass("panSlider")) {
       voice1.sliderVals["panButton"][$this.attr("id")] = $this.val();
       var currentOscP = voice1.oscPanDict[$this.attr("id")];
-      var currentDistP = voice1.distPanDict[$this.attr("id")];
       currentOscP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
-      currentDistP.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005);
     } else if ($this.hasClass("ampSlider")) {
       voice1.sliderVals["ampButton"][$this.attr("id")] = $this.val();
       var currentEnvP = voice1.envParamDict[$this.attr("id")];
@@ -535,7 +533,6 @@ $(document).ready(function() {
         voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
       } else if (activePage == "panButton") {
         voice1.lfoGainDict[activePage].disconnect(voice1.oscPanModDict[$this.attr("id")]);
-        voice1.lfoGainDict[activePage].disconnect(voice1.distPanModDict[$this.attr("id")]);
       }
       voice1.patchStates[activePage][$this.attr("id")] = 0;
       $this.css("opacity", "33%");
@@ -547,7 +544,6 @@ $(document).ready(function() {
         voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
       } else if (activePage == "panButton") {
         voice1.lfoGainDict[activePage].connect(voice1.oscPanModDict[$this.attr("id")]);
-        voice1.lfoGainDict[activePage].connect(voice1.distPanModDict[$this.attr("id")]);
       }
       voice1.patchStates[activePage][$this.attr("id")] = 1;
       $this.css("opacity", "100%");
