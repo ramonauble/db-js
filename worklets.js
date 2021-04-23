@@ -1,76 +1,3 @@
-class gainProcessor extends AudioWorkletProcessor {
-  static get parameterDescriptors() {
-    return [
-      {
-        name: "staticGain",
-        defaultValue: 0,
-        minValue: 0,
-        maxValue: 1,
-        automationRate: "a-rate"
-      },
-      {
-        name: "modGain",
-        defaultValue: 0,
-        minValue: -1,
-        maxValue: 1,
-        automationRate: "a-rate"
-      }
-    ];
-  }
-
-  constructor() {
-    super();
-
-    this.staticGain;
-    this.modGain;
-
-    this.staticGHasChanged;
-    this.modGHasChanged;
-
-    this.sampleStaticGain;
-    this.sampleModGain;
-
-    this.currentIn;
-    this.currentOut;
-
-    this.i = 0;
-    this.c = 0;
-    this.s = 0;
-  }
-
-  process(inputs, outputs, parameters) {
-    this.staticGain = parameters.staticGain;
-    this.modGain = parameters.modGain;
-
-    this.staticGHasChanged = !(this.staticGain.length === 1);
-    this.modGHasChanged = !(this.modGain.length === 1);
-
-    this.sampleStaticGain = this.staticGain[0];
-    this.sampleModGain = this.modGain[0];
-
-    for (this.i = 0; this.i < outputs.length; this.i++) { //move through each output
-      for (this.c = 0; this.c < outputs[this.i].length; this.c++) { //move through each channel
-        this.currentIn = inputs[0][0]; //input 0, channel 0
-        this.currentOut = outputs[this.i][this.c]; //output i, channel 0
-        for (this.s = 0; this.s < outputs[this.i][this.c].length; this.s++) {
-          if (this.staticGHasChanged) {
-            this.sampleStaticGain = this.staticGain[this.s];
-          } else {
-            this.sampleStaticGain = this.staticGain[0];
-          }
-          if (this.modGHasChanged) {
-            this.sampleModGain = this.modGain[this.s];
-          } else {
-            this.sampleModGain = this.modGain[0];
-          }
-          this.currentOut[this.s] = this.currentIn[this.s] * (this.sampleStaticGain + this.sampleModGain);
-        }
-      }
-    }
-    return true;
-  }
-}
-
 class panProcessor extends AudioWorkletProcessor {
   static get parameterDescriptors() {
     return [
@@ -365,6 +292,92 @@ class envelopeNode extends AudioWorkletProcessor {
   }
 }
 
-registerProcessor("gainProcessor", gainProcessor);
+class bitCrushNode extends AudioWorkletProcessor {
+  static get parameterDescriptors() {
+    return [
+      {
+        name: "sampleRate",
+        defaultValue: 1,
+        minValue: .01,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "bitDepth",
+        defaultValue: 1,
+        minValue: .0001,
+        maxValue: 1,
+        automationRate: "a-rate"
+      }
+    ];
+  }
+
+  constructor() {
+    super();
+
+    this.sampleRateHasChanged;
+    this.sampleRateArr;
+    this.sampleRate;
+
+    this.bitRateHasChanged;
+    this.bitRateArr;
+    this.bitRate;
+
+    this.i;
+    this.input;
+    this.output;
+
+    this.phasor = 0;
+    this.lastSample;
+
+    this.bitMax = Math.pow(2, 8) - 1;
+    this.bitBase;
+    this.crushSample;
+  }
+
+  process(inputs, outputs, parameters) {
+    this.sampleRateArr = parameters.sampleRate;
+    this.sampleRate = this.sampleRateArr[0]; //init s rate to k-rate
+    this.bitRateArr = parameters.bitDepth;
+    this.bitRate = this.bitRateArr[0]; //init b rate to k-rate
+    this.input = inputs[0][0]; //input 0, channel 0
+    this.output = outputs[0][0]; //output 0, channel 0
+
+    //loop thru samples
+    for (this.i = 0; this.i < this.input.length; this.i++) {
+
+      //update sample rate param val if a-rate
+      if (!this.sampleRateArr.length === 1) {
+        this.sampleRate = this.sampleRateArr[this.i];
+      }
+      //update bit rate param val if a-rate
+      if (!this.bitRateArr.length === 1) {
+        this.bitRate = this.bitRateArr[this.i];
+      }
+
+      //calculate new depth base
+      this.bitBase = this.bitMax * this.bitRate;
+
+      //increment phasor & update sample if needed
+      this.phasor += this.sampleRate;
+      if (this.phasor >= 1) {
+        this.phasor -= 1;
+        this.lastSample = this.input[this.i];
+      }
+
+      if (this.bitRate == 1) {
+        this.crushSample = this.lastSample; //bypass crush
+      } else {
+        this.crushSample = Math.floor(((this.lastSample + 1)/2) * this.bitBase);
+        this.crushSample = ((2*(this.crushSample/this.bitBase)) - 1); //normalize
+      }
+      //output most recently updated sample
+      this.output[this.i] = this.crushSample;
+    }
+    return true;
+  }
+}
+
 registerProcessor("panProcessor", panProcessor);
 registerProcessor("envelopeNode", envelopeNode);
+registerProcessor("bitCrushNode", bitCrushNode);
