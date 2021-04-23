@@ -312,7 +312,7 @@ class envelopeNode extends AudioWorkletProcessor {
         }
         this.prevAcc = this.acc;  //save current accumulator state
         this.acc += this.inc;          //increment accumulator
-        if (this.acc < this.max) {  //attack phase still in progress
+        if (this.acc < (this.max - this.inc)) {  //attack phase still in progress
           this.normAcc = this.acc/this.max;
           this.output[this.i] = (this.sampleACurve*this.normAcc) + (1 - this.sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1); //output between 0-1
         } else {              //accumulator overflow - trigger decay stage
