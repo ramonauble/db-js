@@ -305,7 +305,7 @@ class bitCrushNode extends AudioWorkletProcessor {
       {
         name: "bitDepth",
         defaultValue: 1,
-        minValue: .0001,
+        minValue: .025,
         maxValue: 1,
         automationRate: "a-rate"
       }
@@ -329,10 +329,12 @@ class bitCrushNode extends AudioWorkletProcessor {
 
     this.phasor = 0;
     this.lastSample;
+    this.normSampleRate;
 
     this.bitMax = Math.pow(2, 8) - 1;
     this.bitBase;
     this.crushSample;
+    this.normBitRate;
   }
 
   process(inputs, outputs, parameters) {
@@ -354,12 +356,19 @@ class bitCrushNode extends AudioWorkletProcessor {
       if (!this.bitRateArr.length === 1) {
         this.bitRate = this.bitRateArr[this.i];
       }
+      this.normSampleRate = this.sampleRate*.33;
+      this.normBitRate = this.bitRate*.33
+
+      //boundary case - no srr in off position
+      if (this.sampleRate == 1) {
+        this.normSampleRate = 1;
+      }
 
       //calculate new depth base
-      this.bitBase = this.bitMax * this.bitRate;
+      this.bitBase = this.bitMax * this.normBitRate;
 
       //increment phasor & update sample if needed
-      this.phasor += this.sampleRate;
+      this.phasor += this.normSampleRate;
       if (this.phasor >= 1) {
         this.phasor -= 1;
         this.lastSample = this.input[this.i];
