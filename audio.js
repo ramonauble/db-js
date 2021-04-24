@@ -67,6 +67,15 @@ $(document).ready(function() {
     5: "PS5",
     6: "PS6"
   };
+  //dictionary to convery between patch select IDs & slider IDs (for LFO routing)
+  const patchConv2 = {
+    PS1: "s1",
+    PS2: "s2",
+    PS3: "s3",
+    PS4: "s4",
+    PS5: "s5",
+    PS6: "s6"
+  };
   const $modeButtons = $(".modeSelect"); //lfo mode select divs
 
   //configure variables for drawing canvas
@@ -199,6 +208,7 @@ $(document).ready(function() {
     }
   });
 
+  //handle LFO slider input - speed, shape & depth
   $(".aSlider").on("input", function() {
     let $this = $(this);
     let id = $this.attr("id");
@@ -225,6 +235,7 @@ $(document).ready(function() {
     }
   });
 
+  //handle bpm slider value change
   $bpmDisp = $("#bpmDisp");
   $reverbDisp = $("#reverbDisp");
   $("#bpmSlider").on("input", function() {
@@ -244,6 +255,8 @@ $(document).ready(function() {
       }
     }
   });
+
+  //handle reverb slider value change
   $("#reverbSlider").on("input", function() {
     let $this = $(this);
     var newRevGain = $this.val()/255.0; //calc new reverb gain
@@ -251,19 +264,22 @@ $(document).ready(function() {
     $reverbDisp.html("reverb: " + (100*newRevGain).toFixed(1) + "%");
   });
 
-  //change fill color & update slider values on page change
+  //handle UI page change event
+  //  change UI colors, update slider vals & LFO params/patch states
   function pageChange(newPage) {
-    activePage = newPage;
+    activePage = newPage; //set newly active page
+    //change UI colors - canvas, page title
     displayCanvCtx.fillStyle = colorsDict[newPage];
     $pageTitle.html(titleDict[newPage]);
     $pageTitle.css("color", colorsDict[newPage]);
+    //update slider values for newly active page
     $sliderDict["s1"].val(voice1.sliderVals[newPage]["s1"]);
     $sliderDict["s2"].val(voice1.sliderVals[newPage]["s2"]);
     $sliderDict["s3"].val(voice1.sliderVals[newPage]["s3"]);
     $sliderDict["s4"].val(voice1.sliderVals[newPage]["s4"]);
     $sliderDict["s5"].val(voice1.sliderVals[newPage]["s5"]);
     $sliderDict["s6"].val(voice1.sliderVals[newPage]["s6"]);
-
+    //update LFO slider values & info displays for newly active page
     $lfoSliderDict["lfoS1"].val(voice1.lfoVals[newPage]["lfoS1"]);
     $lfoSliderDict["lfoS2"].val(voice1.lfoVals[newPage]["lfoS2"]);
     $lfoSliderDict["lfoS3"].val(voice1.lfoVals[newPage]["lfoS3"]);
@@ -273,7 +289,7 @@ $(document).ready(function() {
     $lfoInfo2["base"].html("base: " + voice1.lfoFreqDict[activePage].toFixed(2) + "Hz");
     $lfoInfo2["freq"].html("freq: " + (voice1.lfoFreqDict[activePage]*
     voice1.ratioDict[voice1.lfoVals[activePage]["lfoS1"]]).toFixed(2) + "Hz");
-
+    //update LFO patch states
     for (let patch = 1; patch <= 6; patch++) {
       if (voice1.patchStates[activePage][patchConv[patch]] == 1) {
         $patchButtons[patch].addClass("selected");
@@ -283,7 +299,7 @@ $(document).ready(function() {
         $patchButtons[patch].css("opacity", "33%");
       }
     }
-
+    //update UI to reflect active LFO mode for newly selected page
     let $currentMode = $("#" + voice1.modeStates[activePage]);
     $modeButtons.css("opacity", "50%");
     $modeButtons.removeClass("selected");
@@ -294,7 +310,6 @@ $(document).ready(function() {
   //draw info & scope displays at ~60fps
   var lastUpdate;
   var updateTime = 16.6667; //ms
-
   function drawCanvas(timestamp) {
     if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
       lastUpdate = timestamp; //record latest update time
@@ -409,7 +424,7 @@ $(document).ready(function() {
   }
   window.requestAnimationFrame(drawCanvas);
 
-  //handle display page change
+  //handle UI display page change - modify active state for canvas drawing
   $(".uiButton").click(function() {
     let $this = $(this);
     if ($this.attr("id") == "infoButton") {
@@ -434,6 +449,7 @@ $(document).ready(function() {
     return curveOut;
   }
 
+  //retrieve impulse response for reverb & assign to convolver node buffer
   async function calcIR() {
     let wavFile = await fetch("./wavData/ir4.wav");
     let wavBuffer = await wavFile.arrayBuffer();
@@ -441,17 +457,17 @@ $(document).ready(function() {
   }
 
   //resume context
-  //remove touch end event listener (for iOS support)
   var resume = function() {
     synthCtx.resume();
     voice1.start();
   };
 
-  var keysDict = [];  //dictionary for unique keys held
-  var numKeys = 0; //number of keys held at any instant
+  var keysDict = []; //dictionary for keys current held down
+  var numKeys = 0;   //number of keys held at any instant
 
-  //catches input for the following:
-  //  keyboard press - recalculates new fundamental
+  //catch input for the following:
+  //  keyboard note press
+  //    log keypress in dict, recalculate new fundamental, change osc. frequencies
   //  shift press - logs shift state
   //  L/R arrow keys - shifts keyboard octave down/up
   $(document).keydown(function(event) {
@@ -479,6 +495,7 @@ $(document).ready(function() {
     }
   });
 
+  //handle key release events to execute envelope release stage
   //catch shift release & change shift state
   $(document).keyup(function(event) {
     let expOffset = keyDict[event.which];
@@ -495,15 +512,16 @@ $(document).ready(function() {
     }
   });
 
+  var r1; var r2; var r3; var r4; var r5; var r6;
   //recalculate all frequencies on note change event
   function changeFreqs(newFund) {
     voice1.fundamental = newFund;
-    let r1 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2];
-    let r2 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2];
-    let r3 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2];
-    let r4 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2];
-    let r5 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2];
-    let r6 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2];
+    r1 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2];
+    r2 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2];
+    r3 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2];
+    r4 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2];
+    r5 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2];
+    r6 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2];
     voice1.oscNodeDict["s1"].frequency.setTargetAtTime
     (newFund*r1, synthCtx.currentTime, .00005);
     voice1.oscNodeDict["s2"].frequency.setTargetAtTime
@@ -537,6 +555,11 @@ $(document).ready(function() {
         voice1.lfoGainDict[activePage].disconnect(voice1.modDestDict[activePage][$this.attr("id")]);
       } else if (activePage == "panButton") {
         voice1.lfoGainDict[activePage].disconnect(voice1.oscPanModDict[$this.attr("id")]);
+      } else if (activePage == "ampButton") {
+
+      } else if (activePage == "revButton") {
+        voice1.lfoGainDict[activePage].disconnect(voice1.crushRateDict[patchConv2[$this.attr("id")]]);
+        voice1.lfoGainDict[activePage].disconnect(voice1.crushDepthDict[patchConv2[$this.attr("id")]]);
       }
       voice1.patchStates[activePage][$this.attr("id")] = 0;
       $this.css("opacity", "33%");
@@ -548,6 +571,11 @@ $(document).ready(function() {
         voice1.lfoGainDict[activePage].connect(voice1.modDestDict[activePage][$this.attr("id")]);
       } else if (activePage == "panButton") {
         voice1.lfoGainDict[activePage].connect(voice1.oscPanModDict[$this.attr("id")]);
+      } else if (activePage == "ampButton") {
+
+      } else if (activePage == "revButton") {
+        voice1.lfoGainDict[activePage].connect(voice1.crushRateDict[patchConv2[$this.attr("id")]]);
+        voice1.lfoGainDict[activePage].connect(voice1.crushDepthDict[patchConv2[$this.attr("id")]]);
       }
       voice1.patchStates[activePage][$this.attr("id")] = 1;
       $this.css("opacity", "100%");
