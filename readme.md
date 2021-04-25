@@ -1,13 +1,13 @@
 ![alt text](https://storage.googleapis.com/www.rsyn.co/db/assets/comb.png)
 ## OVERVIEW
 ----------------------------------------------------------------
-db is a 6 oscillator additive synthesizer based on WebAudioAPI,
+db is a 6 oscillator additive fm synthesizer based on WebAudioAPI,
 inspired in part by the ethos of the drawbar organ.
 
 it is designed to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
 
-to play chromatically, the keys are mapped as follows:\
+to play chromatically, the keys are currently mapped as follows:\
     W   E       T   Y   U\
   A   S   D   F   G   H   J   K\
 \
@@ -20,75 +20,86 @@ to play chromatically, the keys are mapped as follows:\
 
 ## STRUCTURE
 ----------------------------------------------------------------
-the synthesis engine is comprised of 6 main sections,
+the synthesis engine is made up of 6 main sections,
 each denoted by a different color & symbol.\
 they are as follows, in order from left to right:
 
- * **oscillator** (OSC, dark purple) - controls the relative amplitudes of each of the 6 partials
- * **ratio**      (RAT, light purple) - controls the tuning ratio of each partial, in reference to the fundamental
- * **shape**      (OFX, muted red) - applies a variable amount of waveshaping distortion to each partial
- * **pan**        (PAN, soft teal) - controls the L/R placement of each partial in the stereo field
- * **envelope**   (AMP, light blue) - controls the shape & curve of the ADSR envelope, applied in stereo
- * **reverb**     (REV, muted pink) - controls the relative send amounts for the stereo convolution reverb
+ * **oscillator** (dark purple) - controls the relative amplitudes of each of the 6 partials
+ * **ratio**      (light purple) - sets the tuning ratio of each partial, in reference to the fundamental
+ * **shape**      (muted red) - applies a variable amount of waveshaping distortion to each partial
+ * **pan**        (soft teal) - controls the L/R placement of each partial in the stereo field
+ * **envelope**   (light blue) - controls the shape & curve of the ADSR envelope
+ * **crush**      (muted pink) - applies a sample rate & bit reduction effect to each partial
 
 ### SYNTHESIS
 ----------------------------------------------------------------
 
-#### OSC
+#### OSCILLATOR
 ----------------------------------------------------
- each "partial" is comprised of a single sine wave.\
- the gain of each sinusoid is controlled by the corresponding drawbar on the OSC page.\
- each partial is thus assigned its own independent pre-mix level bounded between 0 & unity gain.\
- the default positions fall in line with a simple harmonic series,
- with each partial N [N == 1 to 6] being 1/N the maximum amplitude (unity).\
- coupled with the default ratio settings (below), this creates a starting sound
- similar in character to a sawtooth wave.
+ the **oscillator** page controls the relative mix levels for each of the 6 partials.\
+ each "partial" is made up of a single sine wave.\
+ the gain of each sinusoid is controlled by its associated drawbar (parameter slider).\
+ default position is off (0% mix) for all partials.
 
-#### RAT
+#### RATIO
 ----------------------------------------------------
- each partial also has an independent frequency, determined in reference to the fundamental of each note.\
- frequencies are set by the corresponding ratio parameter on the RAT page.\
- the sliders default to a simple harmonic series, similar to a sawtooth -
- 1st is quarter freq (.25x), 2nd is .5x, 3rd is 1x, 4th is 2x, 5th is 3x, 6th is 4x.
- * the top 48 ratios (top 75%) range from 1.125x to 4.00x (overtones).
- * the bottom 16 ratios (bottom 25%) range from 1.00x to .125x (fundamental & undertones).
+ the **ratio** page sets the tuning ratios for each of the 6 partials.\
+ the resultant pitch of each partial is determined in reference to the active fundamental frequency\
+ for example, a tuning ratio of 2.00, with a fundamental of 440Hz, gives an 880Hz pitch for that partial.\
+ there are 64 possible ratios, ranging from .125x to 4.00x. 1.00x (fundamental) is ratio 16.\
+ below 16 gives subharmonic (undertone) frequencies; above 16 gives harmonic (overtone) frequencies.
 
-#### OFX
+#### SHAPE
 ----------------------------------------------------
- each partial also has its own independent waveshaping distortion applied to it.\
- the distortion mix level for each partial is set by the corresponding drawbar on the OFX page, starting with no distortion (bottom position, default state) to full distortion (top position).\
- the distortion itself takes the form of a nonlinear waveshaper, using a sigmoid curve to generate rich harmonics from a simple sine wave
-  * note: the distortion is applied as a mix, which is to say that both the oscillator & distortion are mixed together in the amounts determined by their drawbars, prior to being panned, attenuated & sent to the reverb.
+ the **shape** page is host to 6 independent waveshapers, one for each of the 6 partials.\
+ the amount of shaping for each partial is determined by the position of the corresponding drawbar.\
+ the sliders control both the pregain send & postgain mix amounts, so as the output level is increased, the output spectrum will also become brighter.
 
 #### PAN
 ----------------------------------------------------
- the PAN page allows each partial to be panned to a specific region of the stereo field, prior to being mixed down, attenuated & sent to the stereo reverb.\
- the exact L/R placement of each partial is controlled by the corresponding drawbar.\
- the graphic display represents the current panning location as a moving white dot atop a horizontal black line.\
- default position is center (equal panning) for all partials.\
- top position is fully right, bottom position is fully left.
+ the **pan** page allows each partial to be panned to a specific region of the stereo field, between fully left & fully right.\
+ the exact placement of each partial is controlled by the corresponding drawbar.\
+ top position is fully right, bottom position is fully left, center position is equal panning (default).
 
-#### AMP
+#### ENVELOPE
 ----------------------------------------------------
- the AMP page contains one ADSR envelope, applied to the master VCA, to allow control over the dynamics of the sound.\
+ the **envelope** page contains one ADSR envelope, to allow control over the dynamics of the sound.\
  the envelope is retriggered whenever a NOTE ON event is received. it will always retrigger from its previous position (level). the release stage is executed on the final NOTE OFF event (last held key released).\
  the sliders provide control over attack, decay, sustain and release, in order from left to right.\
- the final two sliders determine the shape of the attack & decay/release stages, respectively. **fully up** is **fully linear**; **fully down** is **fully exponential**; in between gives a gradual linear interpolation between the two.
+ the final two sliders determine the shape of the attack & decay/release stages, respectively.\
+ **fully up** is **fully linear**; **fully down** is **fully exponential**; in between gradually interpolates between the two.
 
-#### REV
+#### CRUSH
 ----------------------------------------------------
- the REV page is host to a stereo convolution reverb, based on an impulse response taken from the Innocent Railway Tunnel (†).\
- the 6 sliders control the relative reverb send amounts for each of the 6 stereo panned waveshaper/oscillator pairings.\
- the effect can thus be applied in varying amounts to each partial individually, offering granular control over the overall timbre of the reverberated signal.\
- reverb send is represented visually by a single white circle (one per partial), which grows in size as the send for each partial is increased.
+ the **crush** page is comprised of 6 separate sample rate/bit reduction effect units.\
+ the position of each drawbar sets the amount of reduction for the corresponding partial.\
+ the crush effect can be used to add anything between a subtle sparkle to a fully reduced distortion, to each of the partials individually.
 
-### LFOS
+### LFOs
 ----------------------------------------------------------------
- each parameter page features its own independent LFO, offering
- separate control over LFO speed, shape & depth, using the 3 horizontal sliders positioned beneath the synthesis window.\
- the LFO parameter states are displayed beneath each of the sliders. each page also offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page.\
- each button acts as a toggle switch, instantly enabling or disabling the connection of the LFO to the corresponding page parameter.\
- the 6 switches are 1:1 with the 6 parameters, from left to right.
+ each page features its own independent LFO, offering separate control over LFO speed, shape & depth, using the 3 horizontal sliders beneath the synthesis window.\
+ the LFO parameter states are displayed beneath each of the sliders. each page offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page.\
+ each button essentially acts as a toggle switch, enabling or disabling the connection of the LFO to the corresponding page parameter when pressed.\
+ the speed for each LFO is set according to the base frequency (displayed above the LFO sliders, left of center).\
+ the speed slider moves through the same ratio multiples as the RATIO page, multiplying the base frequency by a scaling factor, to arrive at the actual LFO frequency (displayed above the LFO sliders, right of center).\
+ the LFO has three possible base frequency modes, selected using the mode select switches beneath the sliders. they are as follows.\
+
+#### MODE 1: FIXED
+ this is the default mode, represented by the **X** (leftmost mode button).\
+ this mode sets the base frequency to a fixed value of 8Hz, providing a static base upon which to construct time-related parameter modulations across pages.
+
+#### MODE 2: BPM
+ this mode is selected using the middle mode button, expressed as a **very tiny metronome**.\
+ this mode sets the base frequency according to the active BPM, to allow time-synchronized modulations when using the note sequencer.\
+ changing the bpm using the bpm slider will change the base frequencies of all LFOs in this mode.\
+ the frequency is determined as: **bpm/60** Hz; or, in other words, **quarter notes per second**.
+
+#### MODE 3: TUNED
+ this mode is selected using the rightmost mode button, visualized as a **small tuning fork**.\
+ tuned mode is distinct from the other two modes, in that it is designed to facilitate modulation at **audio rates**.\
+ every time a note event is received, the base frequency of each LFO in this mode is updated to the fundamental frequency.\
+ this allows for audio rate modulation of **any parameter**, at frequencies equal to some ratio of the active fundamental.\
+ the fundamental reference behavior ensures that the harmonic content generated by the modulation is more distinctly related to the overall character of the note.
 
 ### DISPLAY MODES
 ----------------------------------------------------------------
@@ -113,44 +124,36 @@ they are as follows, in order from left to right:
 
 ## NOTES
 ----------------------------------------------------------------
-this project is still very much in development; the aforementioned structure is mostly
-finalized, but may be subject to change as the project moves toward completion.
-
-the current alpha build runs just a single voice,
-which begins sounding at receipt of user interaction (page select).
+this project is still in development; the structure is mostly
+finalized, but may be subject to change as it moves toward completion.
 
 #### currently implemented:
   * oscillators & mix controls (page 1)
   * ratio table & ratio select (page 2)
   * waveshapers & mix controls (page 3)
   * per partial pan & controls (page 4)
-  * stereo convolution reverb  (page 6)
+  * VCA envelope & controls (page 5)
+  * sample rate & bit reduction (page 6)
+  * stereo convolution reverb
     * using impulse response from Innocent Railway Tunnel
     * (†) (www.openairlib.net)
   * keyboard note change
   * oscilloscope display
   * x/y stereo display
   * parameter value displays
-    * OSC, RAT & OFX pages (numerical)
-    * PAN & REV pages (visual)
+    * oscillator, ratio & shape pages (numerical)
+    * pan & crush pages (visual)
   * LFOs/routing matrix
-    * pages 1 (OSC), 2 (RAT), 3 (OFX) & 4 (PAN)
+    * pages 1, 2, 3, 4, & 6
 #### currently implementing:
-  * amp envelope & controls (page 5)
   * LFOs/routing matrix
-    * pages 5 (AMP) & 6 (REV)
-#### to implement:
+    * page 5 (envelope)
   * parameter value display
-    * AMP page (envelope visualization)
-  * virtual (onscreen) keyboard
-    * for triggering the envelopes & changing the fundamental
-    * for programming notes into the sequencer
+    * envelope page (curve visualization)
+#### to implement:
   * asymmetric note & trig sequencer
-  * custom additive oscillator nodes
   * parameter group control
-  * parameter modulation display (on canvas)
 #### wishful (not priority):
-  * 3 part polyphony
   * midi controller support (WebMIDI API)
 
 <3
