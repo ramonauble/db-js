@@ -44,7 +44,7 @@ they are as follows, in order from left to right:
 #### RATIO
 ----------------------------------------------------
  the **ratio** page sets the tuning ratios for each of the 6 partials.\
- the resultant pitch of each partial is determined in reference to the active fundamental frequency\
+ the resultant pitch of each partial is determined in reference to the active fundamental frequency.\
  for example, a tuning ratio of 2.00, with a fundamental of 440Hz, gives an 880Hz pitch for that partial.\
  there are 64 possible ratios, ranging from .125x to 4.00x. 1.00x (fundamental) is ratio 16.\
  below 16 gives subharmonic (undertone) frequencies; above 16 gives harmonic (overtone) frequencies.
@@ -77,12 +77,13 @@ they are as follows, in order from left to right:
 
 ### LFOs
 ----------------------------------------------------------------
- each page features its own independent LFO, offering separate control over LFO speed, shape & depth, using the 3 horizontal sliders beneath the synthesis window.\
- the LFO parameter states are displayed beneath each of the sliders. each page offers its own separate routing matrix, allowing the LFO to be routed to any combination of the 6 parameters for the active page.\
+ each page features its own independent LFO, offering separate control over LFO **speed**, **shape** & **depth**, using the 3 horizontal sliders beneath the synthesis window.\
+ the current LFO parameter states are displayed beneath each of the sliders, and are updated accordingly when the parameter page is changed.\
+ each page offers its own separate routing matrix, allowing the LFO to be routed to **any combination** of the 6 parameters for the active page.\
  each button essentially acts as a toggle switch, enabling or disabling the connection of the LFO to the corresponding page parameter when pressed.\
- the speed for each LFO is set according to the base frequency (displayed above the LFO sliders, left of center).\
- the speed slider moves through the same ratio multiples as the RATIO page, multiplying the base frequency by a scaling factor, to arrive at the actual LFO frequency (displayed above the LFO sliders, right of center).\
- the LFO has three possible base frequency modes, selected using the mode select switches beneath the sliders. they are as follows.\
+ the **speed** for each LFO is set according to the base frequency (displayed above the LFO sliders, left of center).\
+ the speed slider moves through the same ratio table as the RATIO page, multiplying the base frequency by a scaling factor to arrive at the actual LFO frequency (displayed above the LFO sliders, right of center).\
+ the LFO has three possible base frequency modes, selected using the mode select switches beneath the sliders. they are as follows.
 
 #### MODE 1: FIXED
  this is the default mode, represented by the **X** (leftmost mode button).\
