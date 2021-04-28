@@ -12,6 +12,8 @@ $(document).ready(function() {
   var scopeX = synthCtx.createAnalyser();
   var scopeY = synthCtx.createAnalyser();
   var scopeW = synthCtx.createAnalyser();
+  var scopeGain = synthCtx.createGain();
+  scopeGain.gain.value = 4.0;
   var scopeSplitter = synthCtx.createChannelSplitter();
   scopeX.fftSize = 512;
   scopeY.fftSize = 512;
@@ -19,8 +21,8 @@ $(document).ready(function() {
   //calculate reverb impulse response & assign to convolver node buffer
   calcIR();
   //init voice
-  voice1.mixGain.connect(scopeW); //oscilloscope analyzer
-  voice1.mixGain.connect(scopeSplitter); //lissajous analyzer
+  voice1.mixGain.connect(scopeGain).connect(scopeW); //oscilloscope analyzer
+  voice1.mixGain.connect(scopeGain).connect(scopeSplitter); //lissajous analyzer
   scopeSplitter.connect(scopeX, 0);
   scopeSplitter.connect(scopeY, 1);
   voice1.start();
@@ -307,11 +309,11 @@ $(document).ready(function() {
     $currentMode.addClass("selected");
   }
 
-  //draw info & scope displays at ~60fps
+  //draw info & scope displays at ~30fps
   var lastUpdate;
-  var updateTime = 16.6667; //ms
+  var updateTime = 33.333333; //ms
   function drawCanvas(timestamp) {
-    if (lastUpdate == undefined || (timestamp - lastUpdate) > 33) {
+    if (lastUpdate == undefined || (timestamp - lastUpdate) > updateTime) {
       lastUpdate = timestamp; //record latest update time
       displayCanvCtx.fillRect(0, 0, dCanvW, dCanvH); //clear canvas
       if (activeUI == "info") { //draw info
@@ -393,9 +395,26 @@ $(document).ready(function() {
         displayCanvCtx.lineWidth = 4;
         displayCanvCtx.beginPath();
         let xW = 0; //horizontal accumulator
-        for (let n = 0; n < binLength; n++) {
-          let yW = (dCanvH/2) - tdWaveW[n]*(dCanvH/2);
-          if (n == 0) {
+        let startIndex = 0;
+        let endIndex = 255;
+        let firstChange = 0;
+        let widthBase;
+        for (let m = 1; m < binLength; m++) {
+          if (firstChange == 0) {
+            if (tdWaveW[startIndex] != tdWaveW[m]) {
+              firstChange = m;
+            }
+          }
+        }
+        let reverseSign = 1;
+        if (tdWaveW[startIndex] > tdWaveW[firstChange]) { //if decreasing after zero crossing
+          reverseSign = -1;
+        }
+        widthBase = binLength - startIndex - (256 - endIndex);
+        binWidth = (dCanvW * 1.0) / widthBase;
+        for (let n = startIndex; n <= endIndex; n++) {
+          let yW = (dCanvH/2) - tdWaveW[n]*(dCanvH/2) * reverseSign;
+          if (n == startIndex) {
             displayCanvCtx.moveTo(xW, yW);
           } else {
             displayCanvCtx.lineTo(xW, yW);
