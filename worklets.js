@@ -63,235 +63,6 @@ class panProcessor extends AudioWorkletProcessor {
   }
 }
 
-class envelopeNode extends AudioWorkletProcessor {
-  static get parameterDescriptors() {
-    return [
-      {
-        name: "attack",
-        defaultValue: .1,
-        minValue: .01,
-        maxValue: 1,
-        automationRate: "a-rate"
-      },
-      {
-        name: "decay",
-        defaultValue: .5,
-        minValue: 0,
-        maxValue: 1,
-        automationRate: "a-rate"
-      },
-      {
-        name: "sustain",
-        defaultValue: 0,
-        minValue: 0,
-        maxValue: 1,
-        automationRate: "a-rate"
-      },
-      {
-        name: "release",
-        defaultValue: .5,
-        minValue: 0,
-        maxValue: 1,
-        automationRate: "a-rate"
-      },
-      {
-        name: "aCurve",
-        defaultValue: .5,
-        minValue: 0,
-        maxValue: 1,
-        automationRate: "a-rate"
-      },
-      {
-        name: "drCurve",
-        defaultValue: .5,
-        minValue: 0,
-        maxValue: 1,
-        automationRate: "a-rate"
-      },
-      {
-        name: "state",
-        defaultValue: .5,
-        minValue: 0,
-        maxValue: 1,
-        automationRate: "a-rate"
-      }
-    ];
-  }
-
-  constructor() {
-    super();
-
-    this.acc = new Uint32Array(1); //envelope accumulator state
-    this.prevAcc = 0; //previous accumulator state (for stage change)
-    this.accBuff = 0; //accumulator buffer (for release stage)
-    this.max = (Math.pow(2, 32) - 1); //accumulator max
-    this.inc = 0; //sample increment for current stage
-    this.prevState = 0; //previous envelope state
-    this.stage = 0; //init stage to not running
-    this.normAcc //normalized value bounded between 0-1 - acc/max
-
-    this.currentState;
-    this.currentAttack;
-    this.currentDecay;
-    this.currentSustain;
-    this.currentRelease;
-    this.currentACurve;
-    this.currentDRCurve;
-
-    this.stateHasChanged;
-    this.attackHasChanged;
-    this.decayHasChanged;
-    this.sustainHasChanged;
-    this.releaseHasChanged;
-    this.aCurveHasChanged;
-    this.drCurveHasChanged;
-
-    this.sampleState;
-    this.sampleAttack;
-    this.sampleDecay;
-    this.sampleSustain;
-    this.sampleRelease;
-    this.sampleACurve;
-    this.sampleDRCurve;
-
-    this.output;
-    this.i;
-  }
-
-  process(inputs, outputs, parameters) {
-    //initialize output channe;
-    this.output = outputs[0][0]; //output 0, channel 0
-
-    //parameter value arrays for current quantum
-    this.currentState = parameters.state;
-    this.currentAttack = parameters.attack;
-    this.currentDecay = parameters.decay;
-    this.currentSustain = parameters.sustain;
-    this.currentRelease = parameters.release;
-    this.currentACurve = parameters.aCurve;
-    this.currentDRCurve = parameters.drCurve;
-
-    //flags to discern parameter states for current quantum
-      //true is a-rate, false is k-rate
-    this.stateHasChanged = !(this.currentState.length === 1);
-    this.attackHasChanged = !(this.currentAttack.length === 1);
-    this.decayHasChanged = !(this.currentDecay.length === 1);
-    this.sustainHasChanged = !(this.currentSustain.length === 1);
-    this.releaseHasChanged = !(this.currentRelease.length === 1);
-    this.aCurveHasChanged = !(this.currentACurve.length === 1);
-    this.drCurveHasChanged = !(this.currentDRCurve.length === 1);
-
-    //assign parameter values for current sample based on flag states
-      //to prevent access of undefined elements
-    for (this.i = 0; this.i < this.output.length; this.i++) {
-      if (this.stateHasChanged) {
-        this.sampleState = this.currentState[this.i];
-      } else {
-        this.sampleState = this.currentState[0];
-      }
-      if (this.attackHasChanged) {
-        this.sampleAttack = this.currentAttack[this.i];
-      } else {
-        this.sampleAttack = this.currentAttack[0];
-      }
-      if (this.decayHasChanged) {
-        this.sampleDecay = this.currentDecay[this.i];
-      } else {
-        this.sampleDecay = this.currentDecay[0];
-      }
-      if (this.sustainHasChanged) {
-        this.sampleSustain = this.currentSustain[this.i];
-      } else {
-        this.sampleSustain = this.currentSustain[0];
-      }
-      if (this.releaseHasChanged) {
-        this.sampleRelease = this.currentRelease[this.i];
-      } else {
-        this.sampleRelease = this.currentRelease[0];
-      }
-      if (this.aCurveHasChanged) {
-        this.sampleACurve = this.currentACurve[this.i];
-      } else {
-        this.sampleACurve = this.currentACurve[0];
-      }
-      if (this.drCurveHasChanged) {
-        this.sampleDRCurve = this.currentDRCurve[this.i];
-      } else {
-        this.sampleDRCurve = this.currentDRCurve[0];
-      }
-
-      //note on/off when state changes state :]
-      if (this.prevState == 0 && this.sampleState == 1) { //note on
-        this.stage = 1; //initiate attack stage
-        this.prevState = this.sampleState; //save state for current sample
-      } else if (this.prevState == 1 && this.sampleState == 0) { //note off
-        this.stage = 4; //initiate release stage
-        this.prevState = this.sampleState; //save state for current sample
-      }
-
-      //ADSR envelope implementation
-      if (this.stage == 1) { //attack stage
-        if (this.sampleAttack == 0) {
-          this.inc = this.max;  //instant attack
-          this.stage = 2;       //trigger decay on next sample
-        } else {
-          this.inc = this.max/(this.sampleAttack * sampleRate); //calculate increment
-        }
-        this.prevAcc = this.acc;  //save current accumulator state
-        this.acc += this.inc;          //increment accumulator
-        if (this.acc < (this.max - this.inc)) {  //attack phase still in progress
-          this.normAcc = this.acc/this.max;
-          this.output[this.i] = (this.sampleACurve*this.normAcc) + (1 - this.sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1); //output between 0-1
-        } else {              //accumulator overflow - trigger decay stage
-          this.acc = this.max;//set accumulator to maximum
-          this.output[this.i] = 1.0;    //end of sttack - output at max
-          this.stage = 2;     //initiate decay stage - on next sample
-        }
-        this.accBuff = this.acc; //save accumulator state to buffer
-      } else if (this.stage == 2) { //decay stage
-        if (this.sampleDecay == 0) {
-          this.inc = (this.max - this.max*this.sampleSustain); //dec directly to sustain
-          this.stage = 3;
-        } else {
-          this.inc = (this.max - this.max*this.sampleSustain)/(this.sampleDecay * sampleRate);
-        }
-        this.prevAcc = this.acc;
-        this.acc -= this.inc; //decrement to sustain
-        if (this.acc > (this.max*this.sampleSustain + this.inc)) {
-          this.normAcc = this.acc/this.max;
-          this.output[this.i] = (this.sampleACurve*this.normAcc) + (1 - this.sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1); //output between 0-1
-        } else {
-          this.acc = this.max * this.sampleSustain;
-          this.output[this.i] = 1.0 * this.sampleSustain;
-          this.stage = 3;
-        }
-        this.accBuff = this.acc; //save accumulator state to buffer
-      } else if (this.stage == 3) {
-        this.acc = this.max * this.sampleSustain;
-        this.accBuff = this.acc;
-        this.output[this.i] = 1.0 * this.sampleSustain; //hold until release
-      } else if (this.stage == 4) {
-        if (this.sampleRelease == 0) { //instant release
-          this.inc = this.accBuff;
-          this.stage = 0; //end of envelope
-        } else {
-          this.inc = this.accBuff/(this.sampleRelease * sampleRate)
-        }
-        this.prevAcc = this.acc;
-        this.acc -= this.inc;
-        if (this.acc > this.inc) {
-          this.normAcc = this.acc/this.max;
-          this.output[this.i] = (this.sampleACurve*this.normAcc) + (1 - this.sampleACurve)*Math.expm1(this.normAcc)/(Math.E - 1);
-        } else {
-          this.output[this.i] = 0;
-          this.stage = 0; //end envelope
-        }
-      }
-    }
-    return true;
-  }
-}
-
 class bitCrushNode extends AudioWorkletProcessor {
   static get parameterDescriptors() {
     return [
@@ -387,6 +158,221 @@ class bitCrushNode extends AudioWorkletProcessor {
   }
 }
 
+class envelopeNode extends AudioWorkletProcessor {
+  static get parameterDescriptors() {
+    return [
+      {
+        name: "attack",
+        defaultValue: .1,
+        minValue: .01,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "decay",
+        defaultValue: .5,
+        minValue: 0.001,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "sustain",
+        defaultValue: 0.001,
+        minValue: 0,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "release",
+        defaultValue: .5,
+        minValue: 0.001,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "aCurve",
+        defaultValue: .5,
+        minValue: 0,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "drCurve",
+        defaultValue: .5,
+        minValue: 0,
+        maxValue: 1,
+        automationRate: "a-rate"
+      },
+      {
+        name: "state",
+        defaultValue: 0,
+        minValue: 0,
+        maxValue: 1,
+        automationRate: "a-rate"
+      }
+    ];
+  }
+
+  constructor() {
+    super();
+
+    this.acc = 0; //envelope accumulator state
+    this.prevAcc = 0; //previous accumulator state (for stage change)
+    this.accBuff = 0; //accumulator buffer (for release stage)
+    this.max = (Math.pow(2, 16) - 1); //accumulator max
+    this.inc = 0; //sample increment for current stage
+    this.prevState = 0; //previous envelope state
+    this.stage = 0; //init stage to not running
+    this.normAcc //normalized value bounded between 0-1 - acc/max
+
+    this.stateBuffer;
+    this.attackBuffer;
+    this.decayBuffer;
+    this.sustainBuffer;
+    this.releaseBuffer;
+    this.aCurveBuffer;
+    this.drCurveBuffer;
+
+    this.stateHasChanged;
+    this.attackHasChanged;
+    this.decayHasChanged;
+    this.sustainHasChanged;
+    this.releaseHasChanged;
+    this.aCurveHasChanged;
+    this.drCurveHasChanged;
+
+    this.state;
+    this.attack;
+    this.decay;
+    this.sustain;
+    this.release;
+    this.aCurve;
+    this.drCurve;
+
+    this.attackRate;
+    this.decayRate;
+    this.sustainThresh;
+    this.releaseRate;
+
+    this.output;
+    this.i;
+  }
+
+  process(inputs, outputs, parameters) {
+    //initialize output channe;
+    this.output = outputs[0][0]; //output 0, channel 0
+
+    //parameter value arrays for current quantum
+    this.stateBuffer = parameters.state;
+    this.attackBuffer = parameters.attack;
+    this.decayBuffer = parameters.decay;
+    this.sustainBuffer = parameters.sustain;
+    this.releaseBuffer = parameters.release;
+    this.aCurveBuffer = parameters.aCurve;
+    this.drCurveBuffer = parameters.drCurve;
+
+    //flags to discern parameter states for current quantum
+      //true is a-rate, false is k-rate
+    this.stateHasChanged = !(this.stateBuffer.length === 1);
+    this.attackHasChanged = !(this.attackBuffer.length === 1);
+    this.decayHasChanged = !(this.decayBuffer.length === 1);
+    this.sustainHasChanged = !(this.sustainBuffer.length === 1);
+    this.releaseHasChanged = !(this.releaseBuffer.length === 1);
+    this.aCurveHasChanged = !(this.aCurveBuffer.length === 1);
+    this.drCurveHasChanged = !(this.drCurveBuffer.length === 1);
+
+    //assign parameter values for current sample based on flag states
+      //to prevent access of undefined elements
+    for (this.i = 0; this.i < this.output.length; this.i++) {
+      if (this.stateHasChanged) {
+        this.state = this.stateBuffer[this.i];
+      } else {
+        this.state = this.stateBuffer[0];
+      }
+      if (this.attackHasChanged) {
+        this.attack = this.attackBuffer[this.i];
+      } else {
+        this.attack = this.attackBuffer[0];
+      }
+      if (this.decayHasChanged) {
+        this.decay = this.decayBuffer[this.i];
+      } else {
+        this.decay = this.decayBuffer[0];
+      }
+      if (this.sustainHasChanged) {
+        this.sustain = this.sustainBuffer[this.i];
+      } else {
+        this.sustain = this.sustainBuffer[0];
+      }
+      if (this.releaseHasChanged) {
+        this.release = this.releaseBuffer[this.i];
+      } else {
+        this.release = this.releaseBuffer[0];
+      }
+      if (this.aCurveHasChanged) {
+        this.aCurve = this.aCurveBuffer[this.i];
+      } else {
+        this.aCurve = this.aCurveBuffer[0];
+      }
+      if (this.drCurveHasChanged) {
+        this.drCurve = this.drCurveBuffer[this.i];
+      } else {
+        this.drCurve = this.drCurveBuffer[0];
+      }
+
+      //note on/off when state changes state :]
+      if (this.prevState == 0 && this.state == 1) { //note on
+        this.stage = 1; //initiate attack stage
+        this.prevState = this.state; //save state for current sample
+      } else if (this.prevState == 1 && this.state == 0) { //note off
+        this.stage = 4; //initiate release stage
+        this.prevState = this.state; //save state for current sample
+      }
+
+      //ADSR envelope implementation
+      if (this.stage == 1) { //attack stage
+        this.attackRate = this.attack*sampleRate; //atk time as fraction of sample rate
+        this.inc = this.max/this.attackRate;      //phase increment value
+        this.accBuff = this.acc;                  //save accumulator state before increment (for release)
+        this.acc += this.inc;                     //increment accumulator
+        if (this.acc < this.max) {
+          this.output[this.i] = this.acc/this.max;
+        } else {
+          this.output[this.i] = 1.0;
+          this.stage = 2;
+        }
+      } else if (this.stage == 2) { //decay stage
+        this.decayRate = this.decay*sampleRate;       //decay time as fraction of sample rate
+        this.sustainThresh = this.sustain*this.max;   //sustain threshold
+        this.inc = (this.max - this.sustainThresh)/this.decayRate;
+        this.accBuff = this.acc; //save accumulator state before decrement
+        this.acc -= this.inc;    //decrement accumulator
+        if (this.acc > this.sustainThresh) {
+          this.output[this.i] = this.acc/this.max;
+        } else {
+          this.output[this.i] = this.sustain;
+          this.stage = 3;
+        }
+      } else if (this.stage == 3) {
+        this.output[this.i] = this.sustain;     //hold until release
+        this.acc = this.max*this.sustain;       //update accumulator & buffer (for release)
+        this.accBuff = this.acc;
+      } else if (this.stage == 4) {
+        this.releaseRate = this.release*sampleRate; //release time as fraction of sample rate
+        this.inc = this.accBuff/this.releaseRate;
+        this.acc -= this.inc;
+        if (this.acc > 0) {
+          this.output[this.i] = this.acc/this.max;
+        } else {
+          this.output[this.i] = 0;
+          this.stage = 0; //end of envelope
+        }
+      }
+    }
+    return true;
+  }
+}
+
 registerProcessor("panProcessor", panProcessor);
-registerProcessor("envelopeNode", envelopeNode);
 registerProcessor("bitCrushNode", bitCrushNode);
+registerProcessor("envelopeNode", envelopeNode);
