@@ -135,6 +135,14 @@ class Voice {
         s5: this.crushNode5.parameters.get("bitDepth"),
         s6: this.crushNode6.parameters.get("bitDepth")
       };
+      this.baseFreqDict = {
+        s1: this.crushNode1.parameters.get("baseFreq"),
+        s2: this.crushNode2.parameters.get("baseFreq"),
+        s3: this.crushNode3.parameters.get("baseFreq"),
+        s4: this.crushNode4.parameters.get("baseFreq"),
+        s5: this.crushNode5.parameters.get("baseFreq"),
+        s6: this.crushNode6.parameters.get("baseFreq")
+      };
 
       //dictionaries for node selection
       this.gainNodeDict = {

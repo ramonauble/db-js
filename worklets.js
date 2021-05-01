@@ -79,6 +79,13 @@ class bitCrushNode extends AudioWorkletProcessor {
         minValue: .025,
         maxValue: 1,
         automationRate: "a-rate"
+      },
+      {
+        name: "baseFreq",
+        defaultValue: 2093.04,
+        minValue: 0,
+        maxValue: 48000,
+        automationRate: "a-rate"
       }
     ];
   }
@@ -94,6 +101,10 @@ class bitCrushNode extends AudioWorkletProcessor {
     this.bitRateArr;
     this.bitRate;
 
+    this.baseFreqHasChanged;
+    this.baseFreqArr;
+    this.baseFreq = 2093.12;
+
     this.i;
     this.input;
     this.output;
@@ -106,6 +117,8 @@ class bitCrushNode extends AudioWorkletProcessor {
     this.bitBase;
     this.crushSample;
     this.normBitRate;
+
+    this.baseDiv;
   }
 
   process(inputs, outputs, parameters) {
@@ -113,6 +126,8 @@ class bitCrushNode extends AudioWorkletProcessor {
     this.sampleRate = this.sampleRateArr[0]; //init s rate to k-rate
     this.bitRateArr = parameters.bitDepth;
     this.bitRate = this.bitRateArr[0]; //init b rate to k-rate
+    this.baseFreqArr = parameters.baseFreq;
+    this.baseFreq = this.baseFreqArr[0]; //init base freq to k-rate
     this.input = inputs[0][0]; //input 0, channel 0
     this.output = outputs[0][0]; //output 0, channel 0
 
@@ -127,8 +142,13 @@ class bitCrushNode extends AudioWorkletProcessor {
       if (!this.bitRateArr.length === 1) {
         this.bitRate = this.bitRateArr[this.i];
       }
-      this.normSampleRate = this.sampleRate*.33;
-      this.normBitRate = this.bitRate*.33
+      //update base freq param val if a-rate
+      if (!this.baseFreqArr.length === 1) {
+        this.baseFreq = this.baseFreqArr[this.i];
+      }
+      this.baseDiv = (this.baseFreq)/sampleRate;
+      this.normSampleRate = this.sampleRate*this.baseDiv;
+      this.normBitRate = this.bitRate;
 
       //boundary case - no srr in off position
       if (this.sampleRate == 1) {
@@ -164,7 +184,7 @@ class envelopeNode extends AudioWorkletProcessor {
       {
         name: "attack",
         defaultValue: .1,
-        minValue: .01,
+        minValue: .001,
         maxValue: 1,
         automationRate: "a-rate"
       },
@@ -217,13 +237,11 @@ class envelopeNode extends AudioWorkletProcessor {
     super();
 
     this.acc = 0; //envelope accumulator state
-    this.prevAcc = 0; //previous accumulator state (for stage change)
     this.accBuff = 0; //accumulator buffer (for release stage)
     this.max = (Math.pow(2, 16) - 1); //accumulator max
     this.inc = 0; //sample increment for current stage
     this.prevState = 0; //previous envelope state
     this.stage = 0; //init stage to not running
-    this.normAcc //normalized value bounded between 0-1 - acc/max
 
     this.stateBuffer;
     this.attackBuffer;

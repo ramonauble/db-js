@@ -13,7 +13,7 @@ $(document).ready(function() {
   var scopeY = synthCtx.createAnalyser();
   var scopeW = synthCtx.createAnalyser();
   var scopeGain = synthCtx.createGain();
-  scopeGain.gain.value = 4.0;
+  scopeGain.gain.value = 3.6;
   var scopeSplitter = synthCtx.createChannelSplitter();
   scopeX.fftSize = 512;
   scopeY.fftSize = 512;
@@ -186,6 +186,8 @@ $(document).ready(function() {
       currentGain.setTargetAtTime(($this.val()/255.0), synthCtx.currentTime, .005); //set gain
     } else if ($this.hasClass("ratSlider")) {
       voice1.sliderVals["ratButton"][$this.attr("id")] = $this.val();
+      voice1.baseFreqDict[$this.attr("id")].setTargetAtTime
+      (voice1.fundamental*8*voice1.ratioDict[voice1.sliderVals["ratButton"][$this.attr("id")] >>> 2], synthCtx.currentTime, .00005);
       changeFreqs(voice1.fundamental);
     } else if ($this.hasClass("ofxSlider")) {
       voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
@@ -499,6 +501,18 @@ $(document).ready(function() {
         voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
         expOffset += (12*octaveOffset); //account for octave
         let newFreq = root*(2**(expOffset/12.0)); //12tet
+        voice1.baseFreqDict["s1"].setTargetAtTime
+        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .00005);
+        voice1.baseFreqDict["s2"].setTargetAtTime
+        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .00005);
+        voice1.baseFreqDict["s3"].setTargetAtTime
+        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .00005);
+        voice1.baseFreqDict["s4"].setTargetAtTime
+        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .00005);
+        voice1.baseFreqDict["s5"].setTargetAtTime
+        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .00005);
+        voice1.baseFreqDict["s6"].setTargetAtTime
+        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .00005);
         changeFreqs(newFreq); //change oscillatgor frequencies
       }
     } else if (event.which == 16) { //catch shift press
