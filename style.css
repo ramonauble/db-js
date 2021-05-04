@@ -59,10 +59,15 @@
   #lfoTitle {
     margin:12px auto -30px;
   }
-#lfoInfo1, #lfoInfo2, #lfoInfo3, #lfoBase, #lfoFreq, #bpmDisp, #reverbDisp {
+#lfoInfo1, #lfoInfo2, #lfoInfo3, #lfoBase, #lfoFreq, #bpmDisp, #reverbDisp, #seqInfo1, #seqInfo2, #seqInfo3 {
   font-family:monospace;
   font-weight:bold;
 }
+  #seqInfo1, #seqInfo2, #seqInfo3 {
+    width:102px;
+    margin:0px auto 9px;
+    font-size:1.0em;
+  }
   #lfoInfo1, #lfoInfo2, #lfoInfo3 {
     width:102px;
     margin:0px auto 9px;
@@ -93,6 +98,7 @@
   width:45px;
   height:30px;
   background:white;
+  background-size:contain;
   border-radius:3px;
   margin-top:3px;
   margin-bottom:-11px;
@@ -102,11 +108,11 @@
 }
   #infoButton {
     margin-right:1.5px;
-    background-image: url("./assets/pageButtons/infoButton.png");
+    background-image: url("./assets/pageButtons/infoButton2.png");
   }
   #waveButton {
     margin-left:1.5px;
-    background-image: url("./assets/pageButtons/waveButton.png");
+    background-image: url("./assets/pageButtons/waveButton2.png");
   }
 .pageButton {
   margin-left:3px;
@@ -114,22 +120,22 @@
   background-position: center;
 }
   #oscButton {
-    background-image: url("./assets/pageButtons/oscPage.png");
+    background-image: url("./assets/pageButtons/oscPage2.png");
   }
   #ratButton {
-    background-image: url("./assets/pageButtons/ratioPage.png");
+    background-image: url("./assets/pageButtons/ratioPage2.png");
   }
   #ofxButton {
-    background-image: url("./assets/pageButtons/crushPage.png");
+    background-image: url("./assets/pageButtons/crushPage2.png");
   }
   #panButton {
-    background-image: url("./assets/pageButtons/panPage.png");
+    background-image: url("./assets/pageButtons/panPage2.png");
   }
   #ampButton {
-    background-image: url("./assets/pageButtons/adsrPage.png");
+    background-image: url("./assets/pageButtons/adsrPage2.png");
   }
   #revButton {
-    background-image: url("./assets/pageButtons/reverbPage.png");
+    background-image: url("./assets/pageButtons/reverbPage2.png");
   }
 
 .pageSelect {
@@ -207,7 +213,8 @@
   flex-direction: row;
 }
 
-.pageGroup, .pageSelectGroup, .lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoInfo2, .lfoGroup, .trSliderGroup, .trInfo, .lfoModeGroup {
+.pageGroup, .pageSelectGroup, .seqNoteGroup, .seqTrigGroup, .seqGroup, .seqInfo,
+.lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoInfo2, .lfoGroup, .trSliderGroup, .trInfo, .lfoModeGroup {
   position:absolute;
   min-width:180px;
   max-width:320px;
@@ -229,25 +236,76 @@
   .trInfo {
     margin-bottom:-90px;
   }
+  .seqNoteGroup {
+    margin-bottom:-94px;
+  }
+  .seqTrigGroup {
+    margin-bottom:-118px;
+  }
+  .seqGroup {
+    margin-bottom:-156px;
+  }
+  .seqInfo {
+    margin-bottom:-178px;
+  }
   .lfoTitleGroup {
-    margin-bottom:-72px;
+    margin-bottom:-162px;
   }
   .lfoPatch {
-    margin-bottom:-108px;
+    margin-bottom:-198px;
   }
   .lfoInfo2 {
-    margin-bottom:-134px;
+    margin-bottom:-224px;
   }
   .lfoGroup {
-    margin-bottom:-157px;
+    margin-bottom:-247px;
   }
   .lfoInfo {
-    margin-bottom:-179px;
+    margin-bottom:-269px;
   }
   .lfoModeGroup {
-    margin-bottom:-179px;
+    margin-bottom:-269px;
   }
 
+.noteSeq {
+  display:inline-flex;
+  width:16px;
+  height:16px;
+  border-radius:3px;
+  margin-top:3px;
+  margin-bottom:-11px;
+  margin-left: 1.2px;
+  margin-right: 1.2px;
+  box-sizing:border-box;
+  cursor: pointer;
+  opacity:33%;
+}
+  .leftMid {
+    margin-right: 4.0px;
+  }
+  .rightMid {
+    margin-left: 4.0px;
+  }
+  .noteA {
+    background:#8b478f;
+  }
+  .noteB {
+    backGround:#73478f;
+  }
+.trigSeq {
+  display:inline-flex;
+  width:16px;
+  height:16px;
+  background:#582975;
+  border-radius:3px;
+  margin-top:3px;
+  margin-bottom:-11px;
+  margin-left: 1.4px;
+  margin-right: 1.4px;
+  box-sizing:border-box;
+  cursor: pointer;
+  opacity: 33%;
+}
 .patchSelect, .modeSelect {
   display:inline-flex;
   width:18px;
@@ -320,6 +378,12 @@
     padding:3px 0px;
     margin:3px;
   }
+  .seqSlider {
+    width:96px;
+    height:12px;
+    padding:3px 0px;
+    margin:3px;
+  }
   .trSlider {
     width:147px;
     height:12px;
@@ -358,5 +422,8 @@
       background:#3f1e54;
     }
     .reverbSlider::-webkit-slider-thumb {
+      background:#3f1e54;
+    }
+    .seqSlider::-webkit-slider-thumb {
       background:#3f1e54;
     }

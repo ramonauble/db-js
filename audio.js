@@ -158,9 +158,6 @@ $(document).ready(function() {
     74: 11, //j - B
     75: 12  //k - C2
   };
-  //default to 5th octave of chromatic scale
-  var octaveOffset = 0;
-  var shiftPressed = false; //shift state
 
   //init active param page to osc page
   var activePage = "oscButton";
@@ -246,6 +243,8 @@ $(document).ready(function() {
     let $this = $(this);
     var newBPM = $this.val();
     bpm = newBPM*1.0;
+    gateTime = 1000*((1/bpm)/128); //half st time
+    sixteenthTime = 1000*((1/bpm)/64); //length of one sixteenth note in seconds
     let newBase = (bpm/60.0);
     $bpmDisp.html("bpm: " + bpm.toFixed(1));
     for (let i = 0; i < bpmModDict.length; i++) {
@@ -483,14 +482,19 @@ $(document).ready(function() {
     voice1.start();
   };
 
-  var keysDict = []; //dictionary for keys current held down
+  var keysDict = []; //dictionary for keys currently held down
   var numKeys = 0;   //number of keys held at any instant
-
+  //default to 5th octave of chromatic scale
+  var octaveOffset = 0;
+  var shiftPressed = false; //shift state
+  var leftPressed = false; //left arrow state
+  var rightPressed = false; //right arrow state
   //catch input for the following:
   //  keyboard note press
   //    log keypress in dict, recalculate new fundamental, change osc. frequencies
   //  shift press - logs shift state
-  //  L/R arrow keys - shifts keyboard octave down/up
+  //  U/D arrow keys - shifts keyboard octave down/up
+  //  L/R arrow keys - logs arrow states for note sequence programming (L:a. R:b)
   $(document).keydown(function(event) {
     let root = 261.625565301; //C5
     let expOffset = keyDict[event.which];
@@ -501,35 +505,66 @@ $(document).ready(function() {
         voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
         expOffset += (12*octaveOffset); //account for octave
         let newFreq = root*(2**(expOffset/12.0)); //12tet
+        let scaledFreq = newFreq*8;
         voice1.baseFreqDict["s1"].setTargetAtTime
-        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .00005);
+        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .00005);
         voice1.baseFreqDict["s2"].setTargetAtTime
-        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .00005);
+        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .00005);
         voice1.baseFreqDict["s3"].setTargetAtTime
-        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .00005);
+        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .00005);
         voice1.baseFreqDict["s4"].setTargetAtTime
-        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .00005);
+        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .00005);
         voice1.baseFreqDict["s5"].setTargetAtTime
-        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .00005);
+        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .00005);
         voice1.baseFreqDict["s6"].setTargetAtTime
-        (newFreq*8*voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .00005);
+        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .00005);
         changeFreqs(newFreq); //change oscillatgor frequencies
       }
     } else if (event.which == 16) { //catch shift press
       shiftPressed = true;
-    } else if (event.which == 37 && shiftPressed) {
+    } else if (event.which == 40 && shiftPressed) {
       if (octaveOffset > -2) { //left arrow - octave down
         octaveOffset--;
       }
-    } else if (event.which == 39 && shiftPressed) {
+    } else if (event.which == 38 && shiftPressed) {
       if (octaveOffset < 2) { //right arrow - octave up
         octaveOffset++;
+      }
+    } else if (event.which == 37) { //left arrow - program note sequence a
+      leftPressed = true;
+    } else if (event.which == 39) { //right arrow - program note sequence b
+      rightPressed = true;
+    } else if (event.which == 32) { //space bar - start/stop sequencer
+      if (!seqPlay) { //start sequencer
+        seqPlay = true;
+        startTime = synthCtx.currentTime;
+        voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime);
+        voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime + gateTime);
+      } else {        //stop sequencer
+        seqPlay = false;
       }
     }
   });
 
+  //sequencer
+  var startTime;
+  var gateTime = 1000*((1/bpm)/128); //half st time
+  var sixteenthTime = 1000*((1/bpm)/64); //length of one sixteenth note in seconds
+  var seqPlay = false;
+  //sequencer scheduling timer
+  setInterval(function() {
+    if (seqPlay) {
+      if (synthCtx.currentTime >= startTime) {
+        //schedule next note & advance start time
+        startTime = startTime + sixteenthTime;
+        voice1.trigEnv.setValueAtTime(1, startTime);
+        voice1.trigEnv.setValueAtTime(0, startTime + gateTime);
+      }
+    }
+  }, 16.6667);
+
   //handle key release events to execute envelope release stage
-  //catch shift release & change shift state
+  //catch shift/arrow release & change shift state
   $(document).keyup(function(event) {
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
@@ -542,6 +577,10 @@ $(document).ready(function() {
       numKeys = keysDict.length;
     } else if (event.which == 16) {
       shiftPressed = false;
+    } else if (event.which == 37) {
+      leftPressed = false;
+    } else if (event.which == 39) {
+      rightPressed = false;
     }
   });
 
