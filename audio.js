@@ -3,7 +3,8 @@
 $(document).ready(function() {
   //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const synthCtx = new AudioContext();
+  const synthCtx = new AudioContext({sampleRate: 44100});
+  console.log(synthCtx.sampleRate);
   const distCurve = makeCurve(20); //generate distortion curve
   //create voice
   let voice1 = new Voice(synthCtx, distCurve);
@@ -538,27 +539,79 @@ $(document).ready(function() {
       if (!seqPlay) { //start sequencer
         seqPlay = true;
         startTime = synthCtx.currentTime;
-        voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime);
-        voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime + gateTime);
+        trigPos = 0;
+        if (trigSeq[trigPos]) {
+          voice1.trigEnv.setValueAtTime(1, startTime);
+          voice1.trigEnv.setValueAtTime(0, startTime + gateTime);
+        }
+        //$trigDivs[0].style.opacity = "100%";
       } else {        //stop sequencer
         seqPlay = false;
+        //clear tracker
+        for (let tempPos = 0; tempPos <= 15; tempPos++) {
+          if (trigSeq[tempPos]) {
+            $trigDivs[tempPos].style.opacity = "67%";
+          } else {
+            $trigDivs[tempPos].style.opacity = "33%";
+          }
+        }
       }
     }
   });
 
+  $(".trigSeq").click(function() {
+    let $this = $(this);
+    let index = trigConv[$this.attr("id")];
+    if (!trigSeq[index]) { //off to on
+      trigSeq[index] = 1;
+      $this.css("opacity", "67%");
+    } else {               //on to off
+      trigSeq[index] = 0;
+      $this.css("opacity", "33%");
+    }
+  });
+  var trigConv = {trig1: 0, trig2: 1, trig3: 2, trig4: 3,
+                  trig5: 4, trig6: 5, trig7: 6, trig8: 7,
+                  trig9: 8, trig10: 9, trig11: 10, trig12: 11,
+                  trig13: 12, trig14: 13, trig15: 14, trig16: 15};
   //sequencer
   var startTime;
   var gateTime = 1000*((1/bpm)/128); //half st time
   var sixteenthTime = 1000*((1/bpm)/64); //length of one sixteenth note in seconds
   var seqPlay = false;
+  var trigSeq = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  var trigPos = 0;
+  var $trigDivs = $(".trigSeq");
   //sequencer scheduling timer
   setInterval(function() {
     if (seqPlay) {
       if (synthCtx.currentTime >= startTime) {
         //schedule next note & advance start time
         startTime = startTime + sixteenthTime;
-        voice1.trigEnv.setValueAtTime(1, startTime);
-        voice1.trigEnv.setValueAtTime(0, startTime + gateTime);
+        if (trigPos == 0) {
+          if (trigSeq[15]) {
+            $trigDivs[15].style.opacity = "67%";
+          } else {
+            $trigDivs[15].style.opacity = "33%";
+          }
+          $trigDivs[0].style.opacity = "67%";
+        } else {
+          if (trigSeq[trigPos - 1]) {
+            $trigDivs[trigPos - 1].style.opacity = "67%";
+          } else {
+            $trigDivs[trigPos - 1].style.opacity = "33%";
+          }
+          $trigDivs[trigPos].style.opacity = "100%";
+        }
+        if (trigSeq[trigPos]) {
+          voice1.trigEnv.setValueAtTime(1, startTime);
+          voice1.trigEnv.setValueAtTime(0, startTime + gateTime);
+        }
+        if (trigPos < 15) {
+          trigPos++;
+        } else {
+          trigPos = 0;
+        }
       }
     }
   }, 16.6667);
