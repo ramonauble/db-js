@@ -501,12 +501,12 @@ class Voice {
     this.distGain5.gain.value = 0;
     this.distGain6.gain.value = 0;
     //enable internal oversampling for distortion
-    this.dist1.oversample = "4x";
-    this.dist2.oversample = "4x";
-    this.dist3.oversample = "4x";
-    this.dist4.oversample = "4x";
-    this.dist5.oversample = "4x";
-    this.dist6.oversample = "4x";
+    this.dist1.oversample = "none";
+    this.dist2.oversample = "none";
+    this.dist3.oversample = "none";
+    this.dist4.oversample = "none";
+    this.dist5.oversample = "none";
+    this.dist6.oversample = "none";
     //assign sigmoid waveshapercurve to distortion nodes
     this.dist1.curve = distCurve;
     this.dist2.curve = distCurve;
