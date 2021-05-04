@@ -3,8 +3,7 @@
 $(document).ready(function() {
   //create audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const synthCtx = new AudioContext({sampleRate: 44100});
-  console.log(synthCtx.sampleRate);
+  const synthCtx = new AudioContext({sampleRate: 36000});
   const distCurve = makeCurve(20); //generate distortion curve
   //create voice
   let voice1 = new Voice(synthCtx, distCurve);
@@ -238,20 +237,20 @@ $(document).ready(function() {
   });
 
   //handle bpm slider value change
-  $bpmDisp = $("#bpmDisp");
-  $reverbDisp = $("#reverbDisp");
+  var $bpmDisp = $("#bpmDisp");
+  var $bpmSlider = $("#bpmSlider");
+  var newBPM; var newBase; var currentLFORatio; var newLFOFreq;
   $("#bpmSlider").on("input", function() {
-    let $this = $(this);
-    var newBPM = $this.val();
+    newBPM = $bpmSlider.val();
     bpm = newBPM*1.0;
     gateTime = 1000*((1/bpm)/128); //half st time
     sixteenthTime = 1000*((1/bpm)/64); //length of one sixteenth note in seconds
-    let newBase = (bpm/60.0);
+    newBase = (bpm/60.0);
     $bpmDisp.html("bpm: " + bpm.toFixed(1));
     for (let i = 0; i < bpmModDict.length; i++) {
       voice1.lfoFreqDict[bpmModDict[i]] = newBase; //set new base frequency
-      let currentLFORatio = voice1.ratioDict[voice1.lfoVals[bpmModDict[i]]["lfoS1"]];
-      let newLFOFreq = newBase * currentLFORatio; //calc new LFO frequency
+      currentLFORatio = voice1.ratioDict[voice1.lfoVals[bpmModDict[i]]["lfoS1"]];
+      newLFOFreq = newBase * currentLFORatio; //calc new LFO frequency
       voice1.lfoNodeDict[bpmModDict[i]].frequency.setTargetAtTime(newLFOFreq, synthCtx.currentTime, .00005); //set freq
       if (activePage == bpmModDict[i]) {
         $lfoInfo2["base"].html("base: " + voice1.lfoFreqDict[activePage].toFixed(2) + "Hz");
@@ -261,9 +260,11 @@ $(document).ready(function() {
   });
 
   //handle reverb slider value change
+  var $reverbDisp = $("#reverbDisp");
+  var $revSlider = $("#reverbSlider");
+  var newRevGain;
   $("#reverbSlider").on("input", function() {
-    let $this = $(this);
-    var newRevGain = $this.val()/255.0; //calc new reverb gain
+    newRevGain = $revSlider.val()/255.0; //calc new reverb gain
     voice1.revGain.gain.setTargetAtTime(newRevGain, synthCtx.currentTime, .005);
     $reverbDisp.html("reverb: " + (100*newRevGain).toFixed(1) + "%");
   });
@@ -537,14 +538,9 @@ $(document).ready(function() {
       rightPressed = true;
     } else if (event.which == 32) { //space bar - start/stop sequencer
       if (!seqPlay) { //start sequencer
-        seqPlay = true;
-        startTime = synthCtx.currentTime;
         trigPos = 0;
-        if (trigSeq[trigPos]) {
-          voice1.trigEnv.setValueAtTime(1, startTime);
-          voice1.trigEnv.setValueAtTime(0, startTime + gateTime);
-        }
-        //$trigDivs[0].style.opacity = "100%";
+        startTime = synthCtx.currentTime;
+        seqPlay = true;
       } else {        //stop sequencer
         seqPlay = false;
         //clear tracker
@@ -594,7 +590,7 @@ $(document).ready(function() {
           } else {
             $trigDivs[15].style.opacity = "33%";
           }
-          $trigDivs[0].style.opacity = "67%";
+          $trigDivs[0].style.opacity = "100%";
         } else {
           if (trigSeq[trigPos - 1]) {
             $trigDivs[trigPos - 1].style.opacity = "67%";
@@ -614,7 +610,7 @@ $(document).ready(function() {
         }
       }
     }
-  }, 16.6667);
+  }, 33.333333);
 
   //handle key release events to execute envelope release stage
   //catch shift/arrow release & change shift state
