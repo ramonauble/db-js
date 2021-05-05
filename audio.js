@@ -503,8 +503,10 @@ $(document).ready(function() {
     if (expOffset !== undefined) {
       if (!keysDict.includes(expOffset)) {  //if key not in dictionary
         numKeys = keysDict.push(expOffset); //add key to end of dictionary & trigger envelope
-        voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
-        voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
+        if (!seqPlay) { //only retrigger envelope if sequencer not playing
+          voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
+          voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
+        }
         expOffset += (12*octaveOffset); //account for octave
         let newFreq = root*(2**(expOffset/12.0)); //12tet
         let scaledFreq = newFreq*8;
@@ -572,11 +574,18 @@ $(document).ready(function() {
                   trig13: 12, trig14: 13, trig15: 14, trig16: 15};
   //sequencer
   var startTime;
-  var gateTime = 1000*((1/bpm)/128); //half st time
+  var gateTime = 1000*((1/bpm)/128);     //half st time
   var sixteenthTime = 1000*((1/bpm)/64); //length of one sixteenth note in seconds
-  var seqPlay = false;
-  var trigSeq = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  var trigPos = 0;
+  var seqPlay = false;  //sequencer state
+  var trigSeq = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; //trig sequence
+  var trigSeqLength = 15;  //length of trig sequence before restart
+  var trigPos = 0;  //current position in trig sequence
+  var noteSeqA = [0, 0, 0, 0, 0, 0, 0, 0];  //note sequence A
+  var noteSeqB = [0, 0, 0, 0, 0, 0, 0, 0];  //note sequence B
+  var seqALength = 0; //length of note sequence A
+  var seqBLength = 0; //length of note sequence B
+  var noteAPos = 0; //current position in note sequence A
+  var noteBPos = 0; //current position in note sequence B
   var $trigDivs = $(".trigSeq");
   //sequencer scheduling timer
   setInterval(function() {
@@ -585,10 +594,10 @@ $(document).ready(function() {
         //schedule next note & advance start time
         startTime = startTime + sixteenthTime;
         if (trigPos == 0) {
-          if (trigSeq[15]) {
-            $trigDivs[15].style.opacity = "67%";
+          if (trigSeq[trigSeqLength]) {
+            $trigDivs[trigSeqLength].style.opacity = "67%";
           } else {
-            $trigDivs[15].style.opacity = "33%";
+            $trigDivs[trigSeqLength].style.opacity = "33%";
           }
           $trigDivs[0].style.opacity = "100%";
         } else {
@@ -603,7 +612,7 @@ $(document).ready(function() {
           voice1.trigEnv.setValueAtTime(1, startTime);
           voice1.trigEnv.setValueAtTime(0, startTime + gateTime);
         }
-        if (trigPos < 15) {
+        if (trigPos < trigSeqLength) {
           trigPos++;
         } else {
           trigPos = 0;
@@ -611,6 +620,31 @@ $(document).ready(function() {
       }
     }
   }, 33.333333);
+
+
+  $(".seqSlider").on("input", function() {
+    let $this = $(this);
+    let thisID = $this.attr("id");
+    if (thisID == "gateSlider") { //change gate time
+
+    } else if (thisID == "mixSlider") { //change note sequence probability mix
+
+    } else if (thisID == "lengthSlider") {  //change trig sequence length
+      let newLength = $this.val();
+      trigSeqLength = newLength - 1;
+      for (let tempPos = trigSeqLength; tempPos <= 15; tempPos++) { //clear extraneous trackers
+        if (trigSeq[tempPos]) {
+          $trigDivs[tempPos].style.opacity = "67%";
+        } else {
+          $trigDivs[tempPos].style.opacity = "33%";
+        }
+      }
+      if (trigSeqLength < trigPos) {
+        trigPos = 0;
+      }
+      $("#seqInfo3").html("length: " + newLength);
+    }
+  });
 
   //handle key release events to execute envelope release stage
   //catch shift/arrow release & change shift state
