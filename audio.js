@@ -8,6 +8,7 @@ $(document).ready(function() {
   //create voice
   let voice1 = new Voice(synthCtx, distCurve);
   var bpm = 120.0; //current tempo of sequencer & reference for LFOs (mode 2)
+  var root = 261.625565301; //C5
   //instantiate analyser node (for oscilloscope display)
   var scopeX = synthCtx.createAnalyser();
   var scopeY = synthCtx.createAnalyser();
@@ -164,8 +165,6 @@ $(document).ready(function() {
   //init active display page to info page
   var activeUI = "wave";
 
-  //init oscillator frequencies
-  changeFreqs(voice1.fundamental);
   //init sliders
   pageChange("oscButton");
   //start test
@@ -185,7 +184,7 @@ $(document).ready(function() {
       voice1.sliderVals["ratButton"][$this.attr("id")] = $this.val();
       voice1.baseFreqDict[$this.attr("id")].setTargetAtTime
       (voice1.fundamental*8*voice1.ratioDict[voice1.sliderVals["ratButton"][$this.attr("id")] >>> 2], synthCtx.currentTime, .00005);
-      changeFreqs(voice1.fundamental);
+      changeFreqs(voice1.fundamental, synthCtx.currentTime);
     } else if ($this.hasClass("ofxSlider")) {
       voice1.sliderVals["ofxButton"][$this.attr("id")] = $this.val();
       var currentDist = voice1.distNodeDict[$this.attr("id")];
@@ -498,7 +497,6 @@ $(document).ready(function() {
   //  U/D arrow keys - shifts keyboard octave down/up
   //  L/R arrow keys - logs arrow states for note sequence programming (L:a. R:b)
   $(document).keydown(function(event) {
-    let root = 261.625565301; //C5
     let expOffset = keyDict[event.which];
     if (expOffset !== undefined) {
       if (!keysDict.includes(expOffset)) {  //if key not in dictionary
@@ -508,21 +506,18 @@ $(document).ready(function() {
           voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
         }
         expOffset += (12*octaveOffset); //account for octave
+        if (leftPressed && seqALength < 8) { //program note sequence A
+          noteSeqA[seqALength] = expOffset; //program note
+          $noteADivs[seqALength].style.opacity = "67%";
+          seqALength++;
+        }
+        if (rightPressed && seqBLength < 8) { //program note sequence A
+          noteSeqB[seqBLength] = expOffset; //program note
+          $noteBDivs[seqBLength].style.opacity = "67%";
+          seqBLength++;
+        }
         let newFreq = root*(2**(expOffset/12.0)); //12tet
-        let scaledFreq = newFreq*8;
-        voice1.baseFreqDict["s1"].setTargetAtTime
-        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2], synthCtx.currentTime, .00005);
-        voice1.baseFreqDict["s2"].setTargetAtTime
-        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2], synthCtx.currentTime, .00005);
-        voice1.baseFreqDict["s3"].setTargetAtTime
-        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2], synthCtx.currentTime, .00005);
-        voice1.baseFreqDict["s4"].setTargetAtTime
-        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2], synthCtx.currentTime, .00005);
-        voice1.baseFreqDict["s5"].setTargetAtTime
-        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2], synthCtx.currentTime, .00005);
-        voice1.baseFreqDict["s6"].setTargetAtTime
-        (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2], synthCtx.currentTime, .00005);
-        changeFreqs(newFreq); //change oscillatgor frequencies
+        changeFreqs(newFreq, synthCtx.currentTime); //change oscillatgor frequencies
       }
     } else if (event.which == 16) { //catch shift press
       shiftPressed = true;
@@ -535,8 +530,24 @@ $(document).ready(function() {
         octaveOffset++;
       }
     } else if (event.which == 37) { //left arrow - program note sequence a
+      if (leftPressed == false) { //if first press
+        for (let i = 0; i < seqALength; i++) { //clear previous note sequence
+          noteSeqA[i] = 0;
+          $noteADivs[i].style.opacity = "33%";
+        }
+        seqALength = 0;
+        noteAPos = 0;
+      }
       leftPressed = true;
     } else if (event.which == 39) { //right arrow - program note sequence b
+      if (rightPressed == false) { //if first press
+        for (let i = 0; i < seqBLength; i++) { //clear previous note sequence
+          noteSeqB[i] = 0;
+          $noteBDivs[i].style.opacity = "33%";
+        }
+        seqBLength = 0;
+        noteBPos = 0;
+      }
       rightPressed = true;
     } else if (event.which == 32) { //space bar - start/stop sequencer
       if (!seqPlay) { //start sequencer
@@ -553,6 +564,20 @@ $(document).ready(function() {
             $trigDivs[tempPos].style.opacity = "33%";
           }
         }
+        for (let tempPos = 0; tempPos < 8; tempPos++) {
+          if (tempPos < seqALength) {
+            $noteADivs[tempPos].style.opacity = "67%";
+          } else {
+            $noteADivs[tempPos].style.opacity = "33%";
+          }
+          if (tempPos < seqBLength) {
+            $noteBDivs[tempPos].style.opacity = "67%";
+          } else {
+            $noteBDivs[tempPos].style.opacity = "33%";
+          }
+        }
+        noteAPos = 0;
+        noteBPos = 0;
       }
     }
   });
@@ -573,7 +598,7 @@ $(document).ready(function() {
                   trig9: 8, trig10: 9, trig11: 10, trig12: 11,
                   trig13: 12, trig14: 13, trig15: 14, trig16: 15};
   //sequencer
-  var startTime;
+  var startTime;  //base time for scheduling notes
   var gateTime = 1000*((1/bpm)/128);     //half st time
   var sixteenthTime = 1000*((1/bpm)/64); //length of one sixteenth note in seconds
   var seqPlay = false;  //sequencer state
@@ -586,7 +611,13 @@ $(document).ready(function() {
   var seqBLength = 0; //length of note sequence B
   var noteAPos = 0; //current position in note sequence A
   var noteBPos = 0; //current position in note sequence B
-  var $trigDivs = $(".trigSeq");
+  var noteProb = 0; //note a/b probability
+  var probA = 0;
+  var probB = 0;
+  var newFreq = 0;
+  var $trigDivs = $(".trigSeq"); //trig seq divs for selection
+  var $noteADivs = $(".noteA");  //note seq A divs
+  var $noteBDivs = $(".noteB");  //note seq B divs
   //sequencer scheduling timer
   setInterval(function() {
     if (seqPlay) {
@@ -608,9 +639,45 @@ $(document).ready(function() {
           }
           $trigDivs[trigPos].style.opacity = "100%";
         }
+        if (noteAPos == 0) {
+          if (seqALength > 1) {
+            $noteADivs[seqALength - 1].style.opacity = "67%";
+          }
+          $noteADivs[0].style.opacity = "100%";
+        } else {
+          $noteADivs[noteAPos - 1].style.opacity = "67%";
+          $noteADivs[noteAPos].style.opacity = "100%";
+        }
+        if (noteBPos == 0) {
+          if (seqBLength > 1) {
+            $noteBDivs[seqBLength - 1].style.opacity = "67%";
+          }
+          $noteBDivs[0].style.opacity = "100%";
+        } else {
+          $noteBDivs[noteBPos - 1].style.opacity = "67%";
+          $noteBDivs[noteBPos].style.opacity = "100%";
+        }
         if (trigSeq[trigPos]) {
+          probA = (1 - noteProb)*Math.random();
+          probB = noteProb*Math.random();
+          if (probA >= probB) {
+            newFreq = root*(2**(noteSeqA[noteAPos]/12.0)); //12tet
+          } else {
+            newFreq = root*(2**(noteSeqB[noteBPos]/12.0)); //12tet
+          }
+          changeFreqs(newFreq, startTime);
           voice1.trigEnv.setValueAtTime(1, startTime);
           voice1.trigEnv.setValueAtTime(0, startTime + gateTime);
+          if (noteAPos < (seqALength - 1)) {  //reset a sequence
+            noteAPos++;
+          } else {
+            noteAPos = 0;
+          }
+          if (noteBPos < (seqBLength - 1)) {  //reset b sequence
+            noteBPos++;
+          } else {
+            noteBPos = 0;
+          }
         }
         if (trigPos < trigSeqLength) {
           trigPos++;
@@ -626,9 +693,11 @@ $(document).ready(function() {
     let $this = $(this);
     let thisID = $this.attr("id");
     if (thisID == "gateSlider") { //change gate time
-
+      gateTime = sixteenthTime * ($this.val()/100);
+      $("#seqInfo1").html("gate: " + $this.val() + "%");
     } else if (thisID == "mixSlider") { //change note sequence probability mix
-
+      noteProb = $this.val();
+      $("#seqInfo2").html("mix: " + (100*noteProb).toFixed(0) + "%");
     } else if (thisID == "lengthSlider") {  //change trig sequence length
       let newLength = $this.val();
       trigSeqLength = newLength - 1;
@@ -669,7 +738,7 @@ $(document).ready(function() {
 
   var r1; var r2; var r3; var r4; var r5; var r6;
   //recalculate all frequencies on note change event
-  function changeFreqs(newFund) {
+  function changeFreqs(newFund, changeTime) {
     voice1.fundamental = newFund;
     r1 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2];
     r2 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2];
@@ -677,23 +746,36 @@ $(document).ready(function() {
     r4 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2];
     r5 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2];
     r6 = voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2];
-    voice1.oscNodeDict["s1"].frequency.setTargetAtTime
-    (newFund*r1, synthCtx.currentTime, .00005);
-    voice1.oscNodeDict["s2"].frequency.setTargetAtTime
-    (newFund*r2, synthCtx.currentTime, .00005);
-    voice1.oscNodeDict["s3"].frequency.setTargetAtTime
-    (newFund*r3, synthCtx.currentTime, .00005);
-    voice1.oscNodeDict["s4"].frequency.setTargetAtTime
-    (newFund*r4, synthCtx.currentTime, .00005);
-    voice1.oscNodeDict["s5"].frequency.setTargetAtTime
-    (newFund*r5, synthCtx.currentTime, .00005);
-    voice1.oscNodeDict["s6"].frequency.setTargetAtTime
-    (newFund*r6, synthCtx.currentTime, .00005);
+    voice1.oscNodeDict["s1"].frequency.setValueAtTime
+    (newFund*r1, changeTime);
+    voice1.oscNodeDict["s2"].frequency.setValueAtTime
+    (newFund*r2, changeTime);
+    voice1.oscNodeDict["s3"].frequency.setValueAtTime
+    (newFund*r3, changeTime);
+    voice1.oscNodeDict["s4"].frequency.setValueAtTime
+    (newFund*r4, changeTime);
+    voice1.oscNodeDict["s5"].frequency.setValueAtTime
+    (newFund*r5, changeTime);
+    voice1.oscNodeDict["s6"].frequency.setValueAtTime
+    (newFund*r6, changeTime);
+    let scaledFreq = newFund*8;
+    voice1.baseFreqDict["s1"].setValueAtTime
+    (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s1"] >>> 2], changeTime);
+    voice1.baseFreqDict["s2"].setValueAtTime
+    (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s2"] >>> 2], changeTime);
+    voice1.baseFreqDict["s3"].setValueAtTime
+    (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s3"] >>> 2], changeTime);
+    voice1.baseFreqDict["s4"].setValueAtTime
+    (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s4"] >>> 2], changeTime);
+    voice1.baseFreqDict["s5"].setValueAtTime
+    (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s5"] >>> 2], changeTime);
+    voice1.baseFreqDict["s6"].setValueAtTime
+    (scaledFreq*voice1.ratioDict[voice1.sliderVals["ratButton"]["s6"] >>> 2], changeTime);
     for (let i = 0; i < aRateModDict.length; i++) {
       voice1.lfoFreqDict[aRateModDict[i]] = newFund; //set new base frequency
       let currentLFORatio = voice1.ratioDict[voice1.lfoVals[aRateModDict[i]]["lfoS1"]];
       let newLFOFreq = newFund * currentLFORatio; //calc new LFO frequency
-      voice1.lfoNodeDict[aRateModDict[i]].frequency.setTargetAtTime(newLFOFreq, synthCtx.currentTime, .0005); //set freq
+      voice1.lfoNodeDict[aRateModDict[i]].frequency.setValueAtTime(newLFOFreq, changeTime); //set freq
       if (activePage == aRateModDict[i]) {
         $lfoInfo2["base"].html("base: " + voice1.lfoFreqDict[activePage].toFixed(2) + "Hz");
         $lfoInfo2["freq"].html("freq: " + newLFOFreq.toFixed(2) + "Hz");
