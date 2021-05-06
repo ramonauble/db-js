@@ -116,7 +116,7 @@ class Voice {
         s3: this.ampEnv.parameters.get("sustain"),
         s4: this.ampEnv.parameters.get("release"),
         s5: this.ampEnv.parameters.get("aCurve"),
-        s6: this.ampEnv.parameters.get("drCurve")
+        s6: this.ampEnv.parameters.get("peakVal")
       };
 
       this.crushRateDict = {
