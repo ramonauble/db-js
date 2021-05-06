@@ -184,20 +184,20 @@ class envelopeNode extends AudioWorkletProcessor {
       {
         name: "attack",
         defaultValue: .1,
-        minValue: .001,
+        minValue: .005,
         maxValue: 1,
         automationRate: "a-rate"
       },
       {
         name: "decay",
         defaultValue: .5,
-        minValue: 0.001,
+        minValue: 0.005,
         maxValue: 1,
         automationRate: "a-rate"
       },
       {
         name: "sustain",
-        defaultValue: 0.001,
+        defaultValue: 0.005,
         minValue: 0,
         maxValue: 1,
         automationRate: "a-rate"
@@ -205,7 +205,7 @@ class envelopeNode extends AudioWorkletProcessor {
       {
         name: "release",
         defaultValue: .5,
-        minValue: 0.001,
+        minValue: 0.005,
         maxValue: 1,
         automationRate: "a-rate"
       },
@@ -217,7 +217,7 @@ class envelopeNode extends AudioWorkletProcessor {
         automationRate: "a-rate"
       },
       {
-        name: "drCurve",
+        name: "peakVal",
         defaultValue: .5,
         minValue: 0,
         maxValue: 1,
@@ -249,7 +249,7 @@ class envelopeNode extends AudioWorkletProcessor {
     this.sustainBuffer;
     this.releaseBuffer;
     this.aCurveBuffer;
-    this.drCurveBuffer;
+    this.peakValBuffer;
 
     this.stateHasChanged;
     this.attackHasChanged;
@@ -257,7 +257,7 @@ class envelopeNode extends AudioWorkletProcessor {
     this.sustainHasChanged;
     this.releaseHasChanged;
     this.aCurveHasChanged;
-    this.drCurveHasChanged;
+    this.peakValHasChanged;
 
     this.state;
     this.attack;
@@ -265,7 +265,7 @@ class envelopeNode extends AudioWorkletProcessor {
     this.sustain;
     this.release;
     this.aCurve;
-    this.drCurve;
+    this.peakVal;
 
     this.attackRate;
     this.decayRate;
@@ -287,7 +287,7 @@ class envelopeNode extends AudioWorkletProcessor {
     this.sustainBuffer = parameters.sustain;
     this.releaseBuffer = parameters.release;
     this.aCurveBuffer = parameters.aCurve;
-    this.drCurveBuffer = parameters.drCurve;
+    this.peakValBuffer = parameters.peakVal;
 
     //flags to discern parameter states for current quantum
       //true is a-rate, false is k-rate
@@ -297,7 +297,7 @@ class envelopeNode extends AudioWorkletProcessor {
     this.sustainHasChanged = !(this.sustainBuffer.length === 1);
     this.releaseHasChanged = !(this.releaseBuffer.length === 1);
     this.aCurveHasChanged = !(this.aCurveBuffer.length === 1);
-    this.drCurveHasChanged = !(this.drCurveBuffer.length === 1);
+    this.peakValHasChanged = !(this.peakValBuffer.length === 1);
 
     //assign parameter values for current sample based on flag states
       //to prevent access of undefined elements
@@ -332,10 +332,10 @@ class envelopeNode extends AudioWorkletProcessor {
       } else {
         this.aCurve = this.aCurveBuffer[0];
       }
-      if (this.drCurveHasChanged) {
-        this.drCurve = this.drCurveBuffer[this.i];
+      if (this.peakValHasChanged) {
+        this.peakVal = this.peakValBuffer[this.i];
       } else {
-        this.drCurve = this.drCurveBuffer[0];
+        this.peakVal = this.peakValBuffer[0];
       }
 
       //note on/off when state changes state :]
@@ -354,7 +354,7 @@ class envelopeNode extends AudioWorkletProcessor {
         this.accBuff = this.acc;                  //save accumulator state before increment (for release)
         this.acc += this.inc;                     //increment accumulator
         if (this.acc < this.max) {
-          this.output[this.i] = this.acc/this.max;
+          this.output[this.i] = this.aCurve*(this.acc/this.max) + (1 - this.aCurve)*Math.pow((this.acc/this.max), 3);
         } else {
           this.output[this.i] = 1.0;
           this.stage = 2;
@@ -366,13 +366,13 @@ class envelopeNode extends AudioWorkletProcessor {
         this.accBuff = this.acc; //save accumulator state before decrement
         this.acc -= this.inc;    //decrement accumulator
         if (this.acc > this.sustainThresh) {
-          this.output[this.i] = this.acc/this.max;
+          this.output[this.i] = this.aCurve*(this.acc/this.max) + (1 - this.aCurve)*Math.pow((this.acc/this.max), 3);
         } else {
-          this.output[this.i] = this.sustain;
+          this.output[this.i] = this.aCurve*this.sustain + (1 - this.aCurve)*Math.pow((this.sustain), 3);
           this.stage = 3;
         }
       } else if (this.stage == 3) {
-        this.output[this.i] = this.sustain;     //hold until release
+        this.output[this.i] = this.aCurve*this.sustain + (1 - this.aCurve)*Math.pow((this.sustain), 3);     //hold until release
         this.acc = this.max*this.sustain;       //update accumulator & buffer (for release)
         this.accBuff = this.acc;
       } else if (this.stage == 4) {
@@ -380,7 +380,7 @@ class envelopeNode extends AudioWorkletProcessor {
         this.inc = this.accBuff/this.releaseRate;
         this.acc -= this.inc;
         if (this.acc > 0) {
-          this.output[this.i] = this.acc/this.max;
+          this.output[this.i] = this.aCurve*(this.acc/this.max) + (1 - this.aCurve)*Math.pow((this.acc/this.max), 3);
         } else {
           this.output[this.i] = 0;
           this.stage = 0; //end of envelope
