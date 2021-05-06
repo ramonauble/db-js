@@ -8,15 +8,12 @@ it is designed to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
 
 to play chromatically, the keys are currently mapped as follows:\
-    W   E       T   Y   U\
-  A   S   D   F   G   H   J   K\
-\
-    C#  D#      F#  G#  A#\
-  C   D   E   F   G   A   B   C2
+    W   E       T   Y   U            C#  D#      F#  G#  A#\
+  A   S   D   F   G   H   J   K    C   D   E   F   G   A   B   C2\
 
  to shift 1 octave down, press and hold SHIFT & press UP ARROW\
  to shift 1 octave up, press and hold SHIFT & press DOWN ARROW
-  * present range of -/+ 2 octaves from default position
+  * current range of -/+ 2 octaves from default position
 
 ## STRUCTURE
 ----------------------------------------------------------------
@@ -45,7 +42,7 @@ they are as follows, in order from left to right:
 ----------------------------------------------------
  the **ratio** page sets the tuning ratios for each of the 6 partials.\
  the resultant pitch of each partial is determined in reference to the active fundamental frequency.\
-  * for example, a tuning ratio of 2.00, with a fundamental of 440Hz, gives an 880Hz pitch for that partial.\
+ for example, a tuning ratio of 2.00, with a fundamental of 440Hz, gives an 880Hz pitch for that partial.\
  there are 64 possible ratios, ranging from .125x to 4.00x. 1.00x (fundamental) is ratio 16.\
  below 16 gives subharmonic (undertone) frequencies; above 16 gives harmonic (overtone) frequencies.
 
