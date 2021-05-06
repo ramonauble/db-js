@@ -45,7 +45,7 @@ they are as follows, in order from left to right:
 ----------------------------------------------------
  the **ratio** page sets the tuning ratios for each of the 6 partials.\
  the resultant pitch of each partial is determined in reference to the active fundamental frequency.\
- for example, a tuning ratio of 2.00, with a fundamental of 440Hz, gives an 880Hz pitch for that partial.\
+  * for example, a tuning ratio of 2.00, with a fundamental of 440Hz, gives an 880Hz pitch for that partial.\
  there are 64 possible ratios, ranging from .125x to 4.00x. 1.00x (fundamental) is ratio 16.\
  below 16 gives subharmonic (undertone) frequencies; above 16 gives harmonic (overtone) frequencies.
 
@@ -81,7 +81,7 @@ they are as follows, in order from left to right:
  each page features its own independent LFO, offering separate control over LFO **speed**, **shape** & **depth**, using the 3 horizontal sliders beneath the synthesis window.\
  the current LFO parameter states are displayed beneath each of the sliders, and are updated accordingly when the parameter page is changed.\
  each page offers its own separate routing matrix, allowing the LFO to be routed to **any combination** of the 6 parameters for the active page.\
-  * each button essentially acts as a toggle switch, enabling or disabling the connection of the LFO to the corresponding page parameter when pressed.\
+ each button essentially acts as a toggle switch, enabling or disabling the connection of the LFO to the corresponding page parameter when pressed.\
  the **speed** for each LFO is set according to the base frequency (displayed above the LFO sliders, left of center).\
  the speed slider moves through the same ratio table as the RATIO page, multiplying the base LFO frequency by a scaling factor to arrive at the actual LFO frequency (displayed above the LFO sliders, right of center).\
  the LFO has three possible base frequency modes, selected using the mode select switches beneath the sliders. they are as follows.
@@ -121,7 +121,7 @@ they are as follows, in order from left to right:
  the trig sequence continues until reaching the **length** parameter, after which it will restart.
 
 #### SEQUENCER PARAMS
- the sequencer features 3 sliders to control various aspects of its behavior; they are as follows:
+ the sequencer features 3 sliders to control different aspects of its behavior; they are as follows:
   * **gate** - configures the amount of time that the NOTE ON event is held for each trig - in other words, the amount of time before the release stage is executed. ranges from instantaneous at 0%, to the length of the entire 16th note at 100% (tempo-dependent)
   * **mix** - controls the probability of the next note being taken from either sequence a (left) or sequence b (right). 0% is full probability to sequence a, 100% is full probability to sequence b. 50% gives a 50/50 chance that the next note will be taken from either sequence. this allows for continuous, probabilistic morphing between the two note sequences.
   * **length** - sets the maximum length of the trig sequence before repeating. ranges from 1-16 steps, and can be changed while the sequence is playing.
@@ -130,18 +130,18 @@ they are as follows, in order from left to right:
 ----------------------------------------------------------------
  there are three different display modes for the central canvas, selectable using the display mode buttons at the top center of the console. they are as follows.
 
-#### information page
+#### INFO PAGE
  select this page using the **left display button** (containing the "i" symbol).\
  this page displays information about the 6 parameter states for the selected synthesis page.\
  pages 1, 2 & 3 display numerical values for each of the 6 parameters.\
  pages 4, 5 & 6 display graphical representations of their parameters.\
  this page is useful for fine tuning of the parameters via the sliders.
-#### oscilloscope display
- select this page by pressing the **right display button** once (containing a graphic of one cycle of a triangle wave).\
+#### SCOPE DISPLAY
+ select this page by pressing the **right display button** once (containing a graphic of one cycle of a sine wave).\
  this page displays an oscilloscope-like representation of the current output.\
  the samples are taken after the final mix, so all parameters will affect the shape in some way.\
  in this mode, the **horizontal axis** is time, and the **vertical axis** is amplitude.
-#### x/y stereo display
+#### STEREO DISPLAY
  select this page by pressing the **right display button** twice. on second press, the oscilloscope will turn into the x/y display.\
  this mode preserves the stereo information of the signal - panning the oscillators (or utilizing the PAN LFO) will exert the most noticeable affect on its shape.\
  in this mode, the **horizontal axis** is the left channel, and the **vertical axis** is the right.
