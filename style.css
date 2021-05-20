@@ -59,7 +59,8 @@
   #lfoTitle {
     margin:12px auto -30px;
   }
-#lfoInfo1, #lfoInfo2, #lfoInfo3, #lfoBase, #lfoFreq, #bpmDisp, #reverbDisp, #seqInfo1, #seqInfo2, #seqInfo3 {
+#lfoInfo1, #lfoInfo2, #lfoInfo3, #lfoBase, #lfoFreq, #bpmDisp, #reverbDisp, #seqInfo1,
+#seqInfo2, #seqInfo3, #scaleDisp, #rootDisp, #scaleTitle, #rootTitle {
   font-family:monospace;
   font-weight:bold;
 }
@@ -83,6 +84,17 @@
     margin:0px auto 9px;
     font-size:1.0em;
   }
+  #scaleDisp, #rootDisp, #scaleTitle, #rootTitle {
+    width:154px;
+    margin:0px auto 9px;
+  }
+    #scaleTitle, #rootTitle {
+      font-size:1.0em;
+      text-decoration:underline;
+    }
+    #scaleDisp, #rootDisp {
+      font-size:.95em;
+    }
 
 #displayCanv {
   width:120px;
@@ -214,7 +226,8 @@
 }
 
 .pageGroup, .pageSelectGroup, .seqNoteGroup, .seqTrigGroup, .seqGroup, .seqInfo,
-.lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoInfo2, .lfoGroup, .trSliderGroup, .trInfo, .lfoModeGroup {
+.lfoTitleGroup, .lfoPatch, .lfoInfo, .lfoInfo2, .lfoGroup, .trSliderGroup, .trInfo,
+.lfoModeGroup, .srSliderGroup, .srInfo, .srTitle {
   position:absolute;
   min-width:180px;
   max-width:320px;
@@ -230,41 +243,54 @@
   .pageSelectGroup {
     margin-bottom:-38px;
   }
+
   .trSliderGroup {
-    margin-bottom:-69px;
+    margin-bottom:-68px;
   }
   .trInfo {
-    margin-bottom:-90px;
+    margin-bottom:-89px;
   }
+
   .seqNoteGroup {
-    margin-bottom:-94px;
+    margin-bottom:-87px;
   }
   .seqTrigGroup {
-    margin-bottom:-118px;
+    margin-bottom:-108px;
   }
   .seqGroup {
-    margin-bottom:-156px;
+    margin-bottom:-146px;
   }
   .seqInfo {
-    margin-bottom:-178px;
+    margin-bottom:-168px;
   }
+
   .lfoTitleGroup {
-    margin-bottom:-162px;
+    margin-bottom:-150px;
   }
   .lfoPatch {
-    margin-bottom:-198px;
+    margin-bottom:-172px;
   }
   .lfoInfo2 {
-    margin-bottom:-224px;
+    margin-bottom:-198px;
   }
   .lfoGroup {
-    margin-bottom:-247px;
+    margin-bottom:-221px;
   }
   .lfoInfo {
-    margin-bottom:-269px;
+    margin-bottom:-243px;
   }
   .lfoModeGroup {
-    margin-bottom:-269px;
+    margin-bottom:-243px;
+  }
+
+  .srTitle {
+    margin-bottom:-278px;
+  }
+  .srSliderGroup {
+    margin-bottom:-291px;
+  }
+  .srInfo {
+    margin-bottom:-312px;
   }
 
 .noteSeq {
@@ -384,7 +410,7 @@
     padding:3px 0px;
     margin:3px;
   }
-  .trSlider {
+  .trSlider, .srSlider {
     width:147px;
     height:12px;
     padding:3px 0px;
@@ -418,12 +444,11 @@
     .revSlider::-webkit-slider-thumb, .revPatch {
       background:#DB689C;
     }
-    .bpmSlider::-webkit-slider-thumb {
+    .bpmSlider::-webkit-slider-thumb, .reverbSlider::-webkit-slider-thumb,
+    .srSlider::-webkit-slider-thumb {
       background:#3f1e54;
     }
-    .reverbSlider::-webkit-slider-thumb {
-      background:#3f1e54;
-    }
+
     .seqSlider::-webkit-slider-thumb {
       background:#3f1e54;
     }

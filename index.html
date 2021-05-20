@@ -41,6 +41,20 @@
 					<input id="s6" class="slider pSlider oscSlider" type="range" min="0" max="255"
 					value="1" step=".25"></input>
 				</div>
+				<div class="srTitle">
+					<p id="scaleTitle">scale</p>
+					<p id="rootTitle">root</p>
+				</div>
+				<div class="srSliderGroup">
+					<input id="scaleSlider" class="slider srSlider" type="range" min="0" max="4"
+					value="0" step="1"></input>
+					<input id="rootSlider" class="slider srSlider" type="range" min="0" max="11"
+					value="3" step="1"></input>
+				</div>
+				<div class="srInfo">
+					<p id="scaleDisp">chromatic</p>
+					<p id="rootDisp">C</p>
+				</div>
 				<div class="pageGroup">
 					<div class="uiButton pageButton" id="oscButton"></div>
 					<div class="uiButton pageButton" id="ratButton"></div>
@@ -118,7 +132,7 @@
 					<p id="seqInfo3">length: 16</p>
 				</div>
 				<div class="lfoTitleGroup">
-					<p id="lfoTitle">lfo</p>
+					<p id="lfoTitle"></p>
 				</div>
 				<div class="lfoInfo2">
 					<p id="lfoBase">base: <span id="lfoBaseVal">20.0hz</span></p>
