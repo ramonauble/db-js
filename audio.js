@@ -268,6 +268,24 @@ $(document).ready(function() {
     $reverbDisp.html("reverb: " + (100*newRevGain).toFixed(1) + "%");
   });
 
+  //handle scale selection change
+  var $scaleDisp = $("#scaleDisp");
+  var $scaleSlider = $("#scaleSlider");
+  var activeScale = parseInt($scaleSlider.val());
+  $("#scaleSlider").on("input", function() {
+    $scaleDisp.html(voice1.scaleText[$scaleSlider.val()]);
+    activeScale = parseInt($scaleSlider.val());
+  });
+
+  //handle root selection change
+  var $rootDisp = $("#rootDisp");
+  var $rootSlider = $("#rootSlider");
+  var rootOffset = parseInt($rootSlider.val());
+  $("#rootSlider").on("input", function() {
+    $rootDisp.html(voice1.rootText[$rootSlider.val()]);
+    rootOffset = parseInt($rootSlider.val());
+  });
+
   //handle UI page change event
   //  change UI colors, update slider vals & LFO params/patch states
   function pageChange(newPage) {
@@ -377,6 +395,10 @@ $(document).ready(function() {
           displayCanvCtx.font = "30px monospace"
           displayCanvCtx.fillStyle = colorsDict["panButton"];
           displayCanvCtx.strokeStyle = "#FFFFFF"
+        } else if (activePage == "ampButton") {
+
+          //displayCanvCtx.quadraticCurveTo();
+          //displayCanvCtx.stroke();
         } else if (activePage == "revButton") {
           displayCanvCtx.lineWidth = 3;
           displayCanvCtx.beginPath();
@@ -505,7 +527,8 @@ $(document).ready(function() {
           voice1.trigEnv.setValueAtTime(0, synthCtx.currentTime);
           voice1.trigEnv.setValueAtTime(1, synthCtx.currentTime + .0001);
         }
-        expOffset += (12*octaveOffset); //account for octave
+        expOffset = rootOffset + 12*Math.floor(keyDict[event.which]/voice1.scaleLength[activeScale])
+        + voice1.scaleDict[activeScale][keyDict[event.which]%voice1.scaleLength[activeScale]] + 12*octaveOffset;
         if (leftPressed && seqALength < 8) { //program note sequence A
           noteSeqA[seqALength] = expOffset; //program note
           $noteADivs[seqALength].style.opacity = "67%";
