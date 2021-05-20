@@ -301,7 +301,7 @@ class Voice {
     //instantiate ratio LUT & parameter (slider) state memory
     //-------------------------------------------------------
     //LUT of oscillator tuning ratios (in ref. to fundamental)
-    this.ratioDict = {
+    /*this.ratioDict = {
       63: 4.00, 62: 3.875, 61: 3.833, 60: 3.80,
       59: 3.75, 58: 3.667, 57: 3.625, 56: 3.60,
       55: 3.50, 54: 3.40, 53: 3.375, 52: 3.33,
@@ -318,7 +318,73 @@ class Voice {
       11: .75, 10: .667, 9: .625, 8: .60,
       7: .50, 6: .40, 5: .375, 4: .333,
       3: .25, 2: .20, 1: .167, 0: 0.125,
+    };*/
+    this.ratioDict = {
+      63: 4.00, 62: 3.875, 61: 3.833, 60: 3.80,
+      59: 3.75, 58: 3.667, 57: 3.625, 56: 3.60,
+      55: 3.50, 54: 3.40, 53: 3.375, 52: 3.33,
+      51: 3.25, 50: 3.20, 49: 3.167, 48: 3.125,
+      47: 3.00, 46: 2.875, 45: 2.833, 44: 2.80,
+      43: 2.75, 42: 2.667, 41: 2.625, 40: 2.60,
+      39: 2.50, 38: 2.40, 37: 2.375, 36: 2.333,
+      35: 2.25, 34: 2.20, 33: 2.167, 32: 2.125,
+      31: 2.00, 30: 1.875, 29: 1.833, 28: 1.80,
+      27: 2.00, 26: 1.887748, 25: 1.781797, 24: 1.681793,
+      23: 1.587401, 22: 1.498307, 21: 1.414214, 20: 1.334839,
+      19: 1.259921, 18: 1.189207, 17: 1.122462, 16: 1.059463,
+      15: 1.00, 14: .875, 13: .833, 12: .80,
+      11: .75, 10: .667, 9: .625, 8: .60,
+      7: .50, 6: .40, 5: .375, 4: .333,
+      3: .25, 2: .20, 1: .167, 0: 0.125,
     };
+
+    //scale definitions - index to semitones
+    this.scaleDict = {
+      0: {    //chromatic
+        0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5,
+        6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11
+      },
+      1: {    //diatonic major
+        0: 0, 1: 2, 2: 4, 3: 5, 4: 7, 5: 9, 6: 11
+      },
+      2: {   //natural minor
+        0: 0, 1: 2, 2: 3, 3: 5, 4: 7, 5: 8, 6: 10
+      },
+      3: {   //harmonic minor - raised VII
+        0: 0, 1: 2, 2: 3, 3: 5, 4: 7, 5: 8, 6: 11
+      },
+      4: {   //melodic minor - raised VI & VII
+        0: 0, 1: 2, 2: 3, 3: 5, 4: 7, 5: 9, 6: 11
+      }
+    };
+    //scale lengths - for offset calculation
+    this.scaleLength = {
+      0: 12,
+      1: 7,
+      2: 7,
+      3: 7,
+      4: 7
+    };
+    //convert slider index to text for display of active scale
+    this.scaleText = {
+      0: "chromatic",
+      1: "major",
+      2: "natural minor",
+      3: "harmonic minor",
+      4: "melodic minor"
+    };
+
+    //root definitions - index to semitones
+    this.rootDict = {
+      0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5,
+      6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11
+    };
+    //convert slider index to text for display of active root
+    this.rootText = {
+      0: "A", 1: "A#", 2: "B", 3: "C", 4: "C#", 5: "D",
+      6: "D#", 7: "E", 8: "F", 9: "F#", 10: "G", 11: "G#"
+    };
+
     //instantiate memory for all instantaneous param. states
     this.sliderVals = {
       oscButton: {
