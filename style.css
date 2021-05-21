@@ -26,6 +26,21 @@
     background-color:#D8B9D0;
     text-align:center;
     overflow:auto;
+    justify-content: center;
+    align-items: center;
+  }
+  #contentDiv {
+    left: 20%;
+    right: 20%;
+    display:flex;
+    border-style:solid;
+    border-width:2px;
+    border-radius:6px;
+    border-color:#e6ccdf;
+    background-color:#e6ccdf;
+    width:340px;
+    height:450px;
+    margin:10px auto 0px;
   }
 
 #title {
@@ -237,6 +252,10 @@
   align-items:center;
   flex-direction:row;
 }
+  #pageTitle {
+    margin-top:2px;
+  }
+
   .pageGroup {
     margin-bottom:-22px;
   }
