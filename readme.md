@@ -1,5 +1,5 @@
 <p align="center">
-  ![alt text](https://storage.googleapis.com/www.rsyn.co/db/assets/comb.png)
+  <img width="497" height="654" src="https://storage.googleapis.com/www.rsyn.co/db/assets/comb.png">
 </p>
 ## OVERVIEW
 ----------------------------------------------------------------
