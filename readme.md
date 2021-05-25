@@ -4,11 +4,12 @@
 
 ## OVERVIEW
 ----------------------------------------------------------------
-db is an additive fm synthesizer based on WebAudioAPI,
-inspired in part by the ethos of the drawbar organ.
+db is an additive/fm synthesizer based on WebAudioAPI, designed to run in your web browser (chrome/chromium work best).
 
-it is designed to be both immediate & easy to understand,
+it is made to be both immediate & easy to understand,
 with a simple, symmetrical structure & instantly tweakable parameters.
+
+centered around a unique 6 part synthesis engine, db features 6 flexible LFOs, keytracked FM & bpm sync modes, a dual asymmetric pattern sequencer, probabilistic note morphing, dynamic scale & root selection, oscilloscope & x/y lissajous display, and a master stereo reverb effect.
 
 
 ## SYNTHESIS
@@ -18,11 +19,11 @@ each denoted by a different color & symbol.\
 they are as follows, in order from left to right:
 
  * **mix** (dark purple) - controls the relative mix levels of each of the 6 partials
- * **tune**      (light purple) - sets the tuning ratio of each partial, in reference to the fundamental frequency
+ * **tune**      (light purple) - sets the scale degree offset from the fundamental for each partial
  * **shape**      (muted red) - applies a variable amount of waveshaping distortion to each partial
  * **pan**        (soft teal) - controls the L/R placement of each partial in the stereo field
- * **envelope**   (light blue) - controls the shape & curve of the ADSR envelope
- * **crush**      (muted pink) - applies a keytracked sample rate & bit reduction effect to each partial
+ * **envelope**   (light blue) - controls the shape & curve of the master ADSR envelope
+ * **crush**      (muted pink) - applies a keytracked sample rate/bit reduction effect to each partial
 
 ### mix
 ----------------------------------------------------------------
@@ -37,10 +38,11 @@ they are as follows, in order from left to right:
  the offsets are expressed in units of **scale degrees**, both positive and negative.\
  given the selected scale & root settings (detailed below), the offset will "select" the corresponding note from said scale, starting from the **root note** at center position.\
  for example, an offset of +2 selects the second note up from the root - in C Major, this would be C-D-(**E**).\
+ this behavior is retained for each note of the selected scale; if a C is played in C major, 2 scale degrees up gives a tuning of the E above. however, if a D is then played, the same offset of +2 degrees will give F, not E (as F is 2 degrees above D). this ensures all partials remain tuned in a consistent way for each possible note that can be played.
 
 ### shape
 ----------------------------------------------------
- the **shape** page is host to 6 independent waveshapers, one for each of the 6 partials.\
+ the **shape** page is host to 6 independent waveshaper distortions, one for each of the 6 partials.\
  the amount of shaping for each partial is determined by the position of the corresponding drawbar.\
  the sliders control both the pregain send & postgain mix amounts; as the output level is increased, the output spectrum will also become brighter.
 
@@ -55,20 +57,20 @@ they are as follows, in order from left to right:
  the **envelope** page contains one ADSR envelope, to allow control over the dynamics of the sound.\
  the envelope is retriggered whenever a NOTE ON event is received. it will always retrigger from its previous position (level). the release stage is executed on the final NOTE OFF event (last held key released).\
  the first four sliders provide control over **attack**, **decay**, **sustain** and **release**, in order from left to right.\
- the fifth slider determines the shape of the attack & decay/release curves, from **exponential** (fully down) to **linear** (fully up); intermediate values result in a smooth interpolation between the two shapes.\
- the final slider controls the peak value, effectively setting the maximum loudness level of the envelope. the maximum sustain level is bounded by this value.
+ the fifth slider determines the shape of the attack & decay/release curves, from **exponential** (fully down) to **linear** (fully up); intermediate values result in a continuous interpolation between the two shapes.\
+ the final slider controls the peak value, effectively setting the maximum loudness level of the envelope. the maximum sustain level is then bounded by this value.
 
 ### crush
 ----------------------------------------------------
- the **crush** page is comprised of 6 separate sample rate/bit reduction effect units.\
- the sample rate reduction is keytracked & related to the frequency of each of the partials.\
+ the **crush** page is comprised of 6 separate sample rate/bit reduction effects (one per partial).\
+ the sample rate reduction is keytracked & related to the frequency of the associated partial.\
  the position of each drawbar sets the amount of reduction for the corresponding partial.\
  this page can be used to add anything between a subtle sparkle to a fully reduced distortion, to each of the partials individually.
 
 
 ## SEQUENCER
 ----------------------------------------------------------------
- db features a robust note & trig sequencer, resting just beneath the synthesis window.\
+ db features a robust note & trig sequencer, positioned directly beneath the synthesis window.\
  the sequencer is based around 3 separate sequences - **two note sequences**, and **one trig sequence**.\
  to start/stop the sequencer, press the **spacebar**.
 
@@ -86,7 +88,7 @@ they are as follows, in order from left to right:
 ### sequencer parameters
  the sequencer features 3 sliders to control different aspects of its behavior; they are as follows:
   * **gate** - configures the amount of time that the NOTE ON event is held for each trig - in other words, the amount of time before the release stage is executed. ranges from instantaneous at 0%, to the length of the entire 16th note at 100% (tempo-dependent)
-  * **mix** - controls the probability of the next note being taken from either sequence a (left) or sequence b (right). 0% is full probability to sequence a, 100% is full probability to sequence b. 50% gives a 50/50 chance that the next note will be taken from either sequence. this allows for continuous, probabilistic morphing between the two note sequences.
+  * **morph** - controls the probability of the next note being taken from either sequence a (left) or sequence b (right). 0% is full probability to sequence a, 100% is full probability to sequence b. 50% gives a 50/50 chance that the next note will be taken from either sequence. this allows for continuous, probabilistic morphing between the two note sequences.
   * **length** - sets the maximum length of the trig sequence before repeating. ranges from 1-16 steps, and can be changed while the sequence is playing.
 
 
