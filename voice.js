@@ -116,7 +116,7 @@ class Voice {
         s3: this.ampEnv.parameters.get("sustain"),
         s4: this.ampEnv.parameters.get("release"),
         s5: this.ampEnv.parameters.get("aCurve"),
-        s6: this.ampEnv.parameters.get("peakVal")
+        s6: this.mixGain.gain
       };
 
       this.crushRateDict = {
@@ -180,12 +180,12 @@ class Voice {
           PS6: this.oscGain6.gain
         },
         ofxButton: {
-          PS1: this.preGain1.gain,
-          PS2: this.preGain2.gain,
-          PS3: this.preGain3.gain,
-          PS4: this.preGain4.gain,
-          PS5: this.preGain5.gain,
-          PS6: this.preGain6.gain
+          PS1: this.distGain1.gain,
+          PS2: this.distGain2.gain,
+          PS3: this.distGain3.gain,
+          PS4: this.distGain4.gain,
+          PS5: this.distGain5.gain,
+          PS6: this.distGain6.gain
         }
       }
 
@@ -196,6 +196,15 @@ class Voice {
         PS4: this.oscPan4.parameters.get("panPosition"),
         PS5: this.oscPan5.parameters.get("panPosition"),
         PS6: this.oscPan6.parameters.get("panPosition")
+      };
+
+      this.envModDict = {
+        PS1: this.ampEnv.parameters.get("attack"),
+        PS2: this.ampEnv.parameters.get("decay"),
+        PS3: this.ampEnv.parameters.get("sustain"),
+        PS4: this.ampEnv.parameters.get("release"),
+        PS5: this.ampEnv.parameters.get("aCurve"),
+        PS6: this.mixGain.gain
       };
 
       //oscillators -> gain nodes -> pan mixer nodes

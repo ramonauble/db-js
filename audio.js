@@ -135,7 +135,7 @@ $(document).ready(function() {
   //title dictionary to map page selection to page title
   var titleDict = {
     oscButton: "mix",
-    ratButton: "ratio",
+    ratButton: "tune",
     ofxButton: "shape",
     panButton: "pan",
     ampButton: "envelope",
@@ -818,7 +818,7 @@ $(document).ready(function() {
       } else if (activePage == "panButton") {
         voice1.lfoGainDict[activePage].disconnect(voice1.oscPanModDict[$this.attr("id")]);
       } else if (activePage == "ampButton") {
-
+        voice1.lfoGainDict[activePage].disconnect(voice1.envModDict[$this.attr("id")]);
       } else if (activePage == "revButton") {
         voice1.lfoGainDict[activePage].disconnect(voice1.crushRateDict[patchConv2[$this.attr("id")]]);
         voice1.lfoGainDict[activePage].disconnect(voice1.crushDepthDict[patchConv2[$this.attr("id")]]);
@@ -834,7 +834,7 @@ $(document).ready(function() {
       } else if (activePage == "panButton") {
         voice1.lfoGainDict[activePage].connect(voice1.oscPanModDict[$this.attr("id")]);
       } else if (activePage == "ampButton") {
-
+        voice1.lfoGainDict[activePage].connect(voice1.envModDict[$this.attr("id")]);
       } else if (activePage == "revButton") {
         voice1.lfoGainDict[activePage].connect(voice1.crushRateDict[patchConv2[$this.attr("id")]]);
         voice1.lfoGainDict[activePage].connect(voice1.crushDepthDict[patchConv2[$this.attr("id")]]);
