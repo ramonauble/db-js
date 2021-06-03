@@ -394,9 +394,20 @@ $(document).ready(function() {
           displayCanvCtx.fillStyle = colorsDict["panButton"];
           displayCanvCtx.strokeStyle = "#FFFFFF"
         } else if (activePage == "ampButton") {
-
-          //displayCanvCtx.quadraticCurveTo();
-          //displayCanvCtx.stroke();
+          let aXStart = 0; let aYStart = dCanvH;
+          let aXEnd = (dCanvW/4)*(p1/255.0); let aYEnd = dCanvH*(1 - (p6/255.0));
+          let dXEnd = aXEnd + (dCanvW/4)*(p2/255.0); let dYEnd = dCanvH*(1 - (p3/255.0)*(p6/255.0));
+          let sXEnd = .75*dCanvW + (dCanvW/4)*(1 - (p4/255.0));
+          displayCanvCtx.beginPath();
+          displayCanvCtx.moveTo(aXStart, aYStart); //bottom left corner
+          displayCanvCtx.quadraticCurveTo((aXEnd - aXStart)/2.0, (aYStart - aYEnd)/2 + aYEnd, aXEnd, aYEnd);
+          displayCanvCtx.stroke();
+          displayCanvCtx.quadraticCurveTo((dXEnd - aXEnd)/2.0 + aXEnd, dYEnd - (dYEnd - aYEnd)/2.0, dXEnd, dYEnd);
+          displayCanvCtx.stroke();
+          displayCanvCtx.lineTo(sXEnd, dYEnd);
+          displayCanvCtx.stroke();
+          displayCanvCtx.quadraticCurveTo(sXEnd + (dCanvW - sXEnd)/2.0, dYEnd + (dCanvH - dYEnd)/2.0, dCanvW, dCanvH);
+          displayCanvCtx.stroke();
         } else if (activePage == "revButton") {
           displayCanvCtx.lineWidth = 3;
           displayCanvCtx.beginPath();
