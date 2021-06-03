@@ -369,6 +369,10 @@ class Voice {
       4: {   //melodic minor - raised VI & VII
         "-6": 2, "-5": 3, "-4": 5, "-3": 7, "-2": 9, "-1": 11,
         "0": 0, "1": 2, "2": 3, "3": 5, "4": 7, "5": 9, "6": 11
+      },
+      5: {   //pentatonic major
+        "-4": 2, "-3": 4, "-2": 7, "-1": 9,
+        "0": 0, "1": 2, "2": 4, "3": 7, "4": 9
       }
     };
     //scale lengths - for offset calculation
@@ -377,7 +381,8 @@ class Voice {
       1: 7,
       2: 7,
       3: 7,
-      4: 7
+      4: 7,
+      5: 5
     };
     //convert slider index to text for display of active scale
     this.scaleText = {
@@ -385,7 +390,8 @@ class Voice {
       1: "major",
       2: "natural minor",
       3: "harmonic minor",
-      4: "melodic minor"
+      4: "melodic minor",
+      5: "pentatonic major"
     };
 
     //root definitions - index to semitones
@@ -434,7 +440,7 @@ class Voice {
         s6: 127
       },
       ampButton: {
-        s1: 26,
+        s1: 5,
         s2: 127,
         s3: 0,
         s4: 127,
