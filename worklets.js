@@ -183,7 +183,7 @@ class envelopeNode extends AudioWorkletProcessor {
     return [
       {
         name: "attack",
-        defaultValue: .1,
+        defaultValue: .02,
         minValue: .005,
         maxValue: 1,
         automationRate: "a-rate"
@@ -349,7 +349,7 @@ class envelopeNode extends AudioWorkletProcessor {
 
       //ADSR envelope implementation
       if (this.stage == 1) { //attack stage
-        this.attackRate = this.attack*sampleRate; //atk time as fraction of sample rate
+        this.attackRate = this.attack*(2*sampleRate); //atk time as fraction of sample rate
         this.inc = this.max/this.attackRate;      //phase increment value
         this.accBuff = this.acc;                  //save accumulator state before increment (for release)
         this.acc += this.inc;                     //increment accumulator
@@ -360,7 +360,7 @@ class envelopeNode extends AudioWorkletProcessor {
           this.stage = 2;
         }
       } else if (this.stage == 2) { //decay stage
-        this.decayRate = this.decay*sampleRate;       //decay time as fraction of sample rate
+        this.decayRate = this.decay*(2*sampleRate);       //decay time as fraction of sample rate
         this.sustainThresh = this.sustain*this.max;   //sustain threshold
         this.inc = (this.max - this.sustainThresh)/this.decayRate;
         this.accBuff = this.acc; //save accumulator state before decrement
@@ -376,7 +376,7 @@ class envelopeNode extends AudioWorkletProcessor {
         this.acc = this.max*this.sustain;       //update accumulator & buffer (for release)
         this.accBuff = this.acc;
       } else if (this.stage == 4) {
-        this.releaseRate = this.release*sampleRate; //release time as fraction of sample rate
+        this.releaseRate = this.release*(2*sampleRate); //release time as fraction of sample rate
         this.inc = this.accBuff/this.releaseRate;
         this.acc -= this.inc;
         if (this.acc > 0) {
