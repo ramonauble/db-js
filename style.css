@@ -447,27 +447,153 @@
   }
     .oscSlider::-webkit-slider-thumb, .oscPatch {
       background:#5D2E7B;
+      background-size:contain;
     }
     .ratSlider::-webkit-slider-thumb, .ratPatch {
       background:#A15ECE;
+      background-size:contain;
     }
     .ofxSlider::-webkit-slider-thumb, .ofxPatch {
       background:#C75858;
+      background-size:contain;
     }
     .panSlider::-webkit-slider-thumb, .panPatch {
       background:#8AC497;
+      background-size:contain;
     }
     .ampSlider::-webkit-slider-thumb, .ampPatch {
       background:#848EDF;
+      background-size:contain;
     }
     .revSlider::-webkit-slider-thumb, .revPatch {
       background:#DB689C;
+      background-size:contain;
     }
     .bpmSlider::-webkit-slider-thumb, .reverbSlider::-webkit-slider-thumb,
     .srSlider::-webkit-slider-thumb {
       background:#3f1e54;
+      background-size:contain;
     }
-
     .seqSlider::-webkit-slider-thumb {
       background:#3f1e54;
+    }
+
+    .oscSlider::-webkit-slider-thumb, .ratSlider::-webkit-slider-thumb,
+    .ofxSlider::-webkit-slider-thumb, .panSlider::-webkit-slider-thumb,
+    .ampSlider::-webkit-slider-thumb, .revSlider::-webkit-slider-thumb {
+      transform: rotate(90deg);
+    }
+
+    .oscSlider#s1::-webkit-slider-thumb, .oscPatch#PS1 {
+      background-image: url("./assets/sliderHandles/oscPage/s1.png");
+    }
+    .oscSlider#s2::-webkit-slider-thumb, .oscPatch#PS2 {
+      background-image: url("./assets/sliderHandles/oscPage/s2.png");
+    }
+    .oscSlider#s3::-webkit-slider-thumb, .oscPatch#PS3 {
+      background-image: url("./assets/sliderHandles/oscPage/s3.png");
+    }
+    .oscSlider#s4::-webkit-slider-thumb, .oscPatch#PS4 {
+      background-image: url("./assets/sliderHandles/oscPage/s4.png");
+    }
+    .oscSlider#s5::-webkit-slider-thumb, .oscPatch#PS5 {
+      background-image: url("./assets/sliderHandles/oscPage/s5.png");
+    }
+    .oscSlider#s6::-webkit-slider-thumb, .oscPatch#PS6 {
+      background-image: url("./assets/sliderHandles/oscPage/s6.png");
+    }
+
+    .ratSlider#s1::-webkit-slider-thumb, .ratPatch#PS1 {
+      background-image: url("./assets/sliderHandles/ratPage/s1.png");
+    }
+    .ratSlider#s2::-webkit-slider-thumb, .ratPatch#PS2 {
+      background-image: url("./assets/sliderHandles/ratPage/s2.png");
+    }
+    .ratSlider#s3::-webkit-slider-thumb, .ratPatch#PS3 {
+      background-image: url("./assets/sliderHandles/ratPage/s3.png");
+    }
+    .ratSlider#s4::-webkit-slider-thumb, .ratPatch#PS4 {
+      background-image: url("./assets/sliderHandles/ratPage/s4.png");
+    }
+    .ratSlider#s5::-webkit-slider-thumb, .ratPatch#PS5 {
+      background-image: url("./assets/sliderHandles/ratPage/s5.png");
+    }
+    .ratSlider#s6::-webkit-slider-thumb, .ratPatch#PS6 {
+      background-image: url("./assets/sliderHandles/ratPage/s6.png");
+    }
+
+    .ofxSlider#s1::-webkit-slider-thumb, .ofxPatch#PS1 {
+      background-image: url("./assets/sliderHandles/ofxPage/s1.png");
+    }
+    .ofxSlider#s2::-webkit-slider-thumb, .ofxPatch#PS2 {
+      background-image: url("./assets/sliderHandles/ofxPage/s2.png");
+    }
+    .ofxSlider#s3::-webkit-slider-thumb, .ofxPatch#PS3 {
+      background-image: url("./assets/sliderHandles/ofxPage/s3.png");
+    }
+    .ofxSlider#s4::-webkit-slider-thumb, .ofxPatch#PS4 {
+      background-image: url("./assets/sliderHandles/ofxPage/s4.png");
+    }
+    .ofxSlider#s5::-webkit-slider-thumb, .ofxPatch#PS5 {
+      background-image: url("./assets/sliderHandles/ofxPage/s5.png");
+    }
+    .ofxSlider#s6::-webkit-slider-thumb, .ofxPatch#PS6 {
+      background-image: url("./assets/sliderHandles/ofxPage/s6.png");
+    }
+
+    .panSlider#s1::-webkit-slider-thumb, .panPatch#PS1 {
+      background-image: url("./assets/sliderHandles/panPage/s1.png");
+    }
+    .panSlider#s2::-webkit-slider-thumb, .panPatch#PS2 {
+      background-image: url("./assets/sliderHandles/panPage/s2.png");
+    }
+    .panSlider#s3::-webkit-slider-thumb, .panPatch#PS3 {
+      background-image: url("./assets/sliderHandles/panPage/s3.png");
+    }
+    .panSlider#s4::-webkit-slider-thumb, .panPatch#PS4 {
+      background-image: url("./assets/sliderHandles/panPage/s4.png");
+    }
+    .panSlider#s5::-webkit-slider-thumb, .panPatch#PS5 {
+      background-image: url("./assets/sliderHandles/panPage/s5.png");
+    }
+    .panSlider#s6::-webkit-slider-thumb, .panPatch#PS6 {
+      background-image: url("./assets/sliderHandles/panPage/s6.png");
+    }
+
+    .ampSlider#s1::-webkit-slider-thumb, .ampPatch#PS1 {
+      background-image: url("./assets/sliderHandles/ampPage/s1.png");
+    }
+    .ampSlider#s2::-webkit-slider-thumb, .ampPatch#PS2 {
+      background-image: url("./assets/sliderHandles/ampPage/s2.png");
+    }
+    .ampSlider#s3::-webkit-slider-thumb, .ampPatch#PS3 {
+      background-image: url("./assets/sliderHandles/ampPage/s3.png");
+    }
+    .ampSlider#s4::-webkit-slider-thumb, .ampPatch#PS4 {
+      background-image: url("./assets/sliderHandles/ampPage/s4.png");
+    }
+    .ampSlider#s5::-webkit-slider-thumb, .ampPatch#PS5 {
+      background-image: url("./assets/sliderHandles/ampPage/s5.png");
+    }
+    .ampSlider#s6::-webkit-slider-thumb, .ampPatch#PS6 {
+      background-image: url("./assets/sliderHandles/ampPage/s6.png");
+    }
+
+    .revSlider#s1::-webkit-slider-thumb, .revPatch#PS1 {
+      background-image: url("./assets/sliderHandles/revPage/s1.png");
+    }
+    .revSlider#s2::-webkit-slider-thumb, .revPatch#PS2 {
+      background-image: url("./assets/sliderHandles/revPage/s2.png");
+    }
+    .revSlider#s3::-webkit-slider-thumb, .revPatch#PS3 {
+      background-image: url("./assets/sliderHandles/revPage/s3.png");
+    }
+    .revSlider#s4::-webkit-slider-thumb, .revPatch#PS4 {
+      background-image: url("./assets/sliderHandles/revPage/s4.png");
+    }
+    .revSlider#s5::-webkit-slider-thumb, .revPatch#PS5 {
+      background-image: url("./assets/sliderHandles/revPage/s5.png");
+    }
+    .revSlider#s6::-webkit-slider-thumb, .revPatch#PS6 {
+      background-image: url("./assets/sliderHandles/revPage/s6.png");
     }

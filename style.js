@@ -39,6 +39,15 @@ $(document).ready(function() {
     revButton: "revSlider"
   };
 
+  var patchClassDict = {
+    oscButton: "oscPatch",
+    ratButton: "ratPatch",
+    ofxButton: "ofxPatch",
+    panButton: "panPatch",
+    ampButton: "ampPatch",
+    revButton: "revPatch"
+  };
+
   var colorDict = {
     oscButton: "#5D2E7B",
     ratButton: "#A15ECE",
@@ -106,11 +115,12 @@ $(document).ready(function() {
         $pageSelectDict[activePage].css("opacity", "20%");
         $pageSliders.removeClass(sliderClassDict[activePage]);
         $auxSliders.removeClass(sliderClassDict[activePage]);
+        $lfoPatch.removeClass(patchClassDict[activePage]);
         activePage = $this.attr("id");
         $pageSliders.addClass(sliderClassDict[activePage]);
         $auxSliders.addClass(sliderClassDict[activePage]);
+        $lfoPatch.addClass(patchClassDict[activePage]);
         $lfoTitle.css("color", colorDict[activePage]);
-        $lfoPatch.css("background", colorDict[activePage]);
         $activePage = $pageDict[activePage];
         $pageSelectDict[activePage].css("opacity", "100%");
         let newBgColor = $pageSelectDict[activePage].css("background");
