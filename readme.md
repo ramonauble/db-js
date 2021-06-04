@@ -99,7 +99,7 @@ they are as follows, in order from left to right:
  each page offers its own separate routing matrix, allowing the LFO to be routed to **any combination** of the 6 parameters for the active page.\
  each button essentially acts as a toggle switch, enabling or disabling the connection of the LFO to the corresponding page parameter when pressed.\
  the **speed** for each LFO is set according to the base frequency (displayed above the LFO sliders, left of center).\
- the speed slider moves through the same ratio table as the RATIO page, multiplying the base LFO frequency by a scaling factor to arrive at the actual LFO frequency (displayed above the LFO sliders, right of center).\
+ the speed slider moves through a table of fixed ratios, multiplying the base LFO frequency by a scaling factor to arrive at the actual LFO frequency (displayed above the LFO sliders, right of center).\
  the LFO has three possible base frequency modes, selected using the mode select switches beneath the sliders. they are as follows.
 
 ### mode 1: fixed
@@ -174,16 +174,12 @@ this project is nearly finished, and the structure will not be changing much goi
   * oscilloscope display
   * x/y stereo display
   * parameter value displays
-    * oscillator, ratio & shape pages (numerical)
-    * pan & crush pages (visual)
+    * oscillator, rune & shape pages (numerical)
+    * pan, envelope & crush pages (visual)
   * LFOs/routing matrix
-    * pages 1, 2, 3, 4, & 6
+    * all pages
   * asymmetric note & trig sequencer
-#### currently implementing:
-  * LFOs/routing matrix
-    * page 5 (envelope)
-  * parameter value display
-    * envelope page (curve visualization)
+  * scale & root selection
 #### to implement:
   * selective note sequence retrig (trig sequence sync)
   * parameter group control
