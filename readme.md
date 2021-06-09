@@ -200,6 +200,10 @@ they are as follows, in order from left to right:
 
 ## SCALE & ROOT SELECTION
 ----------------------------------------------------------------
+<p align="center">
+  <img width="468" height="74" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/scaleroot.png">
+</p>
+
  beneath the LFO section there are two sliders - **scale** and **root**. these allow the sound of the synth to be tuned to a particular set of notes, as defined by the selected scale type & root note.
 
 ### scale
