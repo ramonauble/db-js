@@ -144,7 +144,7 @@ they are as follows, in order from left to right:
 
  each page features its own independent LFO, allowing each of its synthesis parameters to be selectively modulated.\
  the lfo can be free running, bpm synced or tuned via the fundamental frequency of the active note.\
- the base frequency of the LFO is displayed beneath the routing matrix; the actual frequency is shown to the right of this, and changes depending on the selected mode & frequency multiplier.\
+ the base frequency of the LFO is displayed beneath the routing matrix; the actual frequency is shown to the right of this, and changes depending on the selected mode & frequency multiplier.
 
 ### routing matrix
 <p align="center">
@@ -152,7 +152,7 @@ they are as follows, in order from left to right:
 </p>
 
  the LFO routing matrix is expressed as 6 horizontal toggle switches (boxes), corresponding left-for-right to the 6 parameter sliders of the active page.\
- the parameters of each page can be selectively modulated by clicking the corresponding box, to turn on/off the matrix connection for that parameter.\
+ the parameters of each page can be selectively modulated by clicking the corresponding box, to turn on/off the matrix connection for that parameter.
 
 ### parameters
 <p align="center">
@@ -161,7 +161,7 @@ they are as follows, in order from left to right:
 
  the **speed** slider selects the frequency multiplier for the given base frequency, to determine the actual frequency of the active LFO. it moves through a table of multipliers, from **.125x** to **4.00x**. default is **1.00x**\
  the **shape** slider selects the shape of the active LFO; options are **sine**, **triangle**, **square** & **saw**.\
- the **depth** slider controls the depth of the modulation for the active LFO, affecting each of the matrix connections equally.\
+ the **depth** slider controls the depth of the modulation for the active LFO, affecting each of the matrix connections equally.
 
 ### modes
  each of the page LFOs can configured to operate in one of three different frequency **modes**.\
@@ -169,16 +169,28 @@ they are as follows, in order from left to right:
  the modes are as follows:
 
 #### mode 1: fixed
+<p align="center">
+  <img width="101" height="38" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/mode1.png">
+</p>
+
  this is the default mode, represented by the **X** (leftmost mode button).\
  this mode sets the base frequency to a fixed value of 8Hz, providing a static base upon which to construct free-running, time-related parameter modulations across pages.
 
 #### mode 2: bpm synced
+<p align="center">
+  <img width="101" height="38" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/mode2.png">
+</p>
+
  this mode is selected using the middle mode button, expressed as a **very tiny metronome**.\
  this mode sets the base frequency according to the active BPM, to allow time-synchronized modulations when using the sequencer.\
  changing the bpm using the bpm slider will change the base frequencies of all LFOs in this mode.\
  the base frequency is determined as: **bpm/60** Hz; or, in other words, **quarter notes per second**.
 
 #### mode 3: keytracked (fm)
+<p align="center">
+  <img width="101" height="38" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/mode3.png">
+</p>
+
  this mode is selected using the rightmost mode button, visualized as a **small tuning fork**.\
  tuned mode is distinct from the other two modes, in that it is designed to facilitate modulation at **audio rates**.\
  every time a note event is received, the base frequency of each LFO in this mode is updated to the fundamental frequency.\
