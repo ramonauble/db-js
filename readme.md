@@ -14,12 +14,13 @@ centered around a unique 6 part synthesis engine, db features 6 flexible LFOs, k
 
 ## SYNTHESIS
 ----------------------------------------------------------------
+<p align="center">
+  <img width="446" height="63" border-radius="3px" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/synthesis.png">
+</p>
+
 the main synthesis engine is made up of 6 sections,
 each denoted by a different color & symbol.\
 they are as follows, in order from left to right:
-<p align="center">
-  <img width="446" height="63" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/synthesis.png">
-</p>
 
  * **mix** (dark purple) - controls the relative mix levels of each of the 6 partials
  * **tune**      (light purple) - sets the scale degree offset from the fundamental for each partial
