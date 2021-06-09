@@ -222,17 +222,29 @@ they are as follows, in order from left to right:
  there are three different display modes for the central canvas, selectable using the display mode buttons at the top center of the console. they are as follows.
 
 ### info page
+<p align="center">
+  <img width="193" height="165" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/infopage.png">
+</p>
+
  select this page using the **left display button** (containing the "i" symbol).\
  this page displays information about the 6 parameter states for the selected synthesis page.\
  pages 1, 2 & 3 display numerical values for each of the 6 parameters.\
  pages 4, 5 & 6 display graphical representations of their parameters.\
  this page is useful for fine tuning of the parameters via the sliders.
 ### oscilloscope display
+<p align="center">
+  <img width="193" height="165" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/scopepage.png">
+</p>
+
  select this page by pressing the **right display button** once (containing a graphic of one cycle of a sine wave).\
  this page displays an oscilloscope-like representation of the current output.\
  the samples are taken after the final mix, so all parameters will affect the shape in some way.\
  in this mode, the **horizontal axis** is time, and the **vertical axis** is amplitude.
 ### stereo display
+<p align="center">
+  <img width="193" height="165" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/xypage.png">
+</p>
+
  select this page by pressing the **right display button** twice. on second press, the oscilloscope will turn into the x/y display.\
  this mode preserves the stereo information of the signal - panning the oscillators (or utilizing the PAN LFO) will exert the most noticeable affect on its shape.\
  in this mode, the **horizontal axis** is the left channel, and the **vertical axis** is the right.
