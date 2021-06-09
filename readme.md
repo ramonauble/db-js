@@ -14,6 +14,9 @@ centered around a unique 6 part synthesis engine, db features 6 flexible LFOs, k
 
 ## SYNTHESIS
 ----------------------------------------------------------------
+<p align="center">
+  <img width="446" height="63" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/synthesis.png">
+</p>
 the main synthesis engine is made up of 6 sections,
 each denoted by a different color & symbol.\
 they are as follows, in order from left to right:
