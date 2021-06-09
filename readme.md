@@ -98,22 +98,38 @@ they are as follows, in order from left to right:
 
 ## SEQUENCER
 ----------------------------------------------------------------
+<p align="center">
+  <img width="442" height="121" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/sequencer.png">
+</p>
+
  db features a robust note & trig sequencer, positioned directly beneath the synthesis window.\
  the sequencer is based around 3 separate sequences - **two note sequences**, and **one trig sequence**.\
  to start/stop the sequencer, press the **spacebar**.
 
 ### note sequences
+<p align="center">
+  <img width="442" height="35" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/noteseq.png">
+</p>
+
  the two note sequences are each represented by 8 little boxes, positioned above the trig sequence on either side; each box represents a single note in the sequence.\
  each note sequence is independent of the other, and can be between 1-8 steps in length.\
  to program the note sequence, press and hold either **left arrow** or **right arrow**; any notes subsequently entered will be appended to the corresponding sequence, up to the maximum amount of 8.\
  both note sequences are advanced by 1 step each trig, and are reset after reaching the last note in the sequence.
 
 ### trig sequence
+<p align="center">
+  <img width="442" height="37" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/trigseq.png">
+</p>
+
  the trig sequence is positioned directly beneath the two note sequences, represented by 16 contiguous boxes, and can be between 1-16 steps in length. each step corresponds to one **16th note** at the current tempo.\
  to enter trigs into the sequence, just click on the desired box to turn it on/off.\
  the trig sequence continues until reaching the **length** parameter, after which it will restart.
 
 ### sequencer parameters
+<p align="center">
+  <img width="442" height="59" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/paramseq.png">
+</p>
+
  the sequencer features 3 sliders to control different aspects of its behavior; they are as follows:
   * **gate** - configures the amount of time that the NOTE ON event is held for each trig - in other words, the amount of time before the release stage is executed. ranges from instantaneous at 0%, to the length of the entire 16th note at 100% (tempo-dependent)
   * **morph** - controls the probability of the next note being taken from either sequence a (left) or sequence b (right). 0% is full probability to sequence a, 100% is full probability to sequence b. 50% gives a 50/50 chance that the next note will be taken from either sequence. this allows for continuous, probabilistic morphing between the two note sequences.
