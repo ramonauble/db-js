@@ -17,6 +17,7 @@ centered around a unique 6 part synthesis engine, db features 6 flexible LFOs, k
 <p align="center">
   <img width="446" height="63" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/synthesis.png">
 </p>
+
 the main synthesis engine is made up of 6 sections,
 each denoted by a different color & symbol.\
 they are as follows, in order from left to right:
@@ -33,6 +34,7 @@ they are as follows, in order from left to right:
 <p align="center">
   <img width="482" height="257" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/mix.png">
 </p>
+
  the **mix** page controls the relative mix levels for each of the 6 partials.\
  each "partial" is made up of a single sine wave.\
  the gain of each sinusoid is controlled by its associated drawbar (parameter slider).\
@@ -43,6 +45,7 @@ they are as follows, in order from left to right:
 <p align="center">
   <img width="482" height="257" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/tune.png">
 </p>
+
  the **tune** page sets the tuning offsets for each of the 6 oscillators.\
  the offsets are expressed in units of **scale degrees**, both positive and negative.\
  given the selected scale & root settings (detailed below), the offset will "select" the corresponding note from said scale, starting from the **root note** at center position.\
@@ -54,6 +57,7 @@ they are as follows, in order from left to right:
 <p align="center">
   <img width="482" height="257" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/shape.png">
 </p>
+
  the **shape** page is host to 6 independent waveshaper distortions, one for each of the 6 partials.\
  the amount of shaping for each partial is determined by the position of the corresponding drawbar.\
  the sliders control both the pregain send & postgain mix amounts; as the output level is increased, the output spectrum will also become brighter.
@@ -63,6 +67,7 @@ they are as follows, in order from left to right:
 <p align="center">
   <img width="482" height="257" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/pan.png">
 </p>
+
  the **pan** page allows each partial to be panned to a specific region of the stereo field, between fully left & fully right.\
  the exact placement of each partial is controlled by the corresponding drawbar.\
  top position is fully right, bottom position is fully left, center position is equal panning (default).
@@ -72,6 +77,7 @@ they are as follows, in order from left to right:
 <p align="center">
   <img width="482" height="257" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/envelope.png">
 </p>
+
  the **envelope** page contains one ADSR envelope, to allow control over the dynamics of the sound.\
  the envelope is retriggered whenever a NOTE ON event is received. it will always retrigger from its previous position (level). the release stage is executed on the final NOTE OFF event (last held key released).\
  the first four sliders provide control over **attack**, **decay**, **sustain** and **release**, in order from left to right.\
@@ -83,6 +89,7 @@ they are as follows, in order from left to right:
 <p align="center">
   <img width="482" height="257" src="https://storage.googleapis.com/www.rsyn.co/db/assets/readme/crush.png">
 </p>
+
  the **crush** page is comprised of 6 separate sample rate/bit reduction effects (one per partial).\
  the sample rate reduction is keytracked & related to the frequency of the associated partial.\
  the position of each drawbar sets the amount of reduction for the corresponding partial.\
