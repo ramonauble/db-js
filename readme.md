@@ -164,7 +164,7 @@ they are as follows, in order from left to right:
  the **depth** slider controls the depth of the modulation for the active LFO, affecting each of the matrix connections equally.
 
 ### modes
- each of the page LFOs can configured to operate in one of three different frequency **modes**.\
+ each of the page LFOs can be configured to operate in one of three different frequency **modes**.\
  the selected mode affects how the base frequency of the active LFO is determined.\
  the modes are as follows:
 
