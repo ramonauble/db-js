@@ -84,7 +84,7 @@ class bitCrushNode extends AudioWorkletProcessor {
         name: "baseFreq",
         defaultValue: 2093.04,
         minValue: 0,
-        maxValue: 90000,
+        maxValue: 72000,
         automationRate: "a-rate"
       }
     ];
@@ -113,7 +113,7 @@ class bitCrushNode extends AudioWorkletProcessor {
     this.lastSample;
     this.normSampleRate;
 
-    this.bitMax = Math.pow(2, 8) - 1;
+    this.bitMax = Math.pow(2, 16) - 1;
     this.bitBase;
     this.crushSample;
     this.normBitRate;
@@ -146,7 +146,7 @@ class bitCrushNode extends AudioWorkletProcessor {
       if (!this.baseFreqArr.length === 1) {
         this.baseFreq = this.baseFreqArr[this.i];
       }
-      this.baseDiv = (this.baseFreq)/90000;
+      this.baseDiv = (this.baseFreq)/72000;
       this.normSampleRate = this.sampleRate*this.baseDiv;
       this.normBitRate = this.bitRate;
 
