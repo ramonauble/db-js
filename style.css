@@ -47,8 +47,13 @@
   margin:-3px auto 0px;
   font-family:monospace;
   font-size:3.6em;
-  text-decoration:underline;
+  text-decoration:underline dotted;
+  color:#000000;
 }
+  #title:hover {
+    text-decoration:underline;
+    color:#604559;
+  }
 
 #subTitle {
   margin:-3px auto -3px;
